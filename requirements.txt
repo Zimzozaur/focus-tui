@@ -1,0 +1,2 @@
+textual~=0.71.0
+pygame~=2.6.0
