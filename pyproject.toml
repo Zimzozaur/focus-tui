@@ -1,0 +1,18 @@
+[project]
+name = "growbonsai"
+version = "0.1"
+dependencies = [
+    "textual~=0.71.0",
+    "pygame~=2.6.0",
+]
+description = "Grow seeds that matter."
+requires-python = ">=3.12"
+
+[project.optional-dependencies]
+dev = [
+    "textual-dev~=1.5.1",
+]
+
+[build-system]
+requires = ["setuptools~=70.2.0"]
+build-backend = "setuptools.build_meta"
