@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="adc5b719-fb66-4d52-8f04-9ebdc02b3550" name="Changes" comment="Added Python version">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/growbonsai/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/growbonsai/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/growbonsai/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/mp3/Spacer_s_Choice.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/mp3/users_mp3/Auntie_Cleo_s.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="adc5b719-fb66-4d52-8f04-9ebdc02b3550" name="Changes" comment="Created PoC" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,7 +114,7 @@
       <updated>1719946370820</updated>
       <workItem from="1719946371842" duration="21000" />
       <workItem from="1719991652593" duration="1987000" />
-      <workItem from="1719993651404" duration="3683000" />
+      <workItem from="1719993651404" duration="4145000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <option name="closed" value="true" />
@@ -150,7 +140,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719992992697</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Created PoC">
+      <option name="closed" value="true" />
+      <created>1719999360066</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1719999360066</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,7 +158,8 @@
     <MESSAGE value="Initial" />
     <MESSAGE value="Update" />
     <MESSAGE value="Added Python version" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Python version" />
+    <MESSAGE value="Created PoC" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created PoC" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/GrowBonsai_TUI$app.coverage" NAME="app Coverage Results" MODIFIED="1719994288732" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/growbonsai" />
