@@ -1,3 +1,7 @@
+############################
+#     Jet Brains Setup     #
+############################
+
 # Default ignored files
 /shelf/
 /workspace.xml
@@ -6,3 +10,13 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+####################
+#     My Setup     #
+####################
+
+# python generated files
+__pycache__/
+
+# venv
+.venv
