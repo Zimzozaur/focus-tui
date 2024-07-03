@@ -2,7 +2,7 @@ import datetime
 import pygame
 import asyncio
 from textual.app import App, ComposeResult
-from textual.reactive import reactive
+from textual import on
 from textual.widgets import Button, Static, Label
 from textual.containers import Horizontal, Container, Center, Middle
 
@@ -15,7 +15,7 @@ class Clock(Static):
         border: heavy yellow;
         align: center middle;
         width: 100%;
-        height: 100%;
+        height: 80%;
     }
     
     Static {
@@ -60,6 +60,8 @@ class GrowBonsai(App):
         border: heavy red;
         background: $surface;
         padding: 1 2;
+        width: 100%;
+        height: 100%;
     }
     """
     start_time = datetime.datetime.now()
@@ -70,9 +72,6 @@ class GrowBonsai(App):
         NUMBERS_DICT['0'],
         NUMBERS_DICT['0']
     )
-
-    def on_mount(self):
-        self.set_interval(1, self.update_time)
 
     def update_time(self):
         now = datetime.datetime.now()
@@ -97,12 +96,26 @@ class GrowBonsai(App):
         t_sec = NUMBERS_DICT[seconds_str[-2]]
         u_sec = NUMBERS_DICT[seconds_str[-1]]
 
-        self.timer_widget.update_clock(h_min, t_min,
-                                       u_min, t_sec, u_sec)
+        self.timer_widget.update_clock(
+            h_min,
+            t_min,
+            u_min,
+            t_sec,
+            u_sec
+        )
 
     def compose(self):
         with Center(id='body'):
             yield self.timer_widget
+            yield Button('Seed', variant='success', id='seed-bt')
+
+    @on(Button.Pressed, '#seed-bt')
+    def start_timer(self, event: Button.Pressed):
+        self.start_time = datetime.datetime.now()
+        self.set_interval(1, self.update_time)
+        button = event.button
+        button.label = 'Kill'
+        button.variant = 'error'
 
 
 if __name__ == "__main__":
