@@ -19,9 +19,9 @@ class Clock(Static):
     }
     
     Static {
-        width: auto
+        width: auto;
+        color: $warning-lighten-1;
     }
-    
     """
 
     def __init__(self, h_min, t_min, u_min, t_sec, u_sec, *args, **kwargs):
