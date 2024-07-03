@@ -1,13 +1,11 @@
 import datetime
 import pygame
-import asyncio
-from textual.app import App, ComposeResult
+from textual.app import App
 from textual import on
-from textual.widgets import Button, Static, Label, ProgressBar, Input
+from textual.widgets import Button, Static, Label, Input
 from textual.containers import Horizontal, Container, Center, Middle
 
 from _numbers import NUMBERS_DICT
-from growbonsai._slider import Slider
 from growbonsai._validators import ValueFrom5to300
 
 
