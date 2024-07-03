@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="adc5b719-fb66-4d52-8f04-9ebdc02b3550" name="Changes" comment="Base setup">
+    <list default="true" id="adc5b719-fb66-4d52-8f04-9ebdc02b3550" name="Changes" comment="Fixed link to repo">
+      <change afterPath="$PROJECT_DIR$/src/growbonsai/_numbers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/growbonsai/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/growbonsai/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +119,7 @@
       <workItem from="1719946371842" duration="21000" />
       <workItem from="1719991652593" duration="1987000" />
       <workItem from="1719993651404" duration="4576000" />
-      <workItem from="1720000220327" duration="748000" />
+      <workItem from="1720000220327" duration="1718000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <option name="closed" value="true" />
@@ -160,7 +161,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719999603612</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Fixed link to repo">
+      <option name="closed" value="true" />
+      <created>1720001009354</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1720001009354</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,7 +181,8 @@
     <MESSAGE value="Added Python version" />
     <MESSAGE value="Created PoC" />
     <MESSAGE value="Base setup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Base setup" />
+    <MESSAGE value="Fixed link to repo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed link to repo" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/GrowBonsai_TUI$app.coverage" NAME="app Coverage Results" MODIFIED="1719994288732" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/growbonsai" />
