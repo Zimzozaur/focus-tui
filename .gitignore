@@ -3,13 +3,13 @@
 ############################
 
 # Default ignored files
-/shelf/
-/workspace.xml
+.idea/shelf/
+.idea/workspace.xml
 # Editor-based HTTP Client requests
-/httpRequests/
+.idea/httpRequests/
 # Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+.idea/dataSources/
+.idea/dataSources.local.xml
 
 ####################
 #     My Setup     #
@@ -19,4 +19,4 @@
 __pycache__/
 
 # venv
-.venv
+.venv/
