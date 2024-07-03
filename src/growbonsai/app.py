@@ -3,10 +3,12 @@ import pygame
 import asyncio
 from textual.app import App, ComposeResult
 from textual import on
-from textual.widgets import Button, Static, Label
+from textual.widgets import Button, Static, Label, ProgressBar, Input
 from textual.containers import Horizontal, Container, Center, Middle
 
 from _numbers import NUMBERS_DICT
+from growbonsai._slider import Slider
+from growbonsai._validators import ValueFrom5to300
 
 
 class Clock(Static):
@@ -107,6 +109,13 @@ class GrowBonsai(App):
     def compose(self):
         with Center(id='body'):
             yield self.timer_widget
+            yield Input(
+                value='45',
+                placeholder='Type number from 5 to 300',
+                restrict=r'^\d{1,3}$',
+                validators=[ValueFrom5to300()],
+                id='session-duration'
+            )
             yield Button('Seed', variant='success', id='seed-bt')
 
     @on(Button.Pressed, '#seed-bt')
@@ -116,6 +125,13 @@ class GrowBonsai(App):
         button = event.button
         button.label = 'Kill'
         button.variant = 'error'
+
+    @on(Input.Changed, '#session-duration')
+    def set_session_duration(self, event: Input.Changed):
+        if event.input.is_valid:
+            self.query_one('#seed-bt', Button).disabled = False
+        else:
+            self.query_one('#seed-bt', Button).disabled = True
 
 
 if __name__ == "__main__":
