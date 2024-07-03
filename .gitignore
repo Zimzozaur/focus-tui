@@ -18,5 +18,8 @@
 # python generated files
 __pycache__/
 
+# pip generated files
+*egg-info/
+
 # venv
 .venv/
