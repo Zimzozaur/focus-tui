@@ -50,7 +50,13 @@ class Clock(Static):
         self._t_sec = Static(NUMBERS_DICT['0'])
         self._u_sec = Static(NUMBERS_DICT['0'])
         self._seed_button = Button('Seed', variant='success', id='seed-bt')
-
+        self._input_filed = Input(
+            value='45',
+            placeholder='Type 5 to 300',
+            restrict=r'^\d{1,3}$',
+            validators=[ValueFrom5to300()],
+            id='session-duration'
+        )
         # Data
         self._clock_mode: str = 'Timer'
         self._stop_watch_started: datetime = datetime.now()
@@ -75,19 +81,14 @@ class Clock(Static):
             yield Label(' ')
             yield self._u_sec
         with Vertical(id='seed-wrapper'):
-            yield Input(
-                value='45',
-                placeholder='Type 5 to 300',
-                restrict=r'^\d{1,3}$',
-                validators=[ValueFrom5to300()],
-                id='session-duration'
-            )
+            yield self._input_filed
             yield self._seed_button
 
     @on(Button.Pressed, '#seed-bt')
     def _start_timer(self) -> None:
         """Start timer or stopwatch depend on the chosen mode"""
         if self._seed_button.variant == 'success':
+            self._input_filed.visible = False
             self._start_seeding()
         elif self._seed_button.variant == 'warning':
             # Reset Timer
@@ -99,6 +100,8 @@ class Clock(Static):
             # Reset Button
             self._seed_button.variant = 'success'
             self._seed_button.label = 'Seed'
+            # Unhidden Input
+            self._input_filed.visible = True
             # Stop intervals
             self._stop_intervals()
         else:
