@@ -20,6 +20,7 @@ __pycache__/
 
 # pip generated files
 *egg-info/
+dist/
 
 # venv
 .venv/
