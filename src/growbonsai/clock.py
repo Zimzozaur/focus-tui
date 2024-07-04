@@ -1,10 +1,11 @@
 from datetime import datetime
 from textual import on
 from textual.widgets import Button, Static, Label, Input
-from textual.containers import Horizontal, Container, Center, Middle, Vertical
+from textual.containers import Horizontal, Vertical
 
 from _numbers import NUMBERS_DICT
 from growbonsai._validators import ValueFrom5to300
+from growbonsai._confirmation_popup import ConfirmPopup
 
 
 class Clock(Static):
@@ -91,23 +92,33 @@ class Clock(Static):
             self._input_filed.visible = False
             self._start_seeding()
         elif self._seed_button.variant == 'warning':
-            # Reset Timer
-            self._h_min.update('')
-            self._t_min.update('')
-            self._u_min.update(NUMBERS_DICT['0'])
-            self._t_sec.update(NUMBERS_DICT['0'])
-            self._u_sec.update(NUMBERS_DICT['0'])
-            # Reset Button
-            self._seed_button.variant = 'success'
-            self._seed_button.label = 'Seed'
-            # Unhidden Input
-            self._input_filed.visible = True
-            # Stop intervals
-            self._stop_intervals()
+            self._reset_clock()
         else:
-            # TODO: Add popup asking to stop
-            # TODO: Add record to DB
-            pass
+            popup = ConfirmPopup(message='Do you want to kill the session?')
+            self.app.push_screen(popup, self._record_killed_session)
+
+    def _record_killed_session(self, boolean: bool) -> None:
+        """Add killed session to DB and reset clock"""
+        if not boolean:
+            return
+        # TODO: Add record to DB
+        self._reset_clock()
+
+    def _reset_clock(self) -> None:
+        """Set all clock properties to default"""
+        # Reset Timer
+        self._h_min.update('')
+        self._t_min.update('')
+        self._u_min.update(NUMBERS_DICT['0'])
+        self._t_sec.update(NUMBERS_DICT['0'])
+        self._u_sec.update(NUMBERS_DICT['0'])
+        # Reset Button
+        self._seed_button.variant = 'success'
+        self._seed_button.label = 'Seed'
+        # Unhidden Input
+        self._input_filed.visible = True
+        # Stop intervals
+        self._stop_intervals()
 
     def _stop_intervals(self):
         """Stop all active intervals."""
