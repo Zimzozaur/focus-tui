@@ -25,16 +25,23 @@ class Clock(Static):
         width: 20;
     }
     """
-    clock_mode = 'Timer'
-    stop_watch_started = datetime.now()
 
     def __init__(self, h_min, t_min, u_min, t_sec, u_sec, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Widgets
         self.h_min = Static(h_min)
         self.t_min = Static(t_min)
         self.u_min = Static(u_min)
         self.t_sec = Static(t_sec)
         self.u_sec = Static(u_sec)
+        self.seed_button = Button('Seed', variant='success', id='seed-bt')
+
+        # Data
+        self.clock_mode: str = 'Timer'
+        self.stop_watch_started: datetime = datetime.now()
+        self.timer_length: int = 0
+        self._cancel_timer_counter_default = 3
+        self.cancel_timer_counter: int = 0
 
     def compose(self):
         with Horizontal(id='clock-wrapper'):
@@ -56,60 +63,62 @@ class Clock(Static):
             validators=[ValueFrom5to300()],
             id='session-duration'
         )
-        yield Button('Seed', variant='success', id='seed-bt')
+        yield self.seed_button
 
     @on(Button.Pressed, '#seed-bt')
-    def start_timer(self, event: Button.Pressed) -> None:
-        """Start timer"""
+    def start_timer(self) -> None:
+        """Start timer or stopwatch depend on the chosen mode"""
+        self.cancel_timer_counter = self._cancel_timer_counter_default
         if self.clock_mode == 'Timer':
+            self.timer_length = int(self.query_one(Input).value) * 60
             self.set_interval(1, self.timer)
         else:
             self.stop_watch_started = datetime.now()  # Reload time
             self.set_interval(1, self.stopwatch)
-        button = event.button
-        button.label = 'Kill'
-        button.variant = 'error'
+
+        self.seed_button.variant = 'warning'
+        self.set_interval(1, self.cancel_timer, repeat=30)
 
     def stopwatch(self) -> None:
+        """Update variable used by stopwatch and update displayed time"""
         elapsed_time = datetime.now() - self.stop_watch_started
         minutes, seconds = divmod(elapsed_time.total_seconds(), 60)
+        self.update_clock(minutes, seconds)
+
+    def timer(self) -> None:
+        """Update variable used by timer and update displayed time"""
+        self.timer_length -= 1
+        minutes, seconds = divmod(self.timer_length, 60)
+        self.update_clock(minutes, seconds)
+
+    def update_clock(self, minutes, seconds):
+        """Update displayed digits"""
         minutes_str = str(int(minutes)).zfill(2)
         seconds_str = str(int(seconds)).zfill(2)
         print(f"{minutes_str}:{seconds_str}")
 
         if int(minutes) >= 100:
-            h_min = NUMBERS_DICT[minutes_str[-3]]
+            self.h_min.update(NUMBERS_DICT[minutes_str[-3]])
         else:
-            h_min = ''
+            self.h_min.update('')
 
         if int(minutes) >= 10:
-            t_min = NUMBERS_DICT[minutes_str[-2]]
+            self.h_min.update(NUMBERS_DICT[minutes_str[-2]])
         else:
-            t_min = ''
+            self.h_min.update('')
 
-        u_min = NUMBERS_DICT[minutes_str[-1]]
-        t_sec = NUMBERS_DICT[seconds_str[-2]]
-        u_sec = NUMBERS_DICT[seconds_str[-1]]
+        self.u_min.update(NUMBERS_DICT[minutes_str[-1]])
+        self.t_sec.update(NUMBERS_DICT[seconds_str[-2]])
+        self.u_sec.update(NUMBERS_DICT[seconds_str[-1]])
 
-        self.update_clock(
-            h_min,
-            t_min,
-            u_min,
-            t_sec,
-            u_sec
-        )
-
-    def timer(self):
-        pass
-
-
-    def update_clock(self, h_min, t_min, u_min, t_sec, u_sec):
-        """Update displayed digits"""
-        self.h_min.update(h_min)
-        self.t_min.update(t_min)
-        self.u_min.update(u_min)
-        self.t_sec.update(t_sec)
-        self.u_sec.update(u_sec)
+    def cancel_timer(self):
+        """Allow user to cancel timer in first 30 seconds"""
+        self.cancel_timer_counter -= 1
+        if self.cancel_timer_counter > 0:
+            self.seed_button.label = f'Cancel ({self.cancel_timer_counter})'
+        else:
+            self.seed_button.label = 'Kill'
+            self.seed_button.variant = 'error'
 
     @on(Input.Changed, '#session-duration')
     def session_duration_changed(self, event: Input.Changed) -> None:
