@@ -2,7 +2,7 @@ from textual.app import App
 from textual.widgets import Footer, Header
 from textual.containers import Center
 
-from clock import Clock
+from growbonsai.clock import Clock
 
 
 class GrowBonsai(App):
@@ -29,6 +29,3 @@ class GrowBonsai(App):
     def action_timer_mode(self):
         self.query_one(Clock).change_clock_mode()
 
-
-if __name__ == "__main__":
-    GrowBonsai().run()
