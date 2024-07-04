@@ -2,7 +2,6 @@ from textual.app import App
 from textual.widgets import Footer, Header
 from textual.containers import Center
 
-from _numbers import NUMBERS_DICT
 from clock import Clock
 
 
@@ -24,13 +23,7 @@ class GrowBonsai(App):
     def compose(self):
         yield Header()
         with Center(id='body'):
-            yield Clock(
-                '',
-                '',
-                NUMBERS_DICT['0'],
-                NUMBERS_DICT['0'],
-                NUMBERS_DICT['0']
-            )
+            yield Clock()
         yield Footer()
 
     def action_timer_mode(self):

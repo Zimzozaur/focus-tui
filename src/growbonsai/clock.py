@@ -26,14 +26,14 @@ class Clock(Static):
     }
     """
 
-    def __init__(self, h_min, t_min, u_min, t_sec, u_sec, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Widgets
-        self.h_min = Static(h_min)
-        self.t_min = Static(t_min)
-        self.u_min = Static(u_min)
-        self.t_sec = Static(t_sec)
-        self.u_sec = Static(u_sec)
+        self.h_min = Static('')
+        self.t_min = Static('')
+        self.u_min = Static(NUMBERS_DICT['0'])
+        self.t_sec = Static(NUMBERS_DICT['0'])
+        self.u_sec = Static(NUMBERS_DICT['0'])
         self.seed_button = Button('Seed', variant='success', id='seed-bt')
 
         # Data
@@ -42,6 +42,9 @@ class Clock(Static):
         self.timer_length: int = 0
         self._cancel_timer_counter_default = 3
         self.cancel_timer_counter: int = 0
+
+        # Intervals
+        self.intervals = []
 
     def compose(self):
         with Horizontal(id='clock-wrapper'):
@@ -68,16 +71,42 @@ class Clock(Static):
     @on(Button.Pressed, '#seed-bt')
     def start_timer(self) -> None:
         """Start timer or stopwatch depend on the chosen mode"""
+        if self.seed_button.variant == 'success':
+            self.start_seeding()
+        elif self.seed_button.variant == 'warning':
+            # Reset Timer
+            self.h_min.update('')
+            self.t_min.update('')
+            self.u_min.update(NUMBERS_DICT['0'])
+            self.t_sec.update(NUMBERS_DICT['0'])
+            self.u_sec.update(NUMBERS_DICT['0'])
+            # Reset Button
+            self.seed_button.variant = 'success'
+            self.seed_button.label = 'Seed'
+            # Stop intervals
+            self.stop_intervals()
+        else:
+            pass
+
+    def stop_intervals(self):
+        """Stop all active intervals."""
+        for interval in self.intervals:
+            interval.stop()
+        self.intervals.clear()
+
+    def start_seeding(self) -> None:
+        """Start clock"""
         self.cancel_timer_counter = self._cancel_timer_counter_default
         if self.clock_mode == 'Timer':
             self.timer_length = int(self.query_one(Input).value) * 60
-            self.set_interval(1, self.timer)
+            interval1 = self.set_interval(1, self.timer)
         else:
             self.stop_watch_started = datetime.now()  # Reload time
-            self.set_interval(1, self.stopwatch)
+            interval1 = self.set_interval(1, self.stopwatch)
 
         self.seed_button.variant = 'warning'
-        self.set_interval(1, self.cancel_timer, repeat=30)
+        interval2 = self.set_interval(1, self.start_cancel_timer, repeat=30)
+        self.intervals.extend((interval1, interval2))
 
     def stopwatch(self) -> None:
         """Update variable used by stopwatch and update displayed time"""
@@ -111,7 +140,7 @@ class Clock(Static):
         self.t_sec.update(NUMBERS_DICT[seconds_str[-2]])
         self.u_sec.update(NUMBERS_DICT[seconds_str[-1]])
 
-    def cancel_timer(self):
+    def start_cancel_timer(self):
         """Allow user to cancel timer in first 30 seconds"""
         self.cancel_timer_counter -= 1
         if self.cancel_timer_counter > 0:
