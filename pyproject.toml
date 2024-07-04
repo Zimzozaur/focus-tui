@@ -1,18 +1,30 @@
 [project]
 name = "growbonsai"
-version = "0.1"
+version = "0.1.0"
+authors = [
+  { name="Simon Joseph", email="szymonpiechutowski@gmail.com" },
+]
 dependencies = [
     "textual~=0.71.0",
-    "pygame~=2.6.0",
 ]
 description = "Grow seeds that matter."
+readme = "readme.md"
 requires-python = ">=3.12"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
 
 [project.optional-dependencies]
 dev = [
     "textual-dev~=1.5.1",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Zimzozaur/GrowBonsai-TUI"
+Issues = "https://github.com/Zimzozaur/GrowBonsai-TUI/issues"
+
 [build-system]
-requires = ["setuptools~=70.2.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
