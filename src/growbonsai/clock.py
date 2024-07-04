@@ -1,7 +1,7 @@
 from datetime import datetime
 from textual import on
 from textual.widgets import Button, Static, Label, Input
-from textual.containers import Horizontal, Container, Center, Middle
+from textual.containers import Horizontal, Container, Center, Middle, Vertical
 
 from _numbers import NUMBERS_DICT
 from growbonsai._validators import ValueFrom5to300
@@ -11,18 +11,33 @@ class Clock(Static):
     DEFAULT_CSS = """
     Clock {
         border: heavy yellow;
-        align: center middle;
         width: 100%;
         height: 100%;
     }
+
+    #clock-wrapper {
+        align: center middle;
+        height: 60%;
+    }
     
+    #seed-wrapper {
+        align: center middle;
+        height: 40%;
+    }
+
     Static {
         width: auto;
         color: $warning-lighten-1;
     }
-    
+
     #session-duration {
-        width: 20;
+        width: 21;
+    }
+
+    Button {
+        align: center middle;
+        margin-top: 1;
+        margin-left: 2;
     }
     """
 
@@ -59,14 +74,15 @@ class Clock(Static):
             yield self._t_sec
             yield Label(' ')
             yield self._u_sec
-        yield Input(
-            value='45',
-            placeholder='Type number from 5 to 300',
-            restrict=r'^\d{1,3}$',
-            validators=[ValueFrom5to300()],
-            id='session-duration'
-        )
-        yield self._seed_button
+        with Vertical(id='seed-wrapper'):
+            yield Input(
+                value='45',
+                placeholder='Type 5 to 300',
+                restrict=r'^\d{1,3}$',
+                validators=[ValueFrom5to300()],
+                id='session-duration'
+            )
+            yield self._seed_button
 
     @on(Button.Pressed, '#seed-bt')
     def _start_timer(self) -> None:
@@ -126,7 +142,7 @@ class Clock(Static):
         """Update displayed digits"""
         minutes_str = str(int(minutes)).zfill(2)
         seconds_str = str(int(seconds)).zfill(2)
-        print(f"{minutes_str}:{seconds_str}")
+        print(int(minutes))
 
         if int(minutes) >= 100:
             self._h_min.update(NUMBERS_DICT[minutes_str[-3]])
@@ -134,9 +150,9 @@ class Clock(Static):
             self._h_min.update('')
 
         if int(minutes) >= 10:
-            self._h_min.update(NUMBERS_DICT[minutes_str[-2]])
+            self._t_min.update(NUMBERS_DICT[minutes_str[-2]])
         else:
-            self._h_min.update('')
+            self._t_min.update('')
 
         self._u_min.update(NUMBERS_DICT[minutes_str[-1]])
         self._t_sec.update(NUMBERS_DICT[seconds_str[-2]])
