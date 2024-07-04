@@ -86,6 +86,8 @@ class Clock(Static):
             # Stop intervals
             self._stop_intervals()
         else:
+            # TODO: Add popup asking to stop
+            # TODO: Add record to DB
             pass
 
     def _stop_intervals(self):
