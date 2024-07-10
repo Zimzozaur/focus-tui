@@ -1,3 +1,5 @@
+import pygame
+
 from textual.app import App
 from textual.widgets import Footer, Header
 from textual.containers import Center
@@ -26,6 +28,11 @@ class FocusSeeds(App):
         ('ctrl+t', 'timer_mode', 'Timer Mode')
     ]
     ENABLE_COMMAND_PALETTE = False
+
+    def __init__(self):
+        super().__init__()
+        pygame.init()
+        pygame.mixer.init()
 
     def compose(self):
         yield AppHeader()
