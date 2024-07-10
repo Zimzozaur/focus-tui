@@ -1,11 +1,11 @@
 ### PoC Setup (Under 1 min)
 1. Clone this project
    ``` bash
-   git clone https://github.com/Zimzozaur/GrowBonsai-TUI
+   git clone https://github.com/Zimzozaur/FocusSeeds-TUI
    ```
 2. Move to project
     ```
-    cd GrowBonsai-TUI
+    cd FocusSeeds-TUI
     ```
 3. Create virtual env in project directory 
    ```
@@ -26,5 +26,5 @@
    ```
 6. Run app in terminal
    ```
-    python src/growbonsai/app.py
+    python src/focusseeds/app.py
    ```

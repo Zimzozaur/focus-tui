@@ -1,11 +1,17 @@
 from textual.app import App
 from textual.widgets import Footer, Header
 from textual.containers import Center
+from textual.widgets._header import HeaderTitle
 
-from growbonsai.clock import Clock
+from focusseeds.clock import Clock
 
 
-class GrowBonsai(App):
+class AppHeader(Header):
+    def compose(self):
+        yield HeaderTitle()
+
+
+class FocusSeeds(App):
     DEFAULT_CSS = """
     #body {
         border: heavy red;
@@ -17,11 +23,12 @@ class GrowBonsai(App):
     """
     TITLE = 'Timer'
     BINDINGS = [
-        ('ctrl+m', 'timer_mode', 'Timer Mode')
+        ('ctrl+t', 'timer_mode', 'Timer Mode')
     ]
+    ENABLE_COMMAND_PALETTE = False
 
     def compose(self):
-        yield Header()
+        yield AppHeader()
         with Center(id='body'):
             yield Clock()
         yield Footer()
