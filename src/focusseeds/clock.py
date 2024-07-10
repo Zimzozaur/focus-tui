@@ -3,9 +3,9 @@ from textual import on
 from textual.widgets import Button, Static, Label, Input
 from textual.containers import Horizontal, Vertical
 
-from focusseeds._numbers import NUMBERS_DICT
-from focusseeds._validators import ValueFrom5to300
-from focusseeds._confirmation_popup import ConfirmPopup
+from focusseeds.numbers import NUMBERS_DICT
+from focusseeds.validators import ValueFrom5to300
+from focusseeds.confirmation_popup import ConfirmPopup
 
 
 class Clock(Static):
