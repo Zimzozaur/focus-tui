@@ -2,7 +2,7 @@
 name = "focusseeds"
 version = "0.1.0"
 authors = [
-  { name="Simon Joseph", email="szymonpiechutowski@gmail.com" },
+  { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
 ]
 dependencies = [
     "textual~=0.71.0",
@@ -29,11 +29,11 @@ Issues = "https://github.com/Zimzozaur/FocusSeeds-TUI/issues"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build.targets.sdist.include]
+[tool.hatch.build.targets.sdist]
 paths = ["src/focusseeds/static/**"]
 
-[tool.hatch.build.targets.wheel.include]
+[tool.hatch.build.targets.wheel]
 paths = ["src/focusseeds/static/**"]
 
 [project.scripts]
-growbonsai = "focusseeds.__main__:main"
+Focus-Seeds = "focusseeds.__main__:main"
