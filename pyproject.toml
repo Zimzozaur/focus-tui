@@ -6,6 +6,7 @@ authors = [
 ]
 dependencies = [
     "textual~=0.71.0",
+    "pygame~=2.6.0",
     "platformdirs~=4.2.2",
 ]
 description = "Grow seeds that matter."
