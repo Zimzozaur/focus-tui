@@ -16,7 +16,6 @@ class AppHeader(Header):
 class FocusSeeds(App):
     DEFAULT_CSS = """
     #body {
-        border: heavy red;
         background: $surface;
         padding: 1 2;
         width: 100%;
