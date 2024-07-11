@@ -40,5 +40,7 @@ class FocusSeeds(App):
         yield Footer()
 
     def action_timer_mode(self):
-        self.query_one(Clock).change_clock_mode()
+        clock = self.query_one(Clock)
+        if not clock.active_session:
+            clock.change_clock_mode()
 
