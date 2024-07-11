@@ -38,4 +38,4 @@ paths = ["src/focusseeds/static/**"]
 paths = ["src/focusseeds/static/**"]
 
 [project.scripts]
-Focus-Seeds = "focusseeds.__main__:main"
+focusseeds = "focusseeds.__main__:main"
