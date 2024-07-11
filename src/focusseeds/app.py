@@ -6,6 +6,7 @@ from textual.containers import Center
 from textual.widgets._header import HeaderTitle
 
 from focusseeds.clock import Clock
+from focusseeds.settings import SettingsScreen
 
 
 class AppHeader(Header):
@@ -24,7 +25,8 @@ class FocusSeeds(App):
     """
     TITLE = 'Timer'
     BINDINGS = [
-        ('ctrl+t', 'timer_mode', 'Timer Mode')
+        ('ctrl+t', 'timer_mode', 'Timer Mode'),
+        # ('ctrl+s', 'open_settings', 'Settings')
     ]
     ENABLE_COMMAND_PALETTE = False
 
@@ -41,6 +43,11 @@ class FocusSeeds(App):
 
     def action_timer_mode(self):
         clock = self.query_one(Clock)
-        if not clock.active_session:
-            clock.change_clock_mode()
+        clock.change_clock_mode()
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action == 'timer_mode':
+            return not self.query_one(Clock).active_session
+
+        # Otherwise you can close app LOL (ctrl+c default biding)
+        return True

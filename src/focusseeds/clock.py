@@ -111,6 +111,7 @@ class Clock(Static):
         """Start, Cancel, Kill timer or stopwatch depend on the chosen mode"""
         # Start timer
         if self._seed_button.variant == 'success':
+            self.app.refresh_bindings()  # Remove switch clock mode biding
             self._input_filed.visible = False
             self._start_session()
             self.active_session = True
@@ -199,6 +200,8 @@ class Clock(Static):
         for interval in self._intervals:
             interval.stop()
         self._intervals.clear()
+        # Return which clock mode biding
+        self.app.refresh_bindings()
 
     def _update_clock(self):
         """Update displayed digits"""
