@@ -66,7 +66,7 @@ class Clock(Static):
             value='45',
             placeholder='Type 5 to 300',
             restrict=r'^\d{1,3}$',
-            # validators=[ValueFrom5to300()],
+            validators=[ValueFrom5to300()],
             id='session-duration'
         )
         # Mode
