@@ -18,13 +18,19 @@ class DatabaseManager:
         """Method used only to set up DB on app initialization"""
         with self.connect() as con:
             con.cursor().execute("""
-                CREATE TABLE study_session(
+                CREATE TABLE study_sessions(
                 id INTEGER PRIMARY KEY,
-                    length INTEGER, 
-                    date TIMESTAMP, 
+                    length INTEGER,
+                    date DATE,
                     done BIT
-                ) 
+                )
             """)
             con.commit()
 
-
+    def create_session_entry(self, length: int, is_successful: int):
+        with self.connect() as con:
+            con.cursor().execute("""
+                INSERT INTO study_sessions(length, date, done)
+                VALUES (?, ?, ?)
+            """, (length, datetime.now(), is_successful)
+            )
