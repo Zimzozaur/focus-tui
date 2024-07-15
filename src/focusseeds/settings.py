@@ -7,8 +7,12 @@ from focusseeds._app import AppHeader
 
 class SettingsScreen(Screen):
     BINDINGS = [
+        ('ctrl+q', 'quit_app', 'Quit App'),
         ('escape', 'close_settings', 'Close Settings'),
     ]
+
+    def action_quit_app(self):
+        self.app.exit()
 
     def action_close_settings(self):
         """Method has to return anything to run callback"""
