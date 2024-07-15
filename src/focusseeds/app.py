@@ -26,7 +26,7 @@ class FocusSeeds(App):
     TITLE = 'Timer'
     BINDINGS = [
         ('ctrl+t', 'timer_mode', 'Timer Mode'),
-        # ('ctrl+s', 'open_settings', 'Settings')
+        ('ctrl+s', 'open_settings', 'Settings')
     ]
     ENABLE_COMMAND_PALETTE = False
 
@@ -45,9 +45,17 @@ class FocusSeeds(App):
         clock = self.query_one(Clock)
         clock.change_clock_mode()
 
-    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+    def action_open_settings(self):
+        self.push_screen(SettingsScreen())
+
+    def check_action(
+        self,
+        action: str,
+        parameters: tuple[object, ...]
+    ) -> bool | None:
+        print(action)
         if action == 'timer_mode':
             return not self.query_one(Clock).active_session
 
-        # Otherwise you can close app LOL (ctrl+c default biding)
+        # Otherwise you cannot close app LOL (ctrl+c default biding)
         return True
