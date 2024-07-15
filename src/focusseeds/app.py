@@ -7,7 +7,7 @@ from focusseeds.clock import Clock
 from focusseeds._app import AppHeader
 
 
-class FocusSeeds(App):
+class FocusSeeds(App, inherit_bindings=False):
     DEFAULT_CSS = """
     #body {
         background: $surface;
@@ -27,15 +27,3 @@ class FocusSeeds(App):
         yield AppHeader()
         yield Footer()
         self.push_screen(Clock())
-
-    def check_action(
-        self,
-        action: str,
-        parameters: tuple[object, ...]
-    ) -> bool | None:
-        print(action)
-        if action == 'timer_mode':
-            return not self.query_one(Clock).active_session
-
-        # Otherwise you cannot close app LOL (ctrl+c default biding)
-        return True

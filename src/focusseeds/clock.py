@@ -56,9 +56,13 @@ class Clock(Screen):
     }
     """
     BINDINGS = [
+        ('ctrl+q', 'quit_app', 'Quit App'),
         ('ctrl+t', 'timer_mode', 'Timer Mode'),
-        ('ctrl+s', 'open_settings', 'Settings')
+        ('ctrl+s', 'open_settings', 'Settings'),
     ]
+
+    def action_quit_app(self):
+        self.app.exit()
 
     def action_timer_mode(self):
         """Change between Stopwatch and Timer"""
@@ -78,6 +82,13 @@ class Clock(Screen):
 
         self.dismiss()
         self.app.push_screen(SettingsScreen(), open_clock_back)
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """If clock is active refuse to use any shortcut"""
+        if self.active_session:
+            return False
+
+        return True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
