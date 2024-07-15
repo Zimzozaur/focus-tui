@@ -1,7 +1,10 @@
-from platformdirs import user_data_dir
+import shutil
 from pathlib import Path
 
+from platformdirs import user_data_dir
+
 from focusseeds.db import DatabaseManager
+from fake_api_client import FakeAPIClient
 
 
 class AppSetup:
@@ -13,6 +16,7 @@ class AppSetup:
         self.ambiences = self.static / "ambiences"
         self.db_file = self.static / "focus_seeds.db"
 
+        self.fake_api = FakeAPIClient()
         self.db = DatabaseManager()
 
     def setup_app(self):
@@ -28,12 +32,15 @@ class AppSetup:
 
         # Create inner structure
         if not self.sounds.exists():
-            print('Creating sounds folder')
             self.sounds.mkdir()
+            print('Creating sounds folder')
+            for song in self.fake_api.get_songs():
+                shutil.copy(song, self.sounds)
+                print('Copying:', song)
 
         if not self.ambiences.exists():
             print('Creating ambiences folder')
-            self.sounds.mkdir()
+            self.ambiences.mkdir()
 
         # Create SQLite database file (empty for now)
         if not self.db_file.exists():
