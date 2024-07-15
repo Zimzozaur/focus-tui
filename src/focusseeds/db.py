@@ -14,7 +14,7 @@ class DatabaseManager:
         """Return DB connection"""
         return sqlite3.connect(self.db_file)
 
-    def _db_setup(self) -> None:
+    def db_setup(self) -> None:
         """Method used only to set up DB on app initialization"""
         with self.connect() as con:
             con.cursor().execute("""

@@ -10,9 +10,8 @@ class AppSetup:
         self.main_dir: Path = Path(user_data_dir()) / "Focus-Seeds"
         self.static = self.main_dir / "user_data"
         self.sounds = self.static / "sounds"
-        self.user_sounds = self.sounds / "user_sounds"
+        self.ambiences = self.static / "ambiences"
         self.db_file = self.static / "focus_seeds.db"
-        self.custom_themes = self.static / "user_themes.json"
 
         self.db = DatabaseManager()
 
@@ -32,9 +31,9 @@ class AppSetup:
             print('Creating sounds folder')
             self.sounds.mkdir()
 
-        if not self.user_sounds.exists():
-            print('Creating user_sounds folder')
-            self.user_sounds.mkdir()
+        if not self.ambiences.exists():
+            print('Creating ambiences folder')
+            self.sounds.mkdir()
 
         # Create SQLite database file (empty for now)
         if not self.db_file.exists():
@@ -42,13 +41,7 @@ class AppSetup:
             with open(self.db_file, 'w'):
                 # This is the only place where
                 # this methods should be used
-                self.db._db_setup()
-
-        # Create JSON to hold custom themes
-        if not self.custom_themes.exists():
-            print('Creating themes.json file')
-            with open(self.custom_themes, 'w'):
-                pass
+                self.db.db_setup()
 
         # TODO: download sounds
 
