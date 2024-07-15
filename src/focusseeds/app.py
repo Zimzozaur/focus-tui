@@ -1,17 +1,10 @@
 import pygame
 
 from textual.app import App
-from textual.widgets import Footer, Header
-from textual.containers import Center
-from textual.widgets._header import HeaderTitle
+from textual.widgets import Footer
 
 from focusseeds.clock import Clock
-from focusseeds.settings import SettingsScreen
-
-
-class AppHeader(Header):
-    def compose(self):
-        yield HeaderTitle()
+from focusseeds._app import AppHeader
 
 
 class FocusSeeds(App):
@@ -23,11 +16,6 @@ class FocusSeeds(App):
         height: 100%;
     }
     """
-    TITLE = 'Timer'
-    BINDINGS = [
-        ('ctrl+t', 'timer_mode', 'Timer Mode'),
-        ('ctrl+s', 'open_settings', 'Settings')
-    ]
     ENABLE_COMMAND_PALETTE = False
 
     def __init__(self):
@@ -37,16 +25,8 @@ class FocusSeeds(App):
 
     def compose(self):
         yield AppHeader()
-        with Center(id='body'):
-            yield Clock()
         yield Footer()
-
-    def action_timer_mode(self):
-        clock = self.query_one(Clock)
-        clock.change_clock_mode()
-
-    def action_open_settings(self):
-        self.push_screen(SettingsScreen())
+        self.push_screen(Clock())
 
     def check_action(
         self,

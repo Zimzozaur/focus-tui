@@ -1,18 +1,21 @@
 from datetime import datetime
 from textual import on
-from textual.widgets import Button, Static, Label, Input
+from textual.screen import Screen
+from textual.widgets import Button, Static, Label, Input, Footer
 from textual.containers import Horizontal, Vertical
 
 import pygame
 
+from focusseeds._app import AppHeader
 from focusseeds._numbers import NUMBERS_DICT
+from focusseeds.settings import SettingsScreen
 from focusseeds.validators import ValueFrom5to300
 from focusseeds.confirmation_popup import ConfirmPopup
 from focusseeds.db import DatabaseManager
 from focusseeds.config import UNFS_BRAAM
 
 
-class Clock(Static):
+class Clock(Screen):
     """
     Clock widget functionalities:
         - Time display for both timer and stopwatch modes.
@@ -52,6 +55,29 @@ class Clock(Static):
         margin-left: 2;
     }
     """
+    BINDINGS = [
+        ('ctrl+t', 'timer_mode', 'Timer Mode'),
+        ('ctrl+s', 'open_settings', 'Settings')
+    ]
+
+    def action_timer_mode(self):
+        """Change between Stopwatch and Timer"""
+        self.change_clock_mode()
+
+    def action_open_settings(self):
+        """
+        Open settings screen and dismiss clock
+        When Settings are close opens new instance of clock back
+        """
+        def open_clock_back(result) -> None:
+            """
+            Result has to be passed to run callback
+            but is not needed for this functino
+            """
+            self.app.push_screen(Clock())
+
+        self.dismiss()
+        self.app.push_screen(SettingsScreen(), open_clock_back)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -90,6 +116,8 @@ class Clock(Static):
         self.db = DatabaseManager()
 
     def compose(self):
+        self.app.title = 'Timer'
+        yield AppHeader()
         with Horizontal(id='clock-wrapper'):
             yield self._h_min
             yield Label(' ')
@@ -105,6 +133,7 @@ class Clock(Static):
         with Vertical(id='seed-wrapper'):
             yield self._input_filed
             yield self._seed_button
+        yield Footer()
 
     @on(Button.Pressed, '#seed-bt')
     def _seed_button_clicked(self) -> None:
