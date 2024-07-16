@@ -1,5 +1,5 @@
 import sqlite3
-from sqlite3 import Connection, connect
+from sqlite3 import connect
 from pathlib import Path
 from datetime import datetime
 
@@ -8,7 +8,7 @@ from platformdirs import user_data_dir
 
 class DatabaseManager:
     def __init__(self):
-        self.db_file = Path(user_data_dir()) / 'Focus-Seeds/user_data/focus_seeds.db'
+        self.db_file = Path(user_data_dir()) / 'Focus-Seeds/app_data/focus_seeds.db'
 
     def db_setup(self) -> None:
         """Method used only to set up DB on app initialization"""
