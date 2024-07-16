@@ -1,19 +1,19 @@
-# config.py
+from pathlib import Path
+from platformdirs import user_data_dir
 
-import os
 
-# Get the current file's directory (config.py)
-config_dir = os.path.dirname(os.path.abspath(__file__))
+class AppPaths:
+    def __init__(self):
+        # Root
+        self.main_dir: Path = Path(user_data_dir()) / "Focus-Seeds"
+        # App paths
+        self.app_data = self.main_dir / "app_data"
+        self.sounds = self.app_data / "sounds"
+        self.ambiences = self.app_data / "ambiences"
+        # User paths
+        self.user_data = self.main_dir / "user_data"
+        self.user_sounds = self.user_data / "user_sounds"
+        self.user_ambiences = self.user_data / "user_ambiences"
+        # DB
+        self.db_file = self.app_data / "focus_seeds.db"
 
-# Navigate up two levels to reach the base directory
-BASE_DIR = os.path.dirname(os.path.dirname(config_dir))
-
-# Define other directories relative to the base directory
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-MP3_DIR = os.path.join(STATIC_DIR, 'mp3')
-USERS_MP3_DIR = os.path.join(MP3_DIR, 'users_mp3')
-
-UNFS_BRAAM = os.path.join(MP3_DIR, 'Unfa_Braam.mp3')
-UNFS_WOOHOO = os.path.join(MP3_DIR, 'Unfa_Woohoo.mp3')
-UNFA_ACID_BASSLINE = os.path.join(MP3_DIR, 'Unfa_Acid_Bassline.mp3')
-UNFA_LANDING = os.path.join(MP3_DIR, 'Unfa_Landing.mp3')
