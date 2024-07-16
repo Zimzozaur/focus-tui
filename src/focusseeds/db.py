@@ -13,14 +13,33 @@ class DatabaseManager:
     def db_setup(self) -> None:
         """Method used only to set up DB on app initialization"""
         with connect(self.db_file) as con:
+            # Setup Session table
             con.cursor().execute("""
                 CREATE TABLE study_sessions(
-                id INTEGER PRIMARY KEY,
+                    id INTEGER PRIMARY KEY,
                     length INTEGER,
                     date DATE,
                     done BIT
                 )
             """)
+            # Setup Settings table
+            con.cursor().execute("""
+                CREATE TABLE settings_table(
+                    id INTEGER PRIMARY KEY,
+                    key TEXT,
+                    value TEXT
+                )
+            """)
+            con.commit()
+            default_values = (
+                ('selected_alarm', 'Unfa_Braam'),
+                ('selected_signal', 'Unfa_Braam'),
+                ('selected_ambient', 'Unfa_Acid_Bassline')
+            )
+            con.cursor().executemany(
+                "INSERT INTO settings_table (key, value) VALUES(?, ?)",
+                default_values
+            )
             con.commit()
 
     def create_session_entry(self, length: int, is_successful: int):
