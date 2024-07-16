@@ -8,6 +8,7 @@ dependencies = [
     "textual~=0.71.0",
     "pygame-ce~=2.5.0",
     "platformdirs~=4.2.2",
+    "PyYAML~=6.0.1",
 ]
 description = "Grow seeds that matter."
 readme = "readme.md"
