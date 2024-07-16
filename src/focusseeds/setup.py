@@ -9,12 +9,17 @@ from fake_api_client import FakeAPIClient
 
 class AppSetup:
     def __init__(self):
-        # Paths
+        # Root
         self.main_dir: Path = Path(user_data_dir()) / "Focus-Seeds"
+        # App paths
         self.app_data = self.main_dir / "app_data"
-        self.user_data = self.main_dir / "user_data"
         self.sounds = self.app_data / "sounds"
         self.ambiences = self.app_data / "ambiences"
+        # User paths
+        self.user_data = self.main_dir / "user_data"
+        self.user_sounds = self.user_data / "user_sounds"
+        self.user_ambiences = self.user_data / "user_ambiences"
+        # DB
         self.db_file = self.app_data / "focus_seeds.db"
 
         self.fake_api = FakeAPIClient()
@@ -56,6 +61,16 @@ class AppSetup:
         if not self.user_data.exists():
             print('Creating user_data folder')
             self.user_data.mkdir()
+
+        # Create directory for user sounds
+        if not self.user_sounds.exists():
+            print('Creating user_sounds folder')
+            self.user_sounds.mkdir()
+
+        # Create directory for user ambiences
+        if not self.user_ambiences.exists():
+            print('Creating user_ambiences folder')
+            self.user_ambiences.mkdir()
 
         # TODO: download sounds
 
