@@ -11,10 +11,11 @@ class AppSetup:
     def __init__(self):
         # Paths
         self.main_dir: Path = Path(user_data_dir()) / "Focus-Seeds"
-        self.static = self.main_dir / "user_data"
-        self.sounds = self.static / "sounds"
-        self.ambiences = self.static / "ambiences"
-        self.db_file = self.static / "focus_seeds.db"
+        self.app_data = self.main_dir / "app_data"
+        self.user_data = self.main_dir / "user_data"
+        self.sounds = self.app_data / "sounds"
+        self.ambiences = self.app_data / "ambiences"
+        self.db_file = self.app_data / "focus_seeds.db"
 
         self.fake_api = FakeAPIClient()
         self.db = DatabaseManager()
@@ -25,10 +26,10 @@ class AppSetup:
             print('Creating Focus-Seeds folder')
             self.main_dir.mkdir()
 
-        # Create main static directory
-        if not self.static.exists():
-            print('Creating user_data folder')
-            self.static.mkdir()
+        # Create directory app usage
+        if not self.app_data.exists():
+            print('Creating app_data folder')
+            self.app_data.mkdir()
 
         # Create inner structure
         if not self.sounds.exists():
@@ -44,11 +45,17 @@ class AppSetup:
 
         # Create SQLite database file (empty for now)
         if not self.db_file.exists():
-            print('Creating sqlitedb.db file')
+            print('Creating focus_seeds.db file')
+            Path(self.db_file).touch()
             with open(self.db_file, 'w'):
                 # This is the only place where
                 # this methods should be used
                 self.db.db_setup()
+
+        # Create directory for app users
+        if not self.user_data.exists():
+            print('Creating user_data folder')
+            self.user_data.mkdir()
 
         # TODO: download sounds
 
