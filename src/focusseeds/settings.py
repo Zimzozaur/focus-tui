@@ -22,6 +22,7 @@ class SettingsScreen(Screen):
     .settings-section {
         border: round white;
         height: auto;
+        padding: 0 1;
     }
     """
     BINDINGS = [
