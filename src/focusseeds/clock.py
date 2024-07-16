@@ -10,8 +10,7 @@ from focusseeds.settings import SettingsScreen
 from focusseeds.validators import ValueFrom5to300
 from focusseeds.confirmation_popup import ConfirmPopup
 from focusseeds.db import DatabaseManager
-from focusseeds.config import UNFS_BRAAM
-from sound_mixer import play_sound
+from focusseeds.sound_mixer import SoundMixer
 
 
 class Clock(Screen):
@@ -124,6 +123,7 @@ class Clock(Screen):
         self._intervals = []
         # External classes
         self.db = DatabaseManager()
+        self.mixer = SoundMixer()
 
     def compose(self):
         self.app.title = 'Timer'
@@ -208,7 +208,7 @@ class Clock(Screen):
 
     def _successful_session(self, minutes: float) -> None:
         """Play song, add successful session to DB and reset clock"""
-        play_sound(UNFS_BRAAM, 1)
+        self.mixer.play_sound('alarm')
         self.db.create_session_entry(int(minutes), 1)
         self._reset_clock()
 
