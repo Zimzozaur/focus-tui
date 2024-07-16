@@ -4,8 +4,6 @@ from textual.screen import Screen
 from textual.widgets import Button, Static, Label, Input, Footer
 from textual.containers import Horizontal, Vertical
 
-import pygame
-
 from focusseeds._app import AppHeader
 from focusseeds._numbers import NUMBERS_DICT
 from focusseeds.settings import SettingsScreen
@@ -13,6 +11,7 @@ from focusseeds.validators import ValueFrom5to300
 from focusseeds.confirmation_popup import ConfirmPopup
 from focusseeds.db import DatabaseManager
 from focusseeds.config import UNFS_BRAAM
+from sound_mixer import play_sound
 
 
 class Clock(Screen):
@@ -209,8 +208,7 @@ class Clock(Screen):
 
     def _successful_session(self, minutes: float) -> None:
         """Play song, add successful session to DB and reset clock"""
-        pygame.mixer.music.load(UNFS_BRAAM)
-        pygame.mixer.music.play()
+        play_sound(UNFS_BRAAM, 1)
         self.db.create_session_entry(int(minutes), 1)
         self._reset_clock()
 
