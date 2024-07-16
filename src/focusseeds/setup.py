@@ -1,6 +1,8 @@
 import shutil
 from pathlib import Path
 
+import yaml
+
 from focusseeds.db import DatabaseManager
 from focusseeds.fake_api_client import FakeAPIClient
 from focusseeds.config import AppPaths
@@ -44,6 +46,14 @@ class AppSetup(AppPaths):
                 # this methods should be used
                 self.db.db_setup()
 
+        # Create config.yaml file
+        if not self.config_file.exists():
+            print('Creating config.yaml file')
+            Path(self.config_file).touch()
+            # This is the only place where
+            # this methods should be used
+            self.config_setup()
+
         # Create directory for app users
         if not self.user_data.exists():
             print('Creating user_data folder')
@@ -61,4 +71,24 @@ class AppSetup(AppPaths):
 
         # TODO: download sounds
 
+    def config_setup(self):
+        """Method used only to set up CONFIG on app initialization"""
+        default_config = {
+            'used_sounds': {
+                'alarm': {
+                    'name': 'Unfa_Woohoo.mp3',
+                    'path': f'{self.sounds}'
+                },
+                'signal': {
+                    'name': 'Unfa_Braam.mp3',
+                    'path': f'{self.sounds}'
+                },
+                'ambient': {
+                    'name': 'Auntie_Cleo_s.mp3',
+                    'path': f'{self.ambiences}'
+                }
+            }
+        }
+        with open(self.config_file, 'w') as file:
+            yaml.dump(default_config, file, sort_keys=False)
 
