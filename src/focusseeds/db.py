@@ -57,7 +57,7 @@ class DatabaseManager:
             sound_type: Literal['alarm', 'signal', 'ambient']
     ) -> tuple[str, int]:
         """Get from db file name and location of chosen sound
-        if int is 0 it is default else users sound
+        if int is 1 it is default else users sound
         """
         with connect(self.db_file) as con:
             cur = con.cursor().execute(f"""
