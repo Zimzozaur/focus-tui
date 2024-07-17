@@ -31,7 +31,7 @@ class ConfirmPopup(ModalScreen):
             height: auto;
             margin-top: 1;
 
-            & > #confirm-button {
+            & > #yes-button {
                 margin-left: 10;
             }
         }
