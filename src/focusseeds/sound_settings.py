@@ -3,7 +3,7 @@ from typing import cast, Literal
 
 from textual import on
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal, Center
+from textual.containers import Container, Horizontal, Center, VerticalScroll
 from textual.events import Click
 from textual.widgets import Button, Select, Static, Collapsible, Input
 from textual.screen import ModalScreen
@@ -47,7 +47,6 @@ class SoundSettings(Container):
 
     # External classes
     db = DatabaseManager()
-    mixer = SoundMixer()
     app_config = AppConfig()
     # App paths
     sounds: Path = app_config.sounds
@@ -120,9 +119,31 @@ class SoundSettings(Container):
             yield Button('Edit Ambiences', id='edit-ambient')
 
     @on(Button.Pressed)
-    def on_button_pressed(self, event: Button.Pressed):
+    async def on_button_pressed(self, event: Button.Pressed):
         """Open Sounds Edit menu and refresh page if changes
         where applied"""
+        async def reinit_and_recompose_self(arg):
+            """Restart initialization and recompose"""
+            self.set_alarm = self.app_config.get_used_sound('alarm')['name']
+            self.set_signal = self.app_config.get_used_sound('signal')['name']
+            self.set_ambient = self.app_config.get_used_sound('ambient')['name']
+
+            sound_list = return_sounds_list(self.sounds, self.user_sounds)
+            # Set alarm Select
+            self.select_alarm = Select.from_values(sound_list)
+            self.select_alarm.prompt = f'Alarm: {self.set_alarm}'
+            self.select_alarm.id = 'alarm'
+            # Set signal Select
+            self.select_signal = Select.from_values(sound_list)
+            self.select_signal.prompt = f'Signal: {self.set_signal}'
+            self.select_signal.id = 'signal'
+            # Set ambient Select
+            ambiences_list = return_sounds_list(self.ambiences, self.user_ambiences)
+            self.select_ambient = Select.from_values(ambiences_list)
+            self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
+            self.select_ambient.id = 'ambient'
+            await self.recompose()
+
         if event.button.id == 'edit-ambient':
             sound_type: Literal['ambient'] = 'ambient'
             path_to_sounds: Path = self.user_ambiences
@@ -130,7 +151,10 @@ class SoundSettings(Container):
             sound_type: Literal['alarm'] = 'alarm'
             path_to_sounds: Path = self.user_sounds
 
-        self.app.push_screen(EditSound(sound_type, path_to_sounds))
+        await self.app.push_screen(
+            EditSound(sound_type, path_to_sounds),
+            reinit_and_recompose_self
+        )
 
 
 class EditSound(ModalScreen):
@@ -144,8 +168,7 @@ class EditSound(ModalScreen):
     #edit-sound-body {
         min-width: 50;
         max-width: 70;
-        height: auto;
-        min-width: 50;
+        height: 30;
         padding: 1 2;
         background: $panel;
     }
@@ -153,6 +176,7 @@ class EditSound(ModalScreen):
     #sounds-accordion {
         min-width: 50;
         max-width: 70;
+        height: auto;
     }
 
     .sound-buttons-wrapper {
@@ -160,9 +184,17 @@ class EditSound(ModalScreen):
         padding: 1 1 0 1;
         width: 100%;
     }
+    
+    #add-sound-wrapper {
+        height: auto;
+    }
 
     .sound-buttons-divider {
         width: 1fr;
+    }
+    
+    #add-sound-divider {
+        height: 1fr
     }
     """
     BINDINGS = [
@@ -182,6 +214,7 @@ class EditSound(ModalScreen):
             classes: str | None = None,
     ) -> None:
         super().__init__(name, id, classes)
+        self.config = AppConfig()
         self.sound_type = sound_type
         self.path_to_sounds = path_to_sounds
         self.sounds_names: dict[str, str] = {sound.split('.')[0]: f'.{sound.split('.')[1]}'
@@ -200,7 +233,7 @@ class EditSound(ModalScreen):
             self.dismiss(True)
 
     def compose(self) -> ComposeResult:
-        with Container(id='edit-sound-body'):
+        with VerticalScroll(id='edit-sound-body'):
             with Accordion(id='sounds-accordion'):
                 for name in self.sounds_names.keys():
                     with Collapsible(title=name, classes='sound-collapsible', id=f'{name}_coll'):
@@ -211,7 +244,9 @@ class EditSound(ModalScreen):
                             yield Static(classes='sound-buttons-divider')
                             yield Button('Remove', variant='error',
                                          id=f"{name}_remove")
-            with Center():
+
+            yield Static(id='add-sound-divider')
+            with Center(id='add-sound-wrapper'):
                 yield Button(
                     f"Add {'Sound' if self.sound_type != 'ambient' else 'Ambient'}",
                     variant='primary'
@@ -236,6 +271,7 @@ class EditSound(ModalScreen):
         # Update DOM and dict
         del self.sounds_names[sound_name]
         self.sounds_names[new_name] = extension
+        self.config.change_sound_name_if_in_config(self.sound_type, new_name_with_extension)
         await self.recompose()
         self.query_one(f'#{new_name}_coll', Collapsible).collapsed = False
 
