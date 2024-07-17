@@ -46,3 +46,23 @@ class AppConfig(AppPaths):
 
         with open(self.config_file, 'w') as file:
             yaml.dump(yaml_file, file, sort_keys=False)
+
+    def change_sound_name_if_in_config(self, sound_type: Literal['alarm', 'ambient'], new_name: str) -> None:
+        with open(self.config_file) as file:
+            yaml_file = yaml.safe_load(file)
+
+        if sound_type == 'alarm':
+            alarm = yaml_file['used_sounds']['alarm']['name']
+            signal = yaml_file['used_sounds']['signal']['name']
+            if alarm != new_name:
+                yaml_file['used_sounds']['alarm']['name'] = new_name
+            if signal != new_name:
+                yaml_file['used_sounds']['alarm']['name'] = new_name
+        else:
+            ambient = yaml_file['used_sounds']['ambient']['name']
+            if ambient != new_name:
+                yaml_file['used_sounds']['ambient']['name'] = new_name
+
+        with open(self.config_file, 'w') as file:
+            yaml.dump(yaml_file, file, sort_keys=False)
+
