@@ -3,18 +3,33 @@ from typing import cast, Literal
 
 from textual import on
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal
-from textual.widgets import Button, Select
+from textual.containers import Container, Horizontal, Center
+from textual.events import Click
+from textual.widgets import Button, Select, Static, Collapsible, Input
+from textual.screen import ModalScreen
 
 from focusseeds.sound_mixer import SoundMixer
 from focusseeds.db import DatabaseManager
 from focusseeds.config import AppConfig
+from focusseeds.widgets.accordion import Accordion
 
 
 def return_sounds_list(*paths: Path):
     """Return list of audio files supported by Pygame from paths"""
     return [sound.name for path in paths for sound in path.glob('*')
             if sound.suffix in {'.wav', '.mp3', '.ogg', '.flac', '.opus'}]
+
+
+def remove_id_suffix(string: str) -> str:
+    """Remove _something from the end of the string"""
+    return string[:string.rindex('_')]
+
+
+def rename_file(old_path: Path, old_name: str, new_name: str) -> None:
+    """Rename a file located at `old_path` with the given `old_name` to `new_name`."""
+    old_file_path = old_path / old_name
+    new_file_path = old_path / new_name
+    old_file_path.rename(new_file_path)
 
 
 class SoundSettings(Container):
@@ -64,9 +79,8 @@ class SoundSettings(Container):
 
     @on(Select.Changed)
     def select_changed(self, event: Select.Changed) -> None:
-        """
-        Change assigned sound to sound type when other than saved in db
-        """
+        """Change sound connected to type and update config"""
+        # If press blank or already chosen return
         if (event.value == Select.BLANK or
                 event.control.id in [self.set_alarm, self.set_signal, self.set_ambient]):
             return None
@@ -97,11 +111,136 @@ class SoundSettings(Container):
     def compose(self) -> ComposeResult:
         with Horizontal(classes='sound-settings-horizontal-padding'):
             yield self.select_alarm
-            yield Button('Edit Alarms')
+            yield Button('Edit Alarms', id='edit-alarm')
         with Horizontal(classes='sound-settings-horizontal-padding'):
             yield self.select_signal
-            yield Button('Edit Signals')
+            yield Button('Edit Signals', id='edit-signal')
         with Horizontal():
             yield self.select_ambient
-            yield Button('Edit Ambiences')
+            yield Button('Edit Ambiences', id='edit-ambient')
 
+    @on(Button.Pressed)
+    def on_button_pressed(self, event: Button.Pressed):
+        """Open Sounds Edit menu and refresh page if changes
+        where applied"""
+        if event.button.id == 'edit-ambient':
+            sound_type: Literal['ambient'] = 'ambient'
+            path_to_sounds: Path = self.user_ambiences
+        else:
+            sound_type: Literal['alarm'] = 'alarm'
+            path_to_sounds: Path = self.user_sounds
+
+        self.app.push_screen(EditSound(sound_type, path_to_sounds))
+
+
+class EditSound(ModalScreen):
+    DEFAULT_CSS = """
+    EditSound {
+        align: center middle;
+        width: auto;
+        height: auto;
+    }
+
+    #edit-sound-body {
+        min-width: 50;
+        max-width: 70;
+        height: auto;
+        min-width: 50;
+        padding: 1 2;
+        background: $panel;
+    }
+
+    #sounds-accordion {
+        min-width: 50;
+        max-width: 70;
+    }
+
+    .sound-buttons-wrapper {
+        height: auto;
+        padding: 1 1 0 1;
+        width: 100%;
+    }
+
+    .sound-buttons-divider {
+        width: 1fr;
+    }
+    """
+    BINDINGS = [
+        ('ctrl+q', 'quit_app', 'Quit App'),
+        ('escape', 'close_popup', 'Close Popup')
+    ]
+
+    def action_quit_app(self):
+        self.app.exit()
+
+    def __init__(
+            self,
+            sound_type: Literal['alarm', 'ambient'],
+            path_to_sounds: Path,
+            name: str | None = None,
+            id: str | None = None,
+            classes: str | None = None,
+    ) -> None:
+        super().__init__(name, id, classes)
+        self.sound_type = sound_type
+        self.path_to_sounds = path_to_sounds
+        self.sounds_names: dict[str, str] = {sound.split('.')[0]: f'.{sound.split('.')[1]}'
+                                             for sound in return_sounds_list(path_to_sounds)}
+
+    def action_close_popup(self):
+        self.dismiss(True)
+
+    def on_click(self, event: Click):
+        """Close popup when clicked on the background
+        and user is not editing
+        Return [self.edited] to give information to call back
+        """
+        is_background = self.get_widget_at(event.screen_x, event.screen_y)[0] is self
+        if is_background:
+            self.dismiss(True)
+
+    def compose(self) -> ComposeResult:
+        with Container(id='edit-sound-body'):
+            with Accordion(id='sounds-accordion'):
+                for name in self.sounds_names.keys():
+                    with Collapsible(title=name, classes='sound-collapsible', id=f'{name}_coll'):
+                        yield Input(value=name, id=f"{name}_input", restrict=r'^[a-zA-Z0-9_-]+$')
+                        with Horizontal(classes='sound-buttons-wrapper'):
+                            yield Button('Rename', variant='success',
+                                         disabled=True, id=f"{name}_rename")
+                            yield Static(classes='sound-buttons-divider')
+                            yield Button('Remove', variant='error',
+                                         id=f"{name}_remove")
+            with Center():
+                yield Button(
+                    f"Add {'Sound' if self.sound_type != 'ambient' else 'Ambient'}",
+                    variant='primary'
+                )
+
+    @on(Input.Changed)
+    def check_sound_name(self, event: Input.Changed):
+        """Check is new sound name correct"""
+        query = f"#{remove_id_suffix(event.input.id)}_rename"
+        self.query_one(query).disabled = event.input.value in self.sounds_names
+
+    @on(Button.Pressed)
+    async def change_sound_name(self, event: Button.Pressed):
+        """Change name of a sound and update DOM and dist"""
+        # Change name
+        sound_name = remove_id_suffix(event.button.id)
+        extension = self.sounds_names[sound_name]
+        old_name = sound_name + extension
+        new_name = self.query_one(f'#{sound_name}_input', Input).value
+        new_name_with_extension = new_name + extension
+        rename_file(self.path_to_sounds, old_name, new_name_with_extension)
+        # Update DOM and dict
+        del self.sounds_names[sound_name]
+        self.sounds_names[new_name] = extension
+        await self.recompose()
+        self.query_one(f'#{new_name}_coll', Collapsible).collapsed = False
+
+    @on(Button.Pressed)
+    def remove_sound(self):
+        """Display confirmation screen
+        if users accepts sound is removed from library
+        """
