@@ -11,9 +11,10 @@ from focusseeds.db import DatabaseManager
 from focusseeds.config import AppConfig
 
 
-def load_music_list(*paths: Path):
-    """Return list of mp3 files from paths"""
-    return [sound.name for path in paths for sound in path.glob('*mp3')]
+def return_sounds_list(*paths: Path):
+    """Return list of audio files supported by Pygame from paths"""
+    return [sound.name for path in paths for sound in path.glob('*')
+            if sound.suffix in {'.wav', '.mp3', '.ogg', '.flac', '.opus'}]
 
 
 class SoundSettings(Container):
@@ -46,7 +47,7 @@ class SoundSettings(Container):
         self.set_signal = self.app_config.get_used_sound('signal')['name']
         self.set_ambient = self.app_config.get_used_sound('ambient')['name']
 
-        sound_list = load_music_list(self.sounds, self.user_sounds)
+        sound_list = return_sounds_list(self.sounds, self.user_sounds)
         # Set alarm Select
         self.select_alarm = Select.from_values(sound_list)
         self.select_alarm.prompt = f'Alarm: {self.set_alarm}'
@@ -56,7 +57,7 @@ class SoundSettings(Container):
         self.select_signal.prompt = f'Signal: {self.set_signal}'
         self.select_signal.id = 'signal'
         # Set ambient Select
-        ambiences_list = load_music_list(self.ambiences, self.user_ambiences)
+        ambiences_list = return_sounds_list(self.ambiences, self.user_ambiences)
         self.select_ambient = Select.from_values(ambiences_list)
         self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
         self.select_ambient.id = 'ambient'
