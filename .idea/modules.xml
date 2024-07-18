@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/GrowBonsai-TUI.iml" filepath="$PROJECT_DIR$/.idea/GrowBonsai-TUI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FocusKeeper-TUI.iml" filepath="$PROJECT_DIR$/.idea/FocusKeeper-TUI.iml" />
     </modules>
   </component>
 </project>
