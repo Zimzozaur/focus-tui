@@ -1,11 +1,13 @@
+# App is almost production ready, readme will be updated on August 2024
+
 ### PoC Setup (Under 1 min)
 1. Clone this project
    ``` bash
-   git clone https://github.com/Zimzozaur/FocusSeeds-TUI
+   git clone https://github.com/Zimzozaur/FocusKeeper-TUI
    ```
 2. Move to project
     ```
-    cd FocusSeeds-TUI
+    cd FocusKeeper-TUI
     ```
 3. Create virtual env in project directory 
    ```
@@ -20,11 +22,11 @@
      ```powershell
      .\venv\Scripts\Activate.ps1
      ```
-5. Install dependencies from requirements.txt
+5. Install dependencies
    ```
-   pip install -r requirements.txt
+   pip install -e .
    ```
 6. Run app in terminal
    ```
-    python src/focusseeds/app.py
+    python focuskeeper
    ```
