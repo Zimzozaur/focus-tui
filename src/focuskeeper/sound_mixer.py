@@ -3,7 +3,7 @@ from typing import Literal
 
 import pygame
 
-from focusseeds.config import AppConfig
+from focuskeeper.config import AppConfig
 
 
 class SoundMixer:

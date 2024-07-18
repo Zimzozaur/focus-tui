@@ -11,10 +11,10 @@ from textual.events import Click
 from textual.widgets import Button, Select, DirectoryTree, Collapsible, Input, Static, Footer
 from textual.screen import ModalScreen
 
-from focusseeds.sound_mixer import SoundMixer
-from focusseeds.db import DatabaseManager
-from focusseeds.config import AppConfig, AppPaths
-from focusseeds.widgets.accordion import Accordion
+from focuskeeper.sound_mixer import SoundMixer
+from focuskeeper.db import DatabaseManager
+from focuskeeper.config import AppConfig, AppPaths
+from focuskeeper.widgets.accordion import Accordion
 
 
 def sounds_list(*paths: Path):

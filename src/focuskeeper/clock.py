@@ -4,13 +4,13 @@ from textual.screen import Screen
 from textual.widgets import Button, Static, Label, Input, Footer
 from textual.containers import Horizontal, Vertical
 
-from focusseeds._app import AppHeader
-from focusseeds._numbers import NUMBERS_DICT
-from focusseeds.settings import SettingsScreen
-from focusseeds.validators import ValueFrom5to300
-from focusseeds.confirmation_popup import ConfirmPopup
-from focusseeds.db import DatabaseManager
-from focusseeds.sound_mixer import SoundMixer
+from focuskeeper._app import AppHeader
+from focuskeeper._numbers import NUMBERS_DICT
+from focuskeeper.settings import SettingsScreen
+from focuskeeper.validators import ValueFrom5to300
+from focuskeeper.confirmation_popup import ConfirmPopup
+from focuskeeper.db import DatabaseManager
+from focuskeeper.sound_mixer import SoundMixer
 
 
 class Clock(Screen):

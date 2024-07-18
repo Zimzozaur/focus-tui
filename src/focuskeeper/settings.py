@@ -3,9 +3,9 @@ from textual.widgets import Button, Footer, Static
 from textual.screen import Screen
 from textual.containers import Container, VerticalScroll
 
-from focusseeds._app import AppHeader
-from focusseeds.sound_settings import SoundSettings
-from focusseeds.about_settings import AboutSettings
+from focuskeeper._app import AppHeader
+from focuskeeper.sound_settings import SoundSettings
+from focuskeeper.about_settings import AboutSettings
 
 
 class SettingsScreen(Screen):

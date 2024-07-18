@@ -1,5 +1,5 @@
-from focusseeds.app import FocusSeeds
-from focusseeds.setup import AppSetup
+from focuskeeper.app import FocusSeeds
+from focuskeeper.setup import AppSetup
 
 
 def main():

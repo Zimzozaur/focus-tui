@@ -3,9 +3,9 @@ from pathlib import Path
 
 import yaml
 
-from focusseeds.db import DatabaseManager
-from focusseeds.fake_api_client import FakeAPIClient
-from focusseeds.config import AppPaths
+from focuskeeper.db import DatabaseManager
+from focuskeeper.fake_api_client import FakeAPIClient
+from focuskeeper.config import AppPaths
 
 
 class AppSetup(AppPaths):
