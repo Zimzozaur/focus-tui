@@ -113,7 +113,8 @@ class Clock(Screen):
         self._timer_session_len: int = 0
         self._timer_remaining_session: int = 0
         # Cancel session
-        self._cancel_session_counter_default = 60
+        # TODO: Modify for production
+        self._cancel_session_counter_default = 3
         self._cancel_session_counter: int = 0
         # Clock - When ever user start clock they get restarted
         # Used to print time on a screen
@@ -174,7 +175,8 @@ class Clock(Screen):
         self._cancel_session_counter = self._cancel_session_counter_default
 
         if self._clock_mode == 'Timer':
-            self._timer_session_len = int(self.query_one(Input).value) * 60
+            # TODO: Modify for production
+            self._timer_session_len = int(self.query_one(Input).value) * 1
             self._timer_remaining_session = self._timer_session_len
         else:
             self._stopwatch_started = datetime.now()
