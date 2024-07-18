@@ -1,20 +1,23 @@
 from pathlib import Path
-from typing import cast, Literal
+from typing import cast, Literal, Callable
+import platform
+import os
+import shutil
 
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Grid, Horizontal, Center, VerticalScroll
 from textual.events import Click
-from textual.widgets import Button, Select, Static, Collapsible, Input
+from textual.widgets import Button, Select, DirectoryTree, Collapsible, Input, Static, Footer
 from textual.screen import ModalScreen
 
 from focusseeds.sound_mixer import SoundMixer
 from focusseeds.db import DatabaseManager
-from focusseeds.config import AppConfig
+from focusseeds.config import AppConfig, AppPaths
 from focusseeds.widgets.accordion import Accordion
 
 
-def return_sounds_list(*paths: Path):
+def sounds_list(*paths: Path):
     """Return list of audio files supported by Pygame from paths"""
     return [sound.name for path in paths for sound in path.glob('*')
             if sound.suffix in {'.wav', '.mp3', '.ogg', '.flac', '.opus'}]
@@ -30,6 +33,20 @@ def rename_file(old_path: Path, old_name: str, new_name: str) -> None:
     old_file_path = old_path / old_name
     new_file_path = old_path / new_name
     old_file_path.rename(new_file_path)
+
+
+def get_users_folder() -> str:
+    """Return name of users folder"""
+    users_system = platform.system()
+
+    if users_system == 'Linux':
+        return '/home'
+    elif users_system == 'Windows':
+        return os.path.expandvars("%SystemDrive%\\Users")
+    elif users_system == 'Darwin':
+        return '/Users'
+    else:
+        raise NotImplementedError("Functionality not implemented for this operating system.")
 
 
 class SoundSettings(Grid):
@@ -84,7 +101,7 @@ class SoundSettings(Grid):
         self.set_signal = self.app_config.get_used_sound('signal')['name']
         self.set_ambient = self.app_config.get_used_sound('ambient')['name']
 
-        sound_list = return_sounds_list(self.sounds, self.user_sounds)
+        sound_list = sounds_list(self.sounds, self.user_sounds)
         # Set alarm Select
         self.select_alarm = Select.from_values(sound_list)
         self.select_alarm.prompt = f'Alarm: {self.set_alarm}'
@@ -94,7 +111,7 @@ class SoundSettings(Grid):
         self.select_signal.prompt = f'Signal: {self.set_signal}'
         self.select_signal.id = 'signal'
         # Set ambient Select
-        ambiences_list = return_sounds_list(self.ambiences, self.user_ambiences)
+        ambiences_list = sounds_list(self.ambiences, self.user_ambiences)
         self.select_ambient = Select.from_values(ambiences_list)
         self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
         self.select_ambient.id = 'ambient'
@@ -212,16 +229,14 @@ class EditSound(ModalScreen):
             self,
             sound_type: Literal['alarm', 'ambient'],
             path_to_sounds: Path,
-            name: str | None = None,
-            id: str | None = None,
-            classes: str | None = None,
+            *args, **kwargs
     ) -> None:
-        super().__init__(name, id, classes)
+        super().__init__(*args, **kwargs)
         self.config = AppConfig()
         self.sound_type = sound_type
         self.path_to_sounds = path_to_sounds
         self.sounds_names: dict[str, str] = {sound.split('.')[0]: f'.{sound.split('.')[1]}'
-                                             for sound in return_sounds_list(path_to_sounds)}
+                                             for sound in sounds_list(path_to_sounds)}
 
     def action_close_popup(self):
         self.dismiss(True)
@@ -252,7 +267,7 @@ class EditSound(ModalScreen):
             with Center(id='add-sound-wrapper'):
                 yield Button(
                     f"Add {'Sound' if self.sound_type != 'ambient' else 'Ambient'}",
-                    variant='primary'
+                    variant='primary', id='add-sound-bt'
                 )
 
     @on(Input.Changed)
@@ -276,6 +291,10 @@ class EditSound(ModalScreen):
         self.sounds_names[new_name] = extension
         self.config.change_sound_name_if_in_config(self.sound_type, old_name, new_name_with_extension)
         await self.recompose()
+        if self.sound_type == 'ambient':
+            self.notify('Changed name of an ambient')
+        else:
+            self.notify('Changed name of a sound')
         self.query_one(f'#{new_name}_coll', Collapsible).collapsed = False
 
     @on(Button.Pressed, '.sound-remove-bt')
@@ -295,6 +314,106 @@ class EditSound(ModalScreen):
 
         # Remove sound
         (self.path_to_sounds / sound_to_remove).unlink()
-        self.sounds_names: dict[str, str] = {sound.split('.')[0]: f'.{sound.split('.')[1]}'
-                                             for sound in return_sounds_list(self.path_to_sounds)}
+        await self.recompose_(None)
+
+    async def recompose_(self, arg):
+        """Refresh and recompose screen"""
+        self.sounds_names: dict[str, str] = {
+            sound.split('.')[0]: f'.{sound.split('.')[1]}'
+            for sound in sounds_list(self.path_to_sounds)
+        }
         await self.recompose()
+
+    @on(Button.Pressed, '#add-sound-bt')
+    def open_music_directory_tree(self):
+        self.app.push_screen(AddSoundTree(self.sound_type), self.recompose_)
+
+
+class MusicDirectoryTree(DirectoryTree):
+    show_root = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def filter_paths(self, paths):
+        def not_hidden(path: Path) -> bool:
+            return path.is_dir() and not path.name.startswith(".")
+        suffixes = {".wav", ".mp3", ".ogg", ".flac", ".opus", '/'}
+        return [path for path in paths if not_hidden(path) or path.suffix in suffixes]
+
+
+class AddSoundTree(ModalScreen):
+    DEFAULT_CSS = """
+    AddSoundTree {
+        align: center middle;
+        width: auto;
+        height: auto;
+    }
+
+    MusicDirectoryTree {
+        width: 60%;
+        height: 60%;
+        padding: 1 2;
+        background: $panel;
+    }
+
+    """
+    BINDINGS = [
+        ('ctrl+q', 'quit_app', 'Quit App'),
+        ('escape', 'close_popup', 'Close Popup')
+    ]
+
+    def action_quit_app(self):
+        self.app.exit()
+
+    def action_close_popup(self):
+        self.dismiss(True)
+
+    def on_click(self, event: Click):
+        """Close popup when clicked on the background
+        and user is not editing
+        Return [self.edited] to give information to call back
+        """
+        is_background = self.get_widget_at(event.screen_x, event.screen_y)[0] is self
+        if is_background:
+            self.dismiss(True)
+
+    def __init__(self, sound_type, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sound_type = sound_type
+        self.paths = AppPaths()
+
+    def compose(self) -> ComposeResult:
+        yield MusicDirectoryTree(get_users_folder())
+
+    @on(MusicDirectoryTree.FileSelected)
+    def file_selected(self, event: MusicDirectoryTree.FileSelected) -> None:
+        """Add sounds to chosen folder type"""
+        soundified_name = f'{soundify(event.path)}{event.path.suffix}'
+        if is_imported_sound(soundified_name, self.sound_type):
+            self.notify('Sound already imported', severity='warning')
+            return None
+
+        if self.sound_type == 'ambient':
+            path = self.paths.user_ambiences
+        else:
+            path = self.paths.user_sounds
+
+        shutil.copy(event.path, path / soundified_name)
+        self.notify(f'Imported: {soundified_name}')
+
+
+def is_imported_sound(sound: str, sound_type: Literal['alarm', 'ambient']) -> bool:
+    """Rerun is file already in users absences or sounds folder"""
+    paths = AppPaths()
+    if sound_type == 'alarm':
+        return sound in sounds_list(paths.user_sounds)
+    else:
+        return sound in sounds_list(paths.user_ambiences)
+
+
+def soundify(sound: Path):
+    """Remove all characters that are not a letter, number, - or _"""
+
+    file_name = sound.name.rsplit('.')[0]
+    return ''.join(map(lambda l: l if l.isalnum() or l in '_-' else '_', file_name))
