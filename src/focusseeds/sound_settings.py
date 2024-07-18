@@ -57,6 +57,15 @@ class SoundSettings(Container):
 
     def __init__(self):
         super().__init__()
+        self.set_alarm = None
+        self.set_signal = None
+        self.set_ambient = None
+        self.select_alarm = None
+        self.select_signal = None
+        self.select_ambient = None
+        self.initialize_attributes()
+
+    def initialize_attributes(self):
         self.set_alarm = self.app_config.get_used_sound('alarm')['name']
         self.set_signal = self.app_config.get_used_sound('signal')['name']
         self.set_ambient = self.app_config.get_used_sound('ambient')['name']
@@ -119,30 +128,9 @@ class SoundSettings(Container):
             yield Button('Edit Ambiences', id='edit-ambient')
 
     @on(Button.Pressed)
-    async def on_button_pressed(self, event: Button.Pressed):
+    def on_button_pressed(self, event: Button.Pressed):
         """Open Sounds Edit menu and refresh page if changes
         where applied"""
-        async def reinit_and_recompose_self(arg):
-            """Restart initialization and recompose"""
-            self.set_alarm = self.app_config.get_used_sound('alarm')['name']
-            self.set_signal = self.app_config.get_used_sound('signal')['name']
-            self.set_ambient = self.app_config.get_used_sound('ambient')['name']
-
-            sound_list = return_sounds_list(self.sounds, self.user_sounds)
-            # Set alarm Select
-            self.select_alarm = Select.from_values(sound_list)
-            self.select_alarm.prompt = f'Alarm: {self.set_alarm}'
-            self.select_alarm.id = 'alarm'
-            # Set signal Select
-            self.select_signal = Select.from_values(sound_list)
-            self.select_signal.prompt = f'Signal: {self.set_signal}'
-            self.select_signal.id = 'signal'
-            # Set ambient Select
-            ambiences_list = return_sounds_list(self.ambiences, self.user_ambiences)
-            self.select_ambient = Select.from_values(ambiences_list)
-            self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
-            self.select_ambient.id = 'ambient'
-            await self.recompose()
 
         if event.button.id == 'edit-ambient':
             sound_type: Literal['ambient'] = 'ambient'
@@ -151,10 +139,15 @@ class SoundSettings(Container):
             sound_type: Literal['alarm'] = 'alarm'
             path_to_sounds: Path = self.user_sounds
 
-        await self.app.push_screen(
+        self.app.push_screen(
             EditSound(sound_type, path_to_sounds),
-            reinit_and_recompose_self
+            self.reinit_and_recompose_self
         )
+
+    async def reinit_and_recompose_self(self, arg):
+        """Restart initialization and recompose"""
+        self.initialize_attributes()
+        await self.recompose()
 
 
 class EditSound(ModalScreen):
@@ -240,10 +233,10 @@ class EditSound(ModalScreen):
                         yield Input(value=name, id=f"{name}_input", restrict=r'^[a-zA-Z0-9_-]+$')
                         with Horizontal(classes='sound-buttons-wrapper'):
                             yield Button('Rename', variant='success',
-                                         disabled=True, id=f"{name}_rename")
+                                         disabled=True, id=f"{name}_rename", classes='sound-rename-bt')
                             yield Static(classes='sound-buttons-divider')
                             yield Button('Remove', variant='error',
-                                         id=f"{name}_remove")
+                                         id=f"{name}_remove", classes='sound-remove-bt')
 
             yield Static(id='add-sound-divider')
             with Center(id='add-sound-wrapper'):
@@ -258,7 +251,7 @@ class EditSound(ModalScreen):
         query = f"#{remove_id_suffix(event.input.id)}_rename"
         self.query_one(query).disabled = event.input.value in self.sounds_names
 
-    @on(Button.Pressed)
+    @on(Button.Pressed, '.sound-rename-bt')
     async def change_sound_name(self, event: Button.Pressed):
         """Change name of a sound and update DOM and dist"""
         # Change name
@@ -275,8 +268,23 @@ class EditSound(ModalScreen):
         await self.recompose()
         self.query_one(f'#{new_name}_coll', Collapsible).collapsed = False
 
-    @on(Button.Pressed)
-    def remove_sound(self):
+    @on(Button.Pressed, '.sound-remove-bt')
+    async def remove_sound(self, event: Button.Pressed):
         """Display confirmation screen
         if users accepts sound is removed from library
         """
+        sound_name = remove_id_suffix(event.button.id)
+        sound_to_remove = sound_name + self.sounds_names[sound_name]
+
+        # if removed sound that is already used
+        if self.config.is_sound_in_config(self.sound_type, sound_to_remove):
+            if self.sound_type == 'ambient':
+                self.config.change_sound_to_default(self.sound_type, sound_to_remove)
+            else:
+                self.config.change_sound_to_default(self.sound_type, sound_to_remove)
+
+        # Remove sound
+        (self.path_to_sounds / sound_to_remove).unlink()
+        self.sounds_names: dict[str, str] = {sound.split('.')[0]: f'.{sound.split('.')[1]}'
+                                             for sound in return_sounds_list(self.path_to_sounds)}
+        await self.recompose()

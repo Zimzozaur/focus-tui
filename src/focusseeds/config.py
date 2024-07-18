@@ -21,6 +21,11 @@ class AppPaths:
         self.db_file = self.app_data / "focus_seeds.db"
         self.config_file = self.app_data / "config.yaml"
 
+        # Default Sounds
+        self.default_alarm_name = 'Unfa_Woohoo.mp3'
+        self.default_signal_name = 'Unfa_Landing.mp3'
+        self.default_ambient_name = 'Woodpecker_Forest.flac'
+
 
 class AppConfig(AppPaths):
     def get_used_sound(
@@ -47,7 +52,18 @@ class AppConfig(AppPaths):
         with open(self.config_file, 'w') as file:
             yaml.dump(yaml_file, file, sort_keys=False)
 
-    def change_sound_name_if_in_config(self, sound_type: Literal['alarm', 'ambient'], new_name: str) -> None:
+    def is_sound_in_config(self, sound_type: Literal['alarm', 'ambient'], sound_name: str) -> None:
+        with open(self.config_file) as file:
+            yaml_file = yaml.safe_load(file)
+
+        if sound_type == 'alarm':
+            alarm = yaml_file['used_sounds']['alarm']['name'] == sound_name
+            signal = yaml_file['used_sounds']['signal']['name'] == sound_name
+            return alarm or signal
+        else:
+            return yaml_file['used_sounds']['ambient']['name'] == sound_name
+
+    def change_sound_name_if_in_config(self, sound_type: Literal['alarm', 'ambient'], new_name: str | None = None) -> None:
         with open(self.config_file) as file:
             yaml_file = yaml.safe_load(file)
 
@@ -57,11 +73,33 @@ class AppConfig(AppPaths):
             if alarm != new_name:
                 yaml_file['used_sounds']['alarm']['name'] = new_name
             if signal != new_name:
-                yaml_file['used_sounds']['alarm']['name'] = new_name
+                yaml_file['used_sounds']['signal']['name'] = new_name
         else:
             ambient = yaml_file['used_sounds']['ambient']['name']
             if ambient != new_name:
-                yaml_file['used_sounds']['ambient']['name'] = new_name
+                yaml_file['used_sounds']['ambient']['name'] = new_name or self.default_signal_name
+
+        with open(self.config_file, 'w') as file:
+            yaml.dump(yaml_file, file, sort_keys=False)
+
+    def change_sound_to_default(self, sound_type: Literal['alarm', 'ambient'], old_name_with_extension) -> None:
+        with open(self.config_file) as file:
+            yaml_file = yaml.safe_load(file)
+
+        if sound_type == 'alarm':
+            alarm = yaml_file['used_sounds']['alarm']['name']
+            signal = yaml_file['used_sounds']['signal']['name']
+            if alarm == old_name_with_extension:
+                print('ALARM')
+                yaml_file['used_sounds']['alarm']['name'] = self.default_alarm_name
+            if signal == old_name_with_extension:
+                print('SIGNAL')
+                yaml_file['used_sounds']['signal']['name'] = self.default_signal_name
+        else:
+            ambient = yaml_file['used_sounds']['ambient']['name']
+            if ambient == old_name_with_extension:
+                print('AMBIENT')
+                yaml_file['used_sounds']['ambient']['name'] = self.default_ambient_name
 
         with open(self.config_file, 'w') as file:
             yaml.dump(yaml_file, file, sort_keys=False)
