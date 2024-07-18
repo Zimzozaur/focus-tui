@@ -3,7 +3,7 @@ from typing import cast, Literal
 
 from textual import on
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal, Center, VerticalScroll
+from textual.containers import Grid, Horizontal, Center, VerticalScroll
 from textual.events import Click
 from textual.widgets import Button, Select, Static, Collapsible, Input
 from textual.screen import ModalScreen
@@ -32,14 +32,28 @@ def rename_file(old_path: Path, old_name: str, new_name: str) -> None:
     old_file_path.rename(new_file_path)
 
 
-class SoundSettings(Container):
+class SoundSettings(Grid):
     DEFAULT_CSS = """
     SoundSettings {
+        grid-size: 2 3;
+        grid-columns: 3fr 1fr;
+        
+    
         height: auto;
         & > * {
             height: auto;
         }
     }
+    
+    #edit-alarm {
+        row-span: 2;
+        height: 8;
+    }
+    
+    .sound-edit-bt {
+        width: 8;
+    }
+    
     .sound-settings-horizontal-padding {
         padding-bottom: 1;
     }
@@ -85,6 +99,13 @@ class SoundSettings(Container):
         self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
         self.select_ambient.id = 'ambient'
 
+    def compose(self) -> ComposeResult:
+        yield self.select_alarm
+        yield Button('Edit Alarms/Signal', id='edit-alarm', classes='sound-edit-bt')
+        yield self.select_signal
+        yield self.select_ambient
+        yield Button('Edit Ambiences', id='edit-ambient', classes='sound-edit-bt')
+
     @on(Select.Changed)
     def select_changed(self, event: Select.Changed) -> None:
         """Change sound connected to type and update config"""
@@ -115,17 +136,6 @@ class SoundSettings(Container):
         else:
             self.set_ambient = event.value
             self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
-
-    def compose(self) -> ComposeResult:
-        with Horizontal(classes='sound-settings-horizontal-padding'):
-            yield self.select_alarm
-            yield Button('Edit Alarms', id='edit-alarm')
-        with Horizontal(classes='sound-settings-horizontal-padding'):
-            yield self.select_signal
-            yield Button('Edit Signals', id='edit-signal')
-        with Horizontal():
-            yield self.select_ambient
-            yield Button('Edit Ambiences', id='edit-ambient')
 
     @on(Button.Pressed)
     def on_button_pressed(self, event: Button.Pressed):
@@ -264,7 +274,7 @@ class EditSound(ModalScreen):
         # Update DOM and dict
         del self.sounds_names[sound_name]
         self.sounds_names[new_name] = extension
-        self.config.change_sound_name_if_in_config(self.sound_type, new_name_with_extension)
+        self.config.change_sound_name_if_in_config(self.sound_type, old_name, new_name_with_extension)
         await self.recompose()
         self.query_one(f'#{new_name}_coll', Collapsible).collapsed = False
 

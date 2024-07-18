@@ -63,7 +63,7 @@ class AppConfig(AppPaths):
         else:
             return yaml_file['used_sounds']['ambient']['name'] == sound_name
 
-    def change_sound_name_if_in_config(self, sound_type: Literal['alarm', 'ambient'], old_name,  new_name: str | None = None) -> None:
+    def change_sound_name_if_in_config(self, sound_type: Literal['alarm', 'ambient'], old_name: str,  new_name: str) -> None:
         with open(self.config_file) as file:
             yaml_file = yaml.safe_load(file)
 
@@ -77,7 +77,7 @@ class AppConfig(AppPaths):
         else:
             ambient = yaml_file['used_sounds']['ambient']['name']
             if ambient != new_name:
-                yaml_file['used_sounds']['ambient']['name'] = new_name or self.default_signal_name
+                yaml_file['used_sounds']['ambient']['name'] = new_name
 
         with open(self.config_file, 'w') as file:
             yaml.dump(yaml_file, file, sort_keys=False)
@@ -90,16 +90,16 @@ class AppConfig(AppPaths):
             alarm = yaml_file['used_sounds']['alarm']['name']
             signal = yaml_file['used_sounds']['signal']['name']
             if alarm == old_name_with_extension:
-                print('ALARM')
                 yaml_file['used_sounds']['alarm']['name'] = self.default_alarm_name
+                yaml_file['used_sounds']['alarm']['path'] = str(self.sounds)
             if signal == old_name_with_extension:
-                print('SIGNAL')
                 yaml_file['used_sounds']['signal']['name'] = self.default_signal_name
+                yaml_file['used_sounds']['signal']['path'] = str(self.sounds)
         else:
             ambient = yaml_file['used_sounds']['ambient']['name']
             if ambient == old_name_with_extension:
-                print('AMBIENT')
                 yaml_file['used_sounds']['ambient']['name'] = self.default_ambient_name
+                yaml_file['used_sounds']['ambient']['path'] = str(self.ambiences)
 
         with open(self.config_file, 'w') as file:
             yaml.dump(yaml_file, file, sort_keys=False)
