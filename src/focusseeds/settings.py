@@ -4,7 +4,8 @@ from textual.screen import Screen
 from textual.containers import Container, VerticalScroll
 
 from focusseeds._app import AppHeader
-from sound_settings import SoundSettings
+from focusseeds.sound_settings import SoundSettings
+from focusseeds.about_settings import AboutSettings
 
 
 class SettingsScreen(Screen):
@@ -73,5 +74,5 @@ class SettingsScreen(Screen):
                 with self.theme_store_settings:
                     yield Button('PLACEHOLDER')
                 with self.about:
-                    yield Button('PLACEHOLDER')
+                    yield AboutSettings()
         yield Footer()
