@@ -9,7 +9,7 @@ from textual.screen import ModalScreen
 from textual.widgets import Button, Collapsible, Input, Static
 
 from focuskeeper.config import AppConfig
-from focuskeeper.modals import AddSoundTree
+from focuskeeper.modals import AddSoundTree, ConfirmPopup
 from focuskeeper.widgets import Accordion
 from focuskeeper.utils.sound import sounds_list, remove_id_suffix, rename_file
 
@@ -140,23 +140,32 @@ class EditSound(ModalScreen):
         self.query_one(f'#{new_name}_coll', Collapsible).collapsed = False
 
     @on(Button.Pressed, '.sound-remove-bt')
-    async def remove_sound(self, event: Button.Pressed):
+    async def should_remove_sound(self, event: Button.Pressed):
         """Display confirmation screen
         if users accepts sound is removed from library
         """
+        async def remove_sound(boolean: bool) -> None:
+            """Remove sound"""
+            if not boolean:
+                return None
+            # if removed sound that is already used
+            if self.config.is_sound_in_config(self.sound_type, sound_to_remove):
+                if self.sound_type == 'ambient':
+                    self.config.change_sound_to_default(self.sound_type, sound_to_remove)
+                else:
+                    self.config.change_sound_to_default(self.sound_type, sound_to_remove)
+
+            # Remove sound
+            self.notify('Sound has been remove')
+            (self.path_to_sounds / sound_to_remove).unlink()
+            await self.recompose_(None)
+
         sound_name = remove_id_suffix(event.button.id)
         sound_to_remove = sound_name + self.sounds_names[sound_name]
 
-        # if removed sound that is already used
-        if self.config.is_sound_in_config(self.sound_type, sound_to_remove):
-            if self.sound_type == 'ambient':
-                self.config.change_sound_to_default(self.sound_type, sound_to_remove)
-            else:
-                self.config.change_sound_to_default(self.sound_type, sound_to_remove)
+        message = 'Are you sure you want to remove sound?'
+        await self.app.push_screen(ConfirmPopup(message=message), remove_sound)
 
-        # Remove sound
-        (self.path_to_sounds / sound_to_remove).unlink()
-        await self.recompose_(None)
 
     async def recompose_(self, arg):
         """Refresh and recompose screen"""
