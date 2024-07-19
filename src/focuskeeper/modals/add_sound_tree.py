@@ -5,7 +5,7 @@ from textual.app import ComposeResult
 from textual.events import Click
 from textual.screen import ModalScreen
 
-from focuskeeper.config import AppPaths
+from focuskeeper.config import AppConfig
 from focuskeeper.widgets import MusicDirectoryTree
 from focuskeeper.utils.sound import get_users_folder, soundify, is_imported_sound
 
@@ -49,7 +49,7 @@ class AddSoundTree(ModalScreen):
     def __init__(self, sound_type, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sound_type = sound_type
-        self.paths = AppPaths()
+        self.config = AppConfig()
 
     def compose(self) -> ComposeResult:
         yield MusicDirectoryTree(get_users_folder())
@@ -58,14 +58,17 @@ class AddSoundTree(ModalScreen):
     def file_selected(self, event: MusicDirectoryTree.FileSelected) -> None:
         """Add sounds to chosen folder type"""
         soundified_name = f'{soundify(event.path)}{event.path.suffix}'
+        if soundify(event.path) in self.config.forbiden_sound_names():
+            self.notify('Sound name reserved for app buildin', severity='error')
+            return None
         if is_imported_sound(soundified_name, self.sound_type):
             self.notify('Sound already imported', severity='warning')
             return None
 
         if self.sound_type == 'ambient':
-            path = self.paths.user_ambiences
+            path = self.config.user_ambiences
         else:
-            path = self.paths.user_sounds
+            path = self.config.user_sounds
 
         shutil.copy(event.path, path / soundified_name)
         self.notify(f'Imported: {soundified_name}')

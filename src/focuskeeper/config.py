@@ -28,6 +28,16 @@ class AppPaths:
 
 
 class AppConfig(AppPaths):
+    def forbiden_sound_names(self) -> set:
+        """Return set of names that are used by app
+        and user is not allowed to use
+        """
+        return {
+            'Unfa_Woohoo', 'Unfa_Landing',
+            'Unfa_Braam', 'Unfa_Acid_Bassline',
+            'Woodpecker_Forest', 'Mexican_Forest',
+        }
+
     def get_used_sound(
             self,
             sound_type: Literal['alarm', 'signal', 'ambient']

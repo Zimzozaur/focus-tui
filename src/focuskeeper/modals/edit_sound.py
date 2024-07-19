@@ -72,8 +72,11 @@ class EditSound(ModalScreen):
         self.config = AppConfig()
         self.sound_type = sound_type
         self.path_to_sounds = path_to_sounds
-        self.sounds_names: dict[str, str] = {sound.split('.')[0]: f'.{sound.split('.')[1]}'
-                                             for sound in sounds_list(path_to_sounds)}
+        self.sounds_names: dict[str, str] = {
+            sound.split('.')[0]: f'.{sound.split('.')[1]}'
+            for sound in sounds_list(path_to_sounds)
+        }
+
 
     def action_close_popup(self):
         self.dismiss(True)
@@ -111,7 +114,9 @@ class EditSound(ModalScreen):
     def check_sound_name(self, event: Input.Changed):
         """Check is new sound name correct"""
         query = f"#{remove_id_suffix(event.input.id)}_rename"
-        self.query_one(query).disabled = event.input.value in self.sounds_names
+        sound_name = event.input.value
+        self.query_one(query).disabled = (sound_name in self.sounds_names or
+                                          sound_name in self.config.forbiden_sound_names())
 
     @on(Button.Pressed, '.sound-rename-bt')
     async def change_sound_name(self, event: Button.Pressed):
