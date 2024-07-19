@@ -1,13 +1,13 @@
-"""Collection of Screens and Popups(ModalScreen)"""
+"""Collection of Screens"""
 
 
 # Local imports.
 from .clock import Clock
-from .confirmation_popup import ConfirmPopup
+from .settings import SettingsScreen
 
 # Public symbols
 __all__ = [
     'Clock',
-    'ConfirmPopup',
+    'SettingsScreen',
 ]
 

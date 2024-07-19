@@ -3,8 +3,8 @@ import pygame
 from textual.app import App
 from textual.widgets import Footer
 
-from focuskeeper.clock import Clock
-from focuskeeper._app import AppHeader
+from focuskeeper.screens import Clock
+from focuskeeper.widgets import AppHeader
 
 
 class FocusSeeds(App, inherit_bindings=False):

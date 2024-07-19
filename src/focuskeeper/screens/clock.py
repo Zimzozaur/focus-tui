@@ -4,11 +4,11 @@ from textual.screen import Screen
 from textual.widgets import Button, Static, Label, Input, Footer
 from textual.containers import Horizontal, Vertical
 
-from focuskeeper.widgets._app import AppHeader
-from focuskeeper._numbers import NUMBERS_DICT
-from focuskeeper.settings import SettingsScreen
+from focuskeeper.widgets import AppHeader
+from focuskeeper.assets import NUMBERS_DICT
+from focuskeeper.screens.settings import SettingsScreen
 from focuskeeper.validators import ValueFrom5to300
-from focuskeeper.screens import ConfirmPopup
+from focuskeeper.modals import ConfirmPopup
 from focuskeeper.db import DatabaseManager
 from focuskeeper.sound_mixer import SoundMixer
 

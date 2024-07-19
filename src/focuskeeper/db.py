@@ -1,8 +1,6 @@
-import sqlite3
 from sqlite3 import connect
 from pathlib import Path
 from datetime import datetime
-from typing import Literal
 
 from platformdirs import user_data_dir
 
