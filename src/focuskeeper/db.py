@@ -7,7 +7,7 @@ from platformdirs import user_data_dir
 
 class DatabaseManager:
     def __init__(self):
-        self.db_file = Path(user_data_dir()) / 'Focus-Seeds/app_data/focus_seeds.db'
+        self.db_file = Path(user_data_dir()) / '.Focus-Keeper/.app_data/focus_keeper.db'
 
     def db_setup(self) -> None:
         """Method used only to set up DB on app initialization"""

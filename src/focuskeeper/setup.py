@@ -17,12 +17,12 @@ class AppSetup(AppPaths):
     def setup_app(self):
         # Create app directory
         if not self.main_dir.exists():
-            print('Creating Focus-Seeds folder')
+            print('Creating .Focus-Keeper folder')
             self.main_dir.mkdir()
 
         # Create directory app usage
         if not self.app_data.exists():
-            print('Creating app_data folder')
+            print('Creating .app_data folder')
             self.app_data.mkdir()
 
         # Create inner structure
