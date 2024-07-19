@@ -39,7 +39,7 @@ class AppSetup(AppPaths):
 
         # Create SQLite database file (empty for now)
         if not self.db_file.exists():
-            print('Creating focus_seeds.db file')
+            print('Creating focus_keeper.db file')
             Path(self.db_file).touch()
             with open(self.db_file, 'w'):
                 # This is the only place where

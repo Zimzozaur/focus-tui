@@ -7,7 +7,7 @@ from focuskeeper.screens import Clock
 from focuskeeper.widgets import AppHeader
 
 
-class FocusSeeds(App, inherit_bindings=False):
+class FocusKeeper(App, inherit_bindings=False):
     DEFAULT_CSS = """
     #body {
         background: $surface;

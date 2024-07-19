@@ -1,10 +1,10 @@
-from focuskeeper.app import FocusSeeds
+from focuskeeper.app import FocusKeeper
 from focuskeeper.setup import AppSetup
 
 
 def main():
     AppSetup().setup_app()
-    FocusSeeds().run()
+    FocusKeeper().run()
 
 
 if __name__ == "__main__":
