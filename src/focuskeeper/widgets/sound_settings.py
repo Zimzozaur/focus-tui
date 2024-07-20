@@ -9,11 +9,15 @@ from textual.widgets import Button, Select
 from focuskeeper.db import DatabaseManager
 from focuskeeper.config import AppConfig
 from focuskeeper.modals import EditSound
-from focuskeeper.sound_mixer import SoundMixer
-from focuskeeper.utils.sound import sounds_list
+from focuskeeper.sound_manager import SoundManager
 
 
 class SoundSettings(Grid):
+    """
+    SoundSettings allow user to change used sounds,
+    test any sound and open EditSound modal
+    """
+
     DEFAULT_CSS = """
     SoundSettings {
         grid-size: 2 4;
@@ -26,7 +30,7 @@ class SoundSettings(Grid):
         }
     }
     
-    #edit-alarm {
+    #short {
         row-span: 2;
         height: 8;
     }
@@ -43,19 +47,10 @@ class SoundSettings(Grid):
     # External classes
     db = DatabaseManager()
     app_config = AppConfig()
-    mixer = SoundMixer()
-    # App paths
-    sounds: Path = app_config.sounds_path
-    ambiences: Path = app_config.ambiences_path
-    # User paths
-    user_sounds: Path = app_config.user_sounds_path
-    user_ambiences: Path = app_config.user_ambiences_path
+    sm = SoundManager()
 
     def __init__(self):
         super().__init__()
-        self.set_alarm = None
-        self.set_signal = None
-        self.set_ambient = None
         self.select_alarm = None
         self.select_signal = None
         self.select_ambient = None
@@ -63,82 +58,59 @@ class SoundSettings(Grid):
         self.initialize_attributes()
 
     def initialize_attributes(self):
-        self.set_alarm = self.app_config.get_used_sound('alarm')['name']
-        self.set_signal = self.app_config.get_used_sound('signal')['name']
-        self.set_ambient = self.app_config.get_used_sound('ambient')['name']
-
-        sound_list = sounds_list(self.sounds, self.user_sounds)
         # Set alarm Select
-        self.select_alarm = Select.from_values(sound_list)
-        self.select_alarm.prompt = f'Alarm: {self.set_alarm}'
+        self.select_alarm = Select.from_values(self.sm.all_shorts_list)
+        self.select_alarm.prompt = f'Alarm: {self.sm.get_used_alarm}'
         self.select_alarm.id = 'alarm'
         # Set signal Select
-        self.select_signal = Select.from_values(sound_list)
-        self.select_signal.prompt = f'Signal: {self.set_signal}'
+        self.select_signal = Select.from_values(self.sm.all_shorts_list)
+        self.select_signal.prompt = f'Signal: {self.sm.get_used_signal}'
         self.select_signal.id = 'signal'
         # Set ambient Select
-        ambiences_list = sounds_list(self.ambiences, self.user_ambiences)
-        self.select_ambient = Select.from_values(ambiences_list)
-        self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
+        self.select_ambient = Select.from_values(self.sm.all_longs_list)
+        self.select_ambient.prompt = f'Ambient: {self.sm.get_used_ambient}'
         self.select_ambient.id = 'ambient'
         # Set test sound Select
-        self.test_sound = Select.from_values(sorted(sound_list + ambiences_list))
+        self.test_sound = Select.from_values(self.sm.all_shorts_longs_list)
+        self.test_sound.prompt = 'Select to play sound'
         self.test_sound.id = 'test-sound'
 
     def compose(self) -> ComposeResult:
         yield self.select_alarm
-        yield Button('Edit Alarms/Signals', id='edit-alarm', classes='sound-edit-bt')
+        yield Button('Edit Alarms/Signals', id='short', classes='sound-edit-bt')
         yield self.select_signal
         yield self.select_ambient
-        yield Button('Edit Ambiences', id='edit-ambient', classes='sound-edit-bt')
+        yield Button('Edit Ambiences', id='long', classes='sound-edit-bt')
         yield self.test_sound
         yield Button('Pause', variant='warning', id='test-sound-bt')
 
-    @on(Select.Changed, '#ambient #signal #alarm')
+    @on(Select.Changed)
     def select_changed(self, event: Select.Changed) -> None:
         """Change sound connected to type and update config"""
-        # If press blank or already chosen return
-        if (event.value == Select.BLANK or
-                event.control.id in [self.set_alarm, self.set_signal, self.set_ambient]):
+        # If #test-sound, press blank or already chosen return
+        if event.select.id == 'test-sound' or event.value == Select.BLANK:
             return None
 
-        if event.control.id == 'ambient':
-            songs_list = [path.name for path in self.ambiences.glob('*')]
-            file_path = self.ambiences if event.value in songs_list else self.user_sounds
-        else:
-            songs_list = [path.name for path in self.sounds.glob('*')]
-            file_path = self.sounds if event.value in songs_list else self.user_sounds
-
         self.app_config.update_used_sound(
-            sound_type=cast(Literal['alarm', 'signal', 'ambient'], event.control.id),
+            sound_type=cast(
+                Literal['alarm', 'signal', 'ambient'], event.select.id
+            ),
             name=event.value,
-            path=str(file_path)
         )
-
+        # Change prompt value in select menu
         if event.control.id == 'alarm':
-            self.set_alarm = event.value
-            self.select_alarm.prompt = f'Alarm: {self.set_alarm}'
+            self.select_alarm.prompt = f'Alarm: {self.sm.get_used_alarm}'
         elif event.control.id == 'signal':
-            self.set_signal = event.value
-            self.select_signal.prompt = f'Signal: {self.set_signal}'
+            self.select_signal.prompt = f'Signal: {self.sm.get_used_signal}'
         else:
-            self.set_ambient = event.value
-            self.select_ambient.prompt = f'Ambient: {self.set_ambient}'
+            self.select_ambient.prompt = f'Ambient: {self.sm.get_used_ambient}'
 
     @on(Button.Pressed, '.sound-edit-bt')
     def open_edit_sound_popup(self, event: Button.Pressed):
         """Open Sounds Edit menu and refresh page if changes
         where applied"""
-
-        if event.button.id == 'edit-ambient':
-            sound_type: Literal['ambient'] = 'ambient'
-            path_to_sounds: Path = self.user_ambiences
-        else:
-            sound_type: Literal['alarm'] = 'alarm'
-            path_to_sounds: Path = self.user_sounds
-
         self.app.push_screen(
-            EditSound(sound_type, path_to_sounds),
+            EditSound(cast(Literal['short', 'long'], event.button.id)),
             self.reinit_and_recompose_self
         )
 
@@ -147,27 +119,16 @@ class SoundSettings(Grid):
         """Play sound selected from list"""
         if event.value == Select.BLANK:
             return None
-        name_with_ext = event.select.value
 
-        if name_with_ext in sounds_list(self.user_sounds):
-            self.mixer.play_any_sound(self.user_sounds, name_with_ext)
-
-        elif name_with_ext in sounds_list(self.user_ambiences):
-            self.mixer.play_any_sound(self.user_ambiences, name_with_ext)
-
-        elif name_with_ext in sounds_list(self.sounds):
-            self.mixer.play_any_sound(self.sounds, name_with_ext)
-
-        elif name_with_ext in sounds_list(self.ambiences):
-            self.mixer.play_any_sound(self.ambiences, name_with_ext)
-
+        if event.value in self.sm.all_shorts_longs_list:
+            self.sm.play_sound(event.value)
         else:
             raise FileNotFoundError("Sound is not in expected folder")
 
     @on(Button.Pressed, '#test-sound-bt')
     def stop_playing_sound(self):
         """Stop playing any sound"""
-        self.mixer.stop_all_sounds()
+        self.sm.stop_sound()
 
     async def reinit_and_recompose_self(self, arg):
         """Restart initialization and recompose"""

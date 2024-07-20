@@ -10,7 +10,7 @@ from focuskeeper.screens.settings import SettingsScreen
 from focuskeeper.validators import ValueFrom5to300
 from focuskeeper.modals import ConfirmPopup
 from focuskeeper.db import DatabaseManager
-from focuskeeper.sound_mixer import SoundMixer
+from focuskeeper.sound_manager import SoundManager
 
 
 class Clock(Screen):
@@ -124,7 +124,7 @@ class Clock(Screen):
         self._intervals = []
         # External classes
         self.db = DatabaseManager()
-        self.mixer = SoundMixer()
+        self.sm = SoundManager()
 
     def compose(self):
         self.app.title = 'Timer'
@@ -210,7 +210,7 @@ class Clock(Screen):
 
     def _successful_session(self, minutes: float) -> None:
         """Play song, add successful session to DB and reset clock"""
-        self.mixer.play_sound('alarm')
+        self.sm.play_alarm()
         self.db.create_session_entry(int(minutes), 1)
         self._reset_clock()
 

@@ -1,13 +1,33 @@
-import shutil
+import os
+import platform
+from typing import Literal
 
 from textual import on
 from textual.app import ComposeResult
 from textual.events import Click
 from textual.screen import ModalScreen
 
-from focuskeeper.config import AppConfig
+from focuskeeper.sound_manager import SoundManager
 from focuskeeper.widgets import MusicDirectoryTree
-from focuskeeper.utils.sound import get_users_folder, soundify, is_imported_sound
+
+
+def get_users_folder() -> str:
+    """Return name of users folder"""
+    users_system = platform.system()
+
+    if users_system == 'Linux':
+        return '/home'
+    elif users_system == 'Windows':
+        return os.path.expandvars("%SystemDrive%\\Users")
+    elif users_system == 'Darwin':
+        return '/Users'
+    else:
+        raise NotImplementedError("Functionality not implemented for this operating system.")
+
+
+def soundify(sound: str):
+    """Remove all characters that are not a letter, number, - or _"""
+    return ''.join(map(lambda l: l if l.isalnum() or l in '_-' else '_', sound))
 
 
 class AddSoundTree(ModalScreen):
@@ -46,10 +66,10 @@ class AddSoundTree(ModalScreen):
         if is_background:
             self.dismiss(True)
 
-    def __init__(self, sound_type, *args, **kwargs):
+    def __init__(self, sound_type: Literal['short', 'long'], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sound_type = sound_type
-        self.config = AppConfig()
+        self.sm = SoundManager()
 
     def compose(self) -> ComposeResult:
         yield MusicDirectoryTree(get_users_folder())
@@ -57,18 +77,14 @@ class AddSoundTree(ModalScreen):
     @on(MusicDirectoryTree.FileSelected)
     def file_selected(self, event: MusicDirectoryTree.FileSelected) -> None:
         """Add sounds to chosen folder type"""
-        soundified_name = f'{soundify(event.path)}{event.path.suffix}'
-        if soundify(event.path) in self.config.forbiden_sound_names():
-            self.notify('Sound name reserved for app buildin', severity='error')
-            return None
-        if is_imported_sound(soundified_name, self.sound_type):
-            self.notify('Sound already imported', severity='warning')
+        sound = soundify(event.path.name.split('.')[0])
+
+        if self.sm.sound_name_exist(sound):
+            message = ("Sound name already in use.\n"
+                       "Please change it before importing.")
+            self.notify(message, severity='error')
             return None
 
-        if self.sound_type == 'ambient':
-            path = self.config.user_ambiences_path
-        else:
-            path = self.config.user_sounds_path
-
-        shutil.copy(event.path, path / soundified_name)
-        self.notify(f'Imported: {soundified_name}')
+        extension = f'.{event.path.name.split('.')[1]}'
+        self.sm.add_sound(event.path, sound, extension, self.sound_type)
+        self.notify(f'Imported: {sound}')
