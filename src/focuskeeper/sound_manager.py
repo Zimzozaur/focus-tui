@@ -99,8 +99,6 @@ class SoundManager:
     def all_shorts_longs_list(self) -> list[str]:
         return sorted(self._all_shorts_longs_dict)
 
-    # TODO: it has to be cached
-
     @property
     def get_used_alarm(self) -> str:
         return self.config.get_used_sound('alarm')
