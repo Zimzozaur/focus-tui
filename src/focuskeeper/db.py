@@ -1,13 +1,12 @@
 from sqlite3 import connect
-from pathlib import Path
 from datetime import datetime
 
-from platformdirs import user_data_dir
+from focuskeeper.app_paths import AppPaths
 
 
 class DatabaseManager:
     def __init__(self):
-        self.db_file = Path(user_data_dir()) / '.Focus-Keeper/.app_data/focus_keeper.db'
+        self.db_file = AppPaths().db_file_path
 
     def db_setup(self) -> None:
         """Method used only to set up DB on app initialization"""

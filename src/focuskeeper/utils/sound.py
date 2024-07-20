@@ -43,9 +43,9 @@ def get_users_folder() -> str:
 def is_imported_sound(sound: str, sound_type: Literal['alarm', 'ambient']) -> bool:
     """Rerun is file already in users absences or sounds folder"""
     if sound_type == 'alarm':
-        return sound in sounds_list(paths_obj.user_sounds)
+        return sound in sounds_list(paths_obj.user_sounds_path)
     else:
-        return sound in sounds_list(paths_obj.user_ambiences)
+        return sound in sounds_list(paths_obj.user_ambiences_path)
 
 
 def soundify(sound: Path):

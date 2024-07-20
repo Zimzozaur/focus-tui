@@ -16,58 +16,58 @@ class AppSetup(AppPaths):
 
     def setup_app(self):
         # Create app directory
-        if not self.main_dir.exists():
+        if not self.main_dir_path.exists():
             print('Creating .Focus-Keeper folder')
-            self.main_dir.mkdir()
+            self.main_dir_path.mkdir()
 
         # Create directory app usage
-        if not self.app_data.exists():
+        if not self.app_data_path.exists():
             print('Creating .app_data folder')
-            self.app_data.mkdir()
+            self.app_data_path.mkdir()
 
         # Create inner structure
-        if not self.sounds.exists():
-            self.sounds.mkdir()
+        if not self.sounds_path.exists():
+            self.sounds_path.mkdir()
             print('Creating sounds folder')
             for song in self.fake_api.get_songs():
-                shutil.copy(song, self.sounds)
+                shutil.copy(song, self.sounds_path)
                 print('Copying:', song)
 
-        if not self.ambiences.exists():
+        if not self.ambiences_path.exists():
             print('Creating ambiences folder')
-            self.ambiences.mkdir()
+            self.ambiences_path.mkdir()
 
         # Create SQLite database file (empty for now)
-        if not self.db_file.exists():
+        if not self.db_file_path.exists():
             print('Creating focus_keeper.db file')
-            Path(self.db_file).touch()
-            with open(self.db_file, 'w'):
+            Path(self.db_file_path).touch()
+            with open(self.db_file_path, 'w'):
                 # This is the only place where
                 # this methods should be used
                 self.db.db_setup()
 
         # Create config.yaml file
-        if not self.config_file.exists():
+        if not self.config_file_path.exists():
             print('Creating config.yaml file')
-            Path(self.config_file).touch()
+            Path(self.config_file_path).touch()
             # This is the only place where
             # this methods should be used
             self.config_setup()
 
         # Create directory for app users
-        if not self.user_data.exists():
+        if not self.user_data_path.exists():
             print('Creating user_data folder')
-            self.user_data.mkdir()
+            self.user_data_path.mkdir()
 
         # Create directory for user sounds
-        if not self.user_sounds.exists():
+        if not self.user_sounds_path.exists():
             print('Creating user_sounds folder')
-            self.user_sounds.mkdir()
+            self.user_sounds_path.mkdir()
 
         # Create directory for user ambiences
-        if not self.user_ambiences.exists():
+        if not self.user_ambiences_path.exists():
             print('Creating user_ambiences folder')
-            self.user_ambiences.mkdir()
+            self.user_ambiences_path.mkdir()
 
         # TODO: download sounds
 
@@ -77,18 +77,18 @@ class AppSetup(AppPaths):
             'used_sounds': {
                 'alarm': {
                     'name': 'Unfa_Woohoo.mp3',
-                    'path': f'{self.sounds}'
+                    'path': f'{self.sounds_path}'
                 },
                 'signal': {
                     'name': 'Unfa_Braam.mp3',
-                    'path': f'{self.sounds}'
+                    'path': f'{self.sounds_path}'
                 },
                 'ambient': {
                     'name': 'Auntie_Cleo_s.mp3',
-                    'path': f'{self.ambiences}'
+                    'path': f'{self.ambiences_path}'
                 }
             }
         }
-        with open(self.config_file, 'w') as file:
+        with open(self.config_file_path, 'w') as file:
             yaml.dump(default_config, file, sort_keys=False)
 

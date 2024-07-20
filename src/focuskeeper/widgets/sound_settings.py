@@ -45,11 +45,11 @@ class SoundSettings(Grid):
     app_config = AppConfig()
     mixer = SoundMixer()
     # App paths
-    sounds: Path = app_config.sounds
-    ambiences: Path = app_config.ambiences
+    sounds: Path = app_config.sounds_path
+    ambiences: Path = app_config.ambiences_path
     # User paths
-    user_sounds: Path = app_config.user_sounds
-    user_ambiences: Path = app_config.user_ambiences
+    user_sounds: Path = app_config.user_sounds_path
+    user_ambiences: Path = app_config.user_ambiences_path
 
     def __init__(self):
         super().__init__()

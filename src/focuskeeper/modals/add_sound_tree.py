@@ -66,9 +66,9 @@ class AddSoundTree(ModalScreen):
             return None
 
         if self.sound_type == 'ambient':
-            path = self.config.user_ambiences
+            path = self.config.user_ambiences_path
         else:
-            path = self.config.user_sounds
+            path = self.config.user_sounds_path
 
         shutil.copy(event.path, path / soundified_name)
         self.notify(f'Imported: {soundified_name}')
