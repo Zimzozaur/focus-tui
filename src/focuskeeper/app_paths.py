@@ -21,7 +21,3 @@ class AppPaths:
     db_file_path = app_data_path / "focus_keeper.db"
     config_file_path = app_data_path / "config.yaml"
 
-    # Default Sounds
-    default_alarm_name = 'Unfa_Woohoo.mp3'
-    default_signal_name = 'Unfa_Landing.mp3'
-    default_ambient_name = 'Woodpecker_Forest.flac'
