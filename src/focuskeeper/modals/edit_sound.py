@@ -121,7 +121,8 @@ class EditSound(ModalScreen):
         """Check is new sound name correct"""
         query = f"#{remove_id_suffix(event.input.id)}_rename"
         sound_name = event.input.value
-        self.query_one(query).disabled = sound_name in self.sm.all_shorts_longs_dict
+        disable = not sound_name or self.sm.exists_in_all_dicts(sound_name)
+        self.query_one(query).disabled = disable
 
     @on(Button.Pressed, '.sound-rename-bt')
     async def change_sound_name(self, event: Button.Pressed):
