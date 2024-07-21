@@ -6,7 +6,7 @@ from textual.containers import Horizontal, Vertical
 
 from focuskeeper.widgets import AppHeader
 from focuskeeper.assets import NUMBERS_DICT
-from focuskeeper.screens.settings import SettingsScreen
+from focuskeeper.screens.settings_screen import SettingsScreen
 from focuskeeper.validators import ValueFrom5to300
 from focuskeeper.modals import ConfirmPopup
 from focuskeeper.db import DatabaseManager

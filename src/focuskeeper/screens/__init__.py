@@ -3,7 +3,7 @@
 
 # Local imports.
 from .clock import Clock
-from .settings import SettingsScreen
+from .settings_screen import SettingsScreen
 
 # Public symbols
 __all__ = [
