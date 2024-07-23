@@ -12,14 +12,6 @@ from focuskeeper.screens import SettingsScreen
 
 
 class StopwatchScreen(Screen):
-    """
-    Clock widget functionalities:
-        - Time display for both timer and stopwatch modes.
-        - Input field to set the timer duration.
-        - Button to start, stop, or cancel the timer/stopwatch.
-        - Play sound when session is successful
-    """
-
     DEFAULT_CSS = """
     StopwatchScreen {
         width: 100%;
@@ -41,6 +33,7 @@ class StopwatchScreen(Screen):
         margin-left: 2;
     }
     """
+
     BINDINGS = [
         ('ctrl+q', 'quit_app', 'Quit App'),
         ('ctrl+t', 'timer_mode', 'Timer Mode'),
@@ -51,7 +44,7 @@ class StopwatchScreen(Screen):
         self.app.exit()
 
     def action_timer_mode(self):
-        """Change screen to Timer"""
+        """Switch screen to Timer"""
         from focuskeeper.screens import TimerScreen
         self.app.switch_screen(TimerScreen())
 
@@ -114,14 +107,16 @@ class StopwatchScreen(Screen):
 
     def _start_session(self) -> None:
         """Start a stopwatch session."""
-        # Set intervals for updating clock and managing cancel timer
-        self._intervals.append(self.set_interval(1, self._clock_display_update))
-        self._intervals.append(self.set_interval(1, self._cancel_session))
         # Set button variant to 'error' to indicate session is ongoing
         self._focus_button.variant = 'warning'
+
         # Deactivate Bindings
         self.active_session = True
         self.app.refresh_bindings()
+
+        # Set intervals for updating clock and managing cancel timer
+        self._intervals.append(self.set_interval(1, self._clock_display_update))
+        self._intervals.append(self.set_interval(1, self._cancel_session))
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer and update displayed time"""

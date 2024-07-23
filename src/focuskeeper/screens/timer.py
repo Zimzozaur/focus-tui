@@ -14,14 +14,6 @@ from focuskeeper.screens import SettingsScreen
 
 
 class TimerScreen(Screen):
-    """
-    Clock widget functionalities:
-        - Time display for both timer and stopwatch modes.
-        - Input field to set the timer duration.
-        - Button to start, stop, or cancel the timer/stopwatch.
-        - Play sound when session is successful
-    """
-
     DEFAULT_CSS = """
     TimerScreen {
         width: 100%;
@@ -43,6 +35,7 @@ class TimerScreen(Screen):
         margin-left: 2;
     }
     """
+
     BINDINGS = [
         ('ctrl+q', 'quit_app', 'Quit App'),
         ('ctrl+t', 'stopwatch_mode', 'Stopwatch'),
@@ -53,7 +46,7 @@ class TimerScreen(Screen):
         self.app.exit()
 
     def action_stopwatch_mode(self):
-        """Change between Stopwatch and Timer"""
+        """Switch screen to Stopwatch"""
         from focuskeeper.screens import StopwatchScreen
         self.app.switch_screen(StopwatchScreen())
 
@@ -73,7 +66,7 @@ class TimerScreen(Screen):
         self.app.push_screen(SettingsScreen(), open_clock_back)
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        """If clock is active refuse to use any shortcut"""
+        """If clock is active refuse to use any shortcuts"""
         return not self.active_session
 
     def __init__(self, *args, **kwargs):
@@ -116,10 +109,10 @@ class TimerScreen(Screen):
         """Start, Cancel, Kill session"""
         # Started Session
         if self._focus_button.variant == 'success':
+            self.active_session = True
             self.app.refresh_bindings()  # Deactivate Bindings
             self._input_filed.visible = False
             self._start_session()
-            self.active_session = True
         # Cancel Session
         elif self._focus_button.variant == 'warning':
             self._reset_timer()
@@ -129,7 +122,7 @@ class TimerScreen(Screen):
             self.app.push_screen(popup, self._not_successful_session)
 
     def _start_session(self) -> None:
-        """Start a timer session."""
+        """Start a Timer session."""
         # Initialize cancel timer counter
         self._cancel_session_remaining = MINUTE
         self._session_len = int(self.query_one(Input).value) * MINUTE
@@ -143,7 +136,8 @@ class TimerScreen(Screen):
         self._focus_button.variant = 'warning'
 
     def _clock_display_update(self) -> None:
-        """Update variable used by timer and update displayed time"""
+        """Update variable used by timer, update displayed time and
+        call `TimerScreen._successful_session()` when self._remaining_session == 0"""
         self._remaining_session -= 1
         # When end of the session
         if self._remaining_session == 0:
