@@ -51,14 +51,13 @@ class StopwatchScreen(Screen):
         self.app.exit()
 
     def action_timer_mode(self):
-        """Change between Stopwatch and Timer"""
+        """Change screen to Timer"""
         from focuskeeper.screens import TimerScreen
         self.app.switch_screen(TimerScreen())
 
     def action_open_settings(self):
-        """
-        Open settings screen and dismiss clock
-        When Settings are close opens new instance of clock back
+        """Open settings screen and dismiss Stopwatch
+        When Settings are close opens new instance of Stopwatch back
         """
         def open_clock_back(result) -> None:
             """
@@ -71,7 +70,7 @@ class StopwatchScreen(Screen):
         self.app.push_screen(SettingsScreen(), open_clock_back)
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        """If clock is active refuse to use any shortcut"""
+        """If Stopwatch is active refuse to use any shortcuts"""
         return not self.active_session
 
     def __init__(self, *args, **kwargs):
@@ -84,7 +83,7 @@ class StopwatchScreen(Screen):
         # Stopwatch time
         self._session_len: int = 0
         # Cancel session
-        self._cancel_session_remaining: int = 0
+        self._cancel_session_remaining: int = MINUTE
         # Interval
         self._intervals = []
         # External classes
@@ -102,12 +101,10 @@ class StopwatchScreen(Screen):
 
     @on(Button.Pressed, '#focus-bt')
     def _focus_button_clicked(self) -> None:
-        """Start, End session"""
+        """Start, Cancel, End session"""
         # Started Session
         if self._focus_button.variant == 'success':
-            self.app.refresh_bindings()  # Deactivate Bindings
             self._start_session()
-            self.active_session = True
         # Canceled Session
         elif self._focus_button.variant == 'warning':
             self._reset_timer()
@@ -116,21 +113,21 @@ class StopwatchScreen(Screen):
             self._successful_session()
 
     def _start_session(self) -> None:
-        """Start a timer session."""
-        # Initialize cancel timer counter
-        self._cancel_session_remaining = MINUTE
-
+        """Start a stopwatch session."""
         # Set intervals for updating clock and managing cancel timer
         self._intervals.append(self.set_interval(1, self._clock_display_update))
         self._intervals.append(self.set_interval(1, self._cancel_session))
-
         # Set button variant to 'error' to indicate session is ongoing
-        self._focus_button.variant = 'error'
+        self._focus_button.variant = 'warning'
+        # Deactivate Bindings
+        self.active_session = True
+        self.app.refresh_bindings()
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer and update displayed time"""
+        # Update session length
         self._session_len += 1
-
+        # Update clock display
         minutes, seconds = divmod(self._session_len, 60)
         minutes_str = str(minutes).zfill(1)
         seconds_str = str(seconds).zfill(2)
@@ -151,21 +148,21 @@ class StopwatchScreen(Screen):
         self._focus_button.label = 'Focus'
         # Session Variable
         self.active_session = False
+        # Reset Counters
+        self._session_len = 0
+        self._cancel_session_remaining = MINUTE
         # Stop intervals
         for interval in self._intervals:
             interval.stop()
-        # Return which clock mode biding
+        # Allow user to use shorts
         self.app.refresh_bindings()
 
     def _cancel_session(self):
-        """
-        Allow user to cancel timer in first
-        `self._cancel_timer_counter_default` seconds
-        """
+        """Allow user to cancel session in first minute"""
         self._cancel_session_remaining -= 1
         if self._cancel_session_remaining > 0:
             self._focus_button.label = f'Cancel ({self._cancel_session_remaining})'
         else:
-            # Set button when the cancel time has ended
+            # Update button when the cancel time has ended
             self._focus_button.label = 'End'
             self._focus_button.variant = 'error'
