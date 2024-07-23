@@ -6,11 +6,11 @@ import yaml
 from focuskeeper.db import DatabaseManager
 from focuskeeper.fake_api_client import FakeAPIClient
 from focuskeeper.config import AppPaths
-
-# Default sounds
-DEFAULT_ALARM_NAME = 'Unfa_Woohoo'
-DEFAULT_SIGNAL_NAME = 'Unfa_Landing'
-DEFAULT_AMBIENT_NAME = 'Woodpecker_Forest'
+from focuskeeper.settings import (
+    DEFAULT_ALARM_NAME,
+    DEFAULT_SIGNAL_NAME,
+    DEFAULT_AMBIENT_NAME
+)
 
 
 class AppSetup(AppPaths):
@@ -81,13 +81,13 @@ class AppSetup(AppPaths):
         default_config = {
             'used_sounds': {
                 'alarm': {
-                    'name': 'Unfa_Woohoo',
+                    'name': DEFAULT_ALARM_NAME,
                 },
                 'signal': {
-                    'name': 'Unfa_Braam',
+                    'name': DEFAULT_SIGNAL_NAME,
                 },
                 'ambient': {
-                    'name': 'Woodpecker_Forest',
+                    'name': DEFAULT_AMBIENT_NAME,
                 }
             }
         }
