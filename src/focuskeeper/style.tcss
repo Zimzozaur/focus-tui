@@ -66,8 +66,8 @@ ClockDisplay {
     width: 100%;
     align: center middle;
 }
-
-#clock-display-digit {
+    
+.clock-display-digit {
     width: auto;
     color: $warning-lighten-1;
 }

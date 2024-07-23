@@ -23,7 +23,7 @@ class ClockDisplay(Horizontal):
         yield Label(' ')
         yield self._u_min
         yield Label(' ')
-        yield Static(NUMBERS_DICT[':'])
+        yield Static(NUMBERS_DICT[':'],  classes='clock-display-digit')
         yield Label(' ')
         yield self._t_sec
         yield Label(' ')
