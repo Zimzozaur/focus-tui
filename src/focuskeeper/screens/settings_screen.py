@@ -10,23 +10,6 @@ from focuskeeper.widgets import (
 
 class SettingsScreen(Screen):
     TITLE = 'Settings'
-    DEFAULT_CSS = """
-    #settings-wrapper {
-        align: center top; 
-    }
-    
-    #settings-body {
-        margin: 2 0;
-        width: 70;
-        height: auto;
-    }
-    
-    .settings-section {
-        border: round white;
-        height: auto;
-        padding: 0 1;
-    }
-    """
     BINDINGS = [
         ('ctrl+q', 'quit_app', 'Quit App'),
         ('escape', 'close_settings', 'Close Settings'),

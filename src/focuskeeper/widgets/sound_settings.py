@@ -18,32 +18,6 @@ class SoundSettings(Grid):
     test any sound and open EditSound modal
     """
 
-    DEFAULT_CSS = """
-    SoundSettings {
-        grid-size: 2 4;
-        grid-columns: 3fr 1fr;
-        
-    
-        height: auto;
-        & > * {
-            height: auto;
-        }
-    }
-    
-    #short {
-        row-span: 2;
-        height: 8;
-    }
-    
-    .sound-edit-bt {
-        width: 8;
-    }
-    
-    .sound-settings-horizontal-padding {
-        padding-bottom: 1;
-    }
-    """
-
     # External classes
     db = DatabaseManager()
     app_config = AppConfig()

@@ -1,0 +1,227 @@
+# ##########################################
+# App
+# ##########################################
+
+#body {
+    background: $surface;
+    padding: 1 2;
+    width: 100%;
+    height: 100%;
+}
+
+# ##########################################
+# TimerScreen
+# ##########################################
+
+TimerScreen {
+    width: 100%;
+    height: 100%;
+}
+
+#focus-wrapper {
+    align: center middle;
+    height: 40%;
+}
+
+#session-duration {
+    width: 21;
+}
+
+#focus-bt {
+    align: center middle;
+    margin-top: 1;
+    margin-left: 2;
+}
+
+# ##########################################
+# StopwatchScreen
+# ##########################################
+
+StopwatchScreen {
+    width: 100%;
+    height: 100%;
+}
+
+#focus-wrapper {
+    align: center middle;
+    height: 40%;
+}
+
+#session-duration {
+    width: 21;
+}
+
+#focus-bt {
+    align: center middle;
+    margin-top: 1;
+    margin-left: 2;
+}
+
+
+# ##########################################
+# ClockDisplay - Widget
+# ##########################################
+
+ClockDisplay {
+    width: 100%;
+    align: center middle;
+}
+
+#clock-display-digit {
+    width: auto;
+    color: $warning-lighten-1;
+}
+
+# ##########################################
+# SettingsScreen
+# ##########################################
+
+#settings-wrapper {
+    align: center top; 
+}
+
+#settings-body {
+    margin: 2 0;
+    width: 70;
+    height: auto;
+}
+
+.settings-section {
+    border: round white;
+    height: auto;
+    padding: 0 1;
+}
+
+# ##########################################
+# SoundSettings - Widget
+# ##########################################
+
+SoundSettings {
+    grid-size: 2 4;
+    grid-columns: 3fr 1fr;
+    
+
+    height: auto;
+    & > * {
+        height: auto;
+    }
+}
+
+#short {
+    row-span: 2;
+    height: 8;
+}
+
+.sound-edit-bt {
+    width: 8;
+}
+
+.sound-settings-horizontal-padding {
+    padding-bottom: 1;
+}
+
+# ##########################################
+# AboutSettings - Widget
+# ##########################################
+
+AboutSettings {
+    height: auto;
+    padding: 1;    
+}
+
+#get-into-social {
+    grid-size: 3 1;
+    grid-gutter: 10;
+    height: auto;
+    padding-top: 1;
+}    
+
+# ##########################################
+# EditSound - Modal
+# ##########################################
+
+EditSound {
+    align: center middle;
+    width: auto;
+    height: auto;
+}
+
+#edit-sound-body {
+    min-width: 50;
+    max-width: 70;
+    height: 30;
+    padding: 1 2;
+    background: $surface;
+}
+
+#sounds-accordion {
+    min-width: 50;
+    max-width: 70;
+    height: auto;
+}
+
+.sound-buttons-wrapper {
+    height: auto;
+    padding: 1 1 0 1;
+    width: 100%;
+}
+
+#add-sound-wrapper {
+    height: auto;
+}
+
+.sound-buttons-divider {
+    width: 1fr;
+}
+
+#add-sound-divider {
+    height: 1fr
+}
+
+# ##########################################
+# ConfirmPopup - Modal
+# ##########################################
+
+ConfirmPopup {
+    align: center middle;
+    width: auto;
+    height: auto;
+}
+
+#confirm-popup-body {
+    width: auto;
+    height: auto;
+    padding: 1 2;
+    background: $panel;
+}
+
+#confirm-popup-message {
+    text-style: bold;
+}
+
+#confirm-popup-buttons {
+    width: auto;
+    height: auto;
+    margin-top: 1;
+
+    & > #yes-button {
+        margin-left: 10;
+    }
+}
+
+# ##########################################
+# AddSoundTree - Modal
+# ##########################################
+
+AddSoundTree {
+    align: center middle;
+    width: auto;
+    height: auto;
+}
+
+MusicDirectoryTree {
+    width: 60%;
+    height: 60%;
+    padding: 1 2;
+    background: $panel;
+}

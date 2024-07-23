@@ -7,20 +7,6 @@ from textual.containers import Grid, Container
 
 
 class AboutSettings(Container):
-    DEFAULT_CSS = """
-    AboutSettings {
-        height: auto;
-        padding: 1;    
-    }
-
-    #get-into-social {
-        grid-size: 3 1;
-        grid-gutter: 10;
-        height: auto;
-        padding-top: 1;
-    }    
-    """
-
     def compose(self) -> ComposeResult:
         yield Static('Focus Keeper is your best buddy for working or studying.')
         yield Static('If you want to learn more, share your ideas, or report bugs...')

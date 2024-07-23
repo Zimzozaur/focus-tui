@@ -31,21 +31,6 @@ def soundify(sound: str):
 
 
 class AddSoundTree(ModalScreen):
-    DEFAULT_CSS = """
-    AddSoundTree {
-        align: center middle;
-        width: auto;
-        height: auto;
-    }
-
-    MusicDirectoryTree {
-        width: 60%;
-        height: 60%;
-        padding: 1 2;
-        background: $panel;
-    }
-
-    """
     BINDINGS = [
         ('ctrl+q', 'quit_app', 'Quit App'),
         ('escape', 'close_popup', 'Close Popup')

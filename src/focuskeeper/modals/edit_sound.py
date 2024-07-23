@@ -20,46 +20,6 @@ def remove_id_suffix(string: str) -> str:
 
 class EditSound(ModalScreen):
     """EditSound allow user to perform CUD operation on sounds"""
-
-    DEFAULT_CSS = """
-    EditSound {
-        align: center middle;
-        width: auto;
-        height: auto;
-    }
-
-    #edit-sound-body {
-        min-width: 50;
-        max-width: 70;
-        height: 30;
-        padding: 1 2;
-        background: $surface;
-    }
-
-    #sounds-accordion {
-        min-width: 50;
-        max-width: 70;
-        height: auto;
-    }
-
-    .sound-buttons-wrapper {
-        height: auto;
-        padding: 1 1 0 1;
-        width: 100%;
-    }
-
-    #add-sound-wrapper {
-        height: auto;
-    }
-
-    .sound-buttons-divider {
-        width: 1fr;
-    }
-
-    #add-sound-divider {
-        height: 1fr
-    }
-    """
     BINDINGS = [
         ('ctrl+q', 'quit_app', 'Quit App'),
         ('escape', 'close_popup', 'Close Popup')

@@ -7,36 +7,6 @@ from textual.widgets import Static, Button
 
 class ConfirmPopup(ModalScreen[bool]):
     """ModalScreen to ask user for confirmation of certain action"""
-
-    DEFAULT_CSS = """
-        ConfirmPopup {
-            align: center middle;
-            width: auto;
-            height: auto;
-        }
-
-        #confirm-popup-body {
-            width: auto;
-            height: auto;
-            padding: 1 2;
-            background: $panel;
-        }
-
-        #confirm-popup-message {
-            text-style: bold;
-        }
-
-        #confirm-popup-buttons {
-            width: auto;
-            height: auto;
-            margin-top: 1;
-
-            & > #yes-button {
-                margin-left: 10;
-            }
-        }
-        """
-
     def __init__(self, *args, message: str, **kwargs):
         super().__init__(*args, **kwargs)
         self.message: str = message

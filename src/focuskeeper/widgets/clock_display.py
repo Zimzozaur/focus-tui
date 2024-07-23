@@ -5,27 +5,16 @@ from focuskeeper.assets import NUMBERS_DICT
 
 
 class ClockDisplay(Horizontal):
-    DEFAULT_CSS = """
-    ClockDisplay {
-        width: 100%;
-        align: center middle;
-    }
-    
-    Static {
-        width: auto;
-        color: $warning-lighten-1;
-    }
-    
-    """
+    """Display time"""
 
     def __init__(self, *args, **kwargs) -> None:
         # Widgets
         super().__init__(*args, **kwargs)
-        self._h_min = Static('')
-        self._t_min = Static('')
-        self._u_min = Static(NUMBERS_DICT['0'])
-        self._t_sec = Static(NUMBERS_DICT['0'])
-        self._u_sec = Static(NUMBERS_DICT['0'])
+        self._h_min = Static('', classes='clock-display-digit')
+        self._t_min = Static('', classes='clock-display-digit')
+        self._u_min = Static(NUMBERS_DICT['0'], classes='clock-display-digit')
+        self._t_sec = Static(NUMBERS_DICT['0'], classes='clock-display-digit')
+        self._u_sec = Static(NUMBERS_DICT['0'], classes='clock-display-digit')
 
     def compose(self):
         yield self._h_min

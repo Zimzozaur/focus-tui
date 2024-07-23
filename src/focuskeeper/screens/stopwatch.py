@@ -13,28 +13,6 @@ from focuskeeper.screens import SettingsScreen
 
 class StopwatchScreen(Screen):
     TITLE = 'Stopwatch'
-    DEFAULT_CSS = """
-    StopwatchScreen {
-        width: 100%;
-        height: 100%;
-    }
-
-    #focus-wrapper {
-        align: center middle;
-        height: 40%;
-    }
-
-    #session-duration {
-        width: 21;
-    }
-
-    Button {
-        align: center middle;
-        margin-top: 1;
-        margin-left: 2;
-    }
-    """
-
     BINDINGS = [
         ('ctrl+q', 'quit_app', 'Quit App'),
         ('ctrl+t', 'timer_mode', 'Timer Mode'),
