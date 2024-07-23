@@ -2,7 +2,7 @@
 
 
 # Local imports.
-from ._app import AppHeader
+from .app_header import AppHeader
 from .about_settings import AboutSettings
 from .accordion import Accordion
 from .music_directory_tree import MusicDirectoryTree
