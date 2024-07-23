@@ -5,7 +5,7 @@ from textual.screen import ModalScreen
 from textual.widgets import Static, Button
 
 
-class ConfirmPopup(ModalScreen):
+class ConfirmPopup(ModalScreen[bool]):
     """ModalScreen to ask user for confirmation of certain action"""
 
     DEFAULT_CSS = """
