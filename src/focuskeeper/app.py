@@ -1,10 +1,8 @@
 import pygame
 
 from textual.app import App
-from textual.widgets import Footer
 
-from focuskeeper.screens import Clock
-from focuskeeper.widgets import AppHeader
+from focuskeeper.screens import TimerScreen
 
 
 class FocusKeeper(App, inherit_bindings=False):
@@ -23,7 +21,5 @@ class FocusKeeper(App, inherit_bindings=False):
         pygame.init()
         pygame.mixer.init()
 
-    def compose(self):
-        yield AppHeader()
-        yield Footer()
-        self.push_screen(Clock())
+    def on_mount(self):
+        self.push_screen(TimerScreen())

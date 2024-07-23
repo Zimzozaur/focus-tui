@@ -2,12 +2,14 @@
 
 
 # Local imports.
-from .clock import Clock
 from .settings_screen import SettingsScreen
+from .timer import TimerScreen
+from .stopwatch import StopwatchScreen
 
 # Public symbols
 __all__ = [
-    'Clock',
     'SettingsScreen',
+    'TimerScreen',
+    'StopwatchScreen'
 ]
 
