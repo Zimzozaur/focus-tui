@@ -12,6 +12,7 @@ from focuskeeper.screens import SettingsScreen
 
 
 class StopwatchScreen(Screen):
+    TITLE = 'Stopwatch'
     DEFAULT_CSS = """
     StopwatchScreen {
         width: 100%;
@@ -49,18 +50,8 @@ class StopwatchScreen(Screen):
         self.app.switch_screen(TimerScreen())
 
     def action_open_settings(self):
-        """Open settings screen and dismiss Stopwatch
-        When Settings are close opens new instance of Stopwatch back
-        """
-        def open_clock_back(result) -> None:
-            """
-            Result has to be passed to run callback
-            but is not needed for this functino
-            """
-            self.app.push_screen(StopwatchScreen())
-
-        self.dismiss()
-        self.app.push_screen(SettingsScreen(), open_clock_back)
+        """Open settings screen"""
+        self.app.push_screen(SettingsScreen())
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If Stopwatch is active refuse to use any shortcuts"""

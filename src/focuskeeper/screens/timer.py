@@ -14,6 +14,7 @@ from focuskeeper.screens import SettingsScreen
 
 
 class TimerScreen(Screen):
+    TITLE = 'Timer'
     DEFAULT_CSS = """
     TimerScreen {
         width: 100%;
@@ -51,26 +52,15 @@ class TimerScreen(Screen):
         self.app.switch_screen(StopwatchScreen())
 
     def action_open_settings(self):
-        """
-        Open settings screen and dismiss clock
-        When Settings are close opens new instance of clock back
-        """
-        def open_clock_back(result) -> None:
-            """
-            Result has to be passed to run callback
-            but is not needed for this functino
-            """
-            self.app.push_screen(TimerScreen())
-
-        self.dismiss()
-        self.app.push_screen(SettingsScreen(), open_clock_back)
+        """Open settings screen"""
+        self.app.push_screen(SettingsScreen())
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If clock is active refuse to use any shortcuts"""
         return not self.active_session
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         # Widgets
         self._clock_display = ClockDisplay()
         self._focus_button = Button('Focus', variant='success', id='focus-bt')

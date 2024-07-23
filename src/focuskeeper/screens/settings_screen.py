@@ -9,6 +9,7 @@ from focuskeeper.widgets import (
 
 
 class SettingsScreen(Screen):
+    TITLE = 'Settings'
     DEFAULT_CSS = """
     #settings-wrapper {
         align: center top; 
@@ -36,7 +37,7 @@ class SettingsScreen(Screen):
 
     def action_close_settings(self):
         """Method has to return anything to run callback"""
-        self.dismiss(None)
+        self.dismiss()
 
     def __init__(self):
         super().__init__()
