@@ -8,7 +8,6 @@ class ClockDisplay(Horizontal):
     DEFAULT_CSS = """
     ClockDisplay {
         width: 100%;
-        border: round red;
         align: center middle;
     }
     
