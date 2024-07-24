@@ -56,20 +56,37 @@ class SoundManager:
     """Class used to work with sounds in app
     Allow to perform CRUD on Shorts, Longs and play them
 
+    This class is a singleton
     """
-    # Imported classes
-    config = AppConfig()
+    _instance = None
 
-    # Dicts containing all songs found at start up
-    _shorts_dict = create_sounds_dict(AppPaths.sounds_path, 'short', True)
-    _user_shorts_dict = create_sounds_dict(AppPaths.user_sounds_path, 'short', False)
-    _longs_dict = create_sounds_dict(AppPaths.ambiences_path, 'long', True)
-    _user_longs_dict = create_sounds_dict(AppPaths.user_ambiences_path, 'long', False)
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(SoundManager, cls).__new__(cls)
+        return cls._instance
 
-    # Never change them, those maps are used to check existence or list - GET ONLY
-    _all_shorts_dict = ChainMap(_shorts_dict, _user_shorts_dict)
-    _all_longs_dict = ChainMap(_longs_dict, _user_longs_dict)
-    _all_shorts_longs_dict = ChainMap(_all_shorts_dict, _all_longs_dict)
+    def __init__(self):
+        # Imported classes
+        self.config = AppConfig()
+
+        # Dicts containing all songs found at start up
+        self._shorts_dict = create_sounds_dict(
+            AppPaths.sounds_path, 'short', True
+        )
+        self._user_shorts_dict = create_sounds_dict(
+            AppPaths.user_sounds_path, 'short', False
+        )
+        self._longs_dict = create_sounds_dict(
+            AppPaths.ambiences_path, 'long', True
+        )
+        self._user_longs_dict = create_sounds_dict(
+            AppPaths.user_ambiences_path, 'long', False
+        )
+
+        # Never change them, those maps are used to check existence or list - GET ONLY
+        self._all_shorts_dict = ChainMap(self._shorts_dict, self._user_shorts_dict)
+        self._all_longs_dict = ChainMap(self._longs_dict, self._user_longs_dict)
+        self._all_shorts_longs_dict = ChainMap(self._all_shorts_dict, self._all_longs_dict)
 
     @property
     def shorts_list(self) -> list[str]:

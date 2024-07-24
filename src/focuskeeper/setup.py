@@ -34,13 +34,16 @@ class AppSetup(AppPaths):
         if not self.sounds_path.exists():
             self.sounds_path.mkdir()
             print('Creating sounds folder')
-            for song in self.fake_api.get_songs():
-                shutil.copy(song, self.sounds_path)
-                print('Copying:', song)
+            for sound in self.fake_api.get_shorts():
+                shutil.copy(sound, self.sounds_path)
+                print('Copying:', sound)
 
         if not self.ambiences_path.exists():
             print('Creating ambiences folder')
             self.ambiences_path.mkdir()
+            for sound in self.fake_api.get_longs():
+                shutil.copy(sound, self.ambiences_path)
+                print('Copying:', sound)
 
         # Create SQLite database file (empty for now)
         if not self.db_file_path.exists():

@@ -18,13 +18,13 @@ class SoundSettings(Grid):
     test any sound and open EditSound modal
     """
 
-    # External classes
-    db = DatabaseManager()
-    app_config = AppConfig()
-    sm = SoundManager()
-
     def __init__(self):
         super().__init__()
+        # External classes
+        self.db = DatabaseManager()
+        self.app_config = AppConfig()
+        self.sm = SoundManager()
+
         self.select_alarm = None
         self.select_signal = None
         self.select_ambient = None
