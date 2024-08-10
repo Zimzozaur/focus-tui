@@ -24,4 +24,5 @@ dist/
 
 # venv
 .venv/
+venv/
 .env
