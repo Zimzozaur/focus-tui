@@ -2,14 +2,14 @@ from typing import Literal
 
 from textual import on
 from textual.app import ComposeResult
-from textual.containers import VerticalScroll, Horizontal, Center
+from textual.containers import Center, Horizontal, VerticalScroll
 from textual.events import Click
 from textual.screen import ModalScreen
 from textual.widgets import Button, Collapsible, Input, Static
 
 from focuskeeper.modals import AddSoundTree, ConfirmPopup
-from focuskeeper.widgets import Accordion
 from focuskeeper.sound_manager import SoundManager
+from focuskeeper.widgets import Accordion
 
 
 def remove_id_suffix(string: str) -> str:
@@ -56,10 +56,10 @@ class EditSound(ModalScreen):
             with Accordion(id="sounds-accordion"):
                 for name in self.sounds_names:
                     with Collapsible(
-                        title=name, classes="sound-collapsible", id=f"{name}_coll"
+                        title=name, classes="sound-collapsible", id=f"{name}_coll",
                     ):
                         yield Input(
-                            value=name, id=f"{name}_input", restrict=r"^[a-zA-Z0-9_-]+$"
+                            value=name, id=f"{name}_input", restrict=r"^[a-zA-Z0-9_-]+$",
                         )
                         with Horizontal(classes="sound-buttons-wrapper"):
                             yield Button(
@@ -118,7 +118,7 @@ class EditSound(ModalScreen):
         async def remove_sound(boolean: bool) -> None:
             """Remove sound"""
             if not boolean:
-                return None
+                return
             # if removed sound that is already used
             self.sm.remove_sound(sound_name, self.sound_type)
             self.notify("Sound has been remove")

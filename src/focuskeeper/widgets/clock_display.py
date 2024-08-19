@@ -1,5 +1,5 @@
-from textual.widgets import Static, Label
 from textual.containers import Horizontal
+from textual.widgets import Label, Static
 
 from focuskeeper.assets import NUMBERS_DICT
 

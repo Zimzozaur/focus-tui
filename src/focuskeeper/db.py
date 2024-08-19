@@ -1,5 +1,5 @@
-from sqlite3 import connect
 from datetime import datetime
+from sqlite3 import connect
 
 from focuskeeper.constants import DB_FILE_PATH
 

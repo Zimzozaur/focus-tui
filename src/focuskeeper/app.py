@@ -1,5 +1,4 @@
 import pygame
-
 from textual.app import App
 
 from focuskeeper.screens import TimerScreen

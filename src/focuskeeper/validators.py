@@ -1,4 +1,4 @@
-from textual.validation import Validator, ValidationResult
+from textual.validation import ValidationResult, Validator
 
 from focuskeeper.constants import MIN_SESSION_LEN
 

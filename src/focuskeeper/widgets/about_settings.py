@@ -2,8 +2,8 @@ import webbrowser
 
 from textual import on
 from textual.app import ComposeResult
+from textual.containers import Container, Grid
 from textual.widgets import Button, Static
-from textual.containers import Grid, Container
 
 
 class AboutSettings(Container):

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from platformdirs import user_data_dir
 
 

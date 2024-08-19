@@ -2,9 +2,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-
 from platformdirs import user_data_dir
-
 
 #############################
 #      Custom Settings      #

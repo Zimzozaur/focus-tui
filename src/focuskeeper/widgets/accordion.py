@@ -5,8 +5,7 @@ from textual.widgets import Collapsible
 
 
 class Accordion(Container):
-    """
-    Accordion class is a container for Collapsibles
+    """Accordion class is a container for Collapsibles
     that turns them into Accordion
     """
 
@@ -19,7 +18,7 @@ class Accordion(Container):
         disabled: bool = False,
     ) -> None:
         super().__init__(
-            *children, name=name, id=id, classes=classes, disabled=disabled
+            *children, name=name, id=id, classes=classes, disabled=disabled,
         )
         self._currently_expanded: Collapsible | None = None
 

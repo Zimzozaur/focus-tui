@@ -1,12 +1,12 @@
 import shutil
+from collections import ChainMap
 from pathlib import Path
 from typing import Literal
-from collections import ChainMap
 
 import pygame
 
-from focuskeeper.config import get_used_sound, update_sound_name, is_sound_in_config
-from focuskeeper.constants import SHORT_PATH, LONGS_PATH, RESERVED_ALL_SOUNDS
+from focuskeeper.config import get_used_sound, is_sound_in_config, update_sound_name
+from focuskeeper.constants import LONGS_PATH, RESERVED_ALL_SOUNDS, SHORT_PATH
 
 
 class Sound:
@@ -40,10 +40,9 @@ class Sound:
 
 
 def create_sounds_dict(
-    path: Path, sound_type: Literal["short", "long"]
+    path: Path, sound_type: Literal["short", "long"],
 ) -> dict[str, Sound]:
     """Return dict of Sounds names and Sounds object mapped to them"""
-
     allowed_suffixes = {".wav", ".mp3", ".ogg", ".flac", ".opus"}
 
     return {
@@ -78,7 +77,7 @@ class SoundManager:
     @property
     def user_shorts_list(self) -> list[str]:
         return sorted(
-            [key for key, value in self._shorts_dict.items() if not value.is_default]
+            [key for key, value in self._shorts_dict.items() if not value.is_default],
         )
 
     @property
@@ -88,7 +87,7 @@ class SoundManager:
     @property
     def user_longs_list(self) -> list[str]:
         return sorted(
-            [key for key, value in self._longs_dict.items() if not value.is_default]
+            [key for key, value in self._longs_dict.items() if not value.is_default],
         )
 
     @property

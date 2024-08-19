@@ -1,19 +1,18 @@
-from typing import cast, Literal
+from typing import Literal, cast
 
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.widgets import Button, Select
 
-from focuskeeper.db import DatabaseManager
 from focuskeeper.config import update_used_sound
+from focuskeeper.db import DatabaseManager
 from focuskeeper.modals import EditSound
 from focuskeeper.sound_manager import SoundManager
 
 
 class SoundSettings(Grid):
-    """
-    SoundSettings allow user to change used sounds,
+    """SoundSettings allow user to change used sounds,
     test any sound and open EditSound modal
     """
 
@@ -61,7 +60,7 @@ class SoundSettings(Grid):
         """Change sound connected to type and update config"""
         # If #test-sound, press blank or already chosen return
         if event.select.id == "test-sound" or event.value == Select.BLANK:
-            return None
+            return
 
         update_used_sound(
             sound_type=cast(Literal["alarm", "signal", "ambient"], event.select.id),
@@ -78,7 +77,8 @@ class SoundSettings(Grid):
     @on(Button.Pressed, ".sound-edit-bt")
     def open_edit_sound_popup(self, event: Button.Pressed):
         """Open Sounds Edit menu and refresh page if changes
-        where applied"""
+        where applied
+        """
         self.app.push_screen(
             EditSound(cast(Literal["short", "long"], event.button.id)),
             self.reinit_and_recompose_self,
@@ -88,7 +88,7 @@ class SoundSettings(Grid):
     def listen_to_sound(self, event: Select.Changed) -> None:
         """Play sound selected from list"""
         if event.value == Select.BLANK:
-            return None
+            return
 
         if event.value in self.sm.all_sounds_list:
             self.sm.play_sound(event.value)

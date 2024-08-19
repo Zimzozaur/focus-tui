@@ -17,20 +17,19 @@ def get_users_folder() -> str:
 
     if users_system == "Linux":
         return "/home"
-    elif users_system == "Windows":
+    if users_system == "Windows":
         return os.path.expandvars("%SystemDrive%\\Users")
-    elif users_system == "Darwin":
+    if users_system == "Darwin":
         return "/Users"
-    else:
-        raise NotImplementedError(
-            "Functionality not implemented for this operating system."
-        )
+    raise NotImplementedError(
+        "Functionality not implemented for this operating system.",
+    )
 
 
 def soundify(sound: str):
     """Remove all characters that are not a letter, number, - or _"""
     return "".join(
-        map(lambda char: char if char.isalnum() or char in {"_", "-"} else "_", sound)
+        map(lambda char: char if char.isalnum() or char in {"_", "-"} else "_", sound),
     )
 
 
@@ -70,11 +69,11 @@ class AddSoundTree(ModalScreen):
 
         if self.sm.sound_name_exist(sound):
             message = (
-                "Sound name already in use.\n" "Please change it before importing."
+                "Sound name already in use.\nPlease change it before importing."
             )
             self.notify(message, severity="error")
-            return None
+            return
 
-        extension = f'.{event.path.name.split('.')[1]}'
+        extension = f".{event.path.name.split('.')[1]}"
         self.sm.add_sound(event.path, sound, extension, self.sound_type)
         self.notify(f"Imported: {sound}")

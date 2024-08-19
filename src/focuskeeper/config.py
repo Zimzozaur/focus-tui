@@ -3,16 +3,16 @@ from typing import Literal
 import yaml
 
 from focuskeeper.constants import (
+    CONFIG_FILE_PATH,
     DEFAULT_ALARM_NAME,
     DEFAULT_AMBIENT_NAME,
     DEFAULT_SIGNAL_NAME,
-    CONFIG_FILE_PATH,
 )
 
 
 def get_used_sound(sound_type: Literal["alarm", "signal", "ambient"]) -> str:
     """Get from config.yaml name of chosen sound_type"""
-    with open(CONFIG_FILE_PATH, "r") as file:
+    with open(CONFIG_FILE_PATH) as file:
         return yaml.safe_load(file)["used_sounds"][sound_type]["name"]
 
 

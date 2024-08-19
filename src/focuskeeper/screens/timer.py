@@ -1,17 +1,15 @@
 from textual import on
-from textual.screen import Screen
-from textual.widgets import Button, Input, Footer
 from textual.containers import Horizontal, Vertical
+from textual.screen import Screen
+from textual.widgets import Button, Footer, Input
 
-from focuskeeper.widgets import AppHeader
-from focuskeeper.validators import ValueFrom5to300
-from focuskeeper.modals import ConfirmPopup
+from focuskeeper.constants import MIN_SESSION_LEN, MINUTE
 from focuskeeper.db import DatabaseManager
-from focuskeeper.sound_manager import SoundManager
-from focuskeeper.constants import MINUTE
-from focuskeeper.widgets import ClockDisplay
+from focuskeeper.modals import ConfirmPopup
 from focuskeeper.screens import SettingsScreen
-from focuskeeper.constants import MIN_SESSION_LEN
+from focuskeeper.sound_manager import SoundManager
+from focuskeeper.validators import ValueFrom5to300
+from focuskeeper.widgets import AppHeader, ClockDisplay
 
 
 class TimerScreen(Screen):
@@ -107,7 +105,8 @@ class TimerScreen(Screen):
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer, update displayed time and
-        call `TimerScreen._successful_session()` when self._remaining_session == 0"""
+        call `TimerScreen._successful_session()` when self._remaining_session == 0
+        """
         self._remaining_session -= 1
         # When end of the session
         if self._remaining_session == 0:
@@ -152,8 +151,7 @@ class TimerScreen(Screen):
         self.app.refresh_bindings()
 
     def _cancel_session(self):
-        """
-        Allow user to cancel timer in first
+        """Allow user to cancel timer in first
         `self._cancel_timer_counter_default` seconds
         """
         self._cancel_session_remaining -= 1

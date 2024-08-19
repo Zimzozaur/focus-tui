@@ -3,21 +3,21 @@ from pathlib import Path
 
 import yaml
 
+from focuskeeper.constants import (
+    CONFIG_FILE_PATH,
+    DB_FILE_PATH,
+    DEFAULT_ALARM_NAME,
+    DEFAULT_AMBIENT_NAME,
+    DEFAULT_SIGNAL_NAME,
+    LONGS_PATH,
+    MAIN_DIR_PATH,
+    QUEUES_PATH,
+    SHORT_PATH,
+    SOUNDS_PATH,
+    THEMES_PATH,
+)
 from focuskeeper.db import DatabaseManager
 from focuskeeper.fake_api_client import FakeAPIClient
-from focuskeeper.constants import (
-    DEFAULT_ALARM_NAME,
-    DEFAULT_SIGNAL_NAME,
-    DEFAULT_AMBIENT_NAME,
-    MAIN_DIR_PATH,
-    SOUNDS_PATH,
-    SHORT_PATH,
-    LONGS_PATH,
-    THEMES_PATH,
-    QUEUES_PATH,
-    DB_FILE_PATH,
-    CONFIG_FILE_PATH,
-)
 
 fake_api = FakeAPIClient()
 db = DatabaseManager()
@@ -33,7 +33,7 @@ default_config = {
         "ambient": {
             "name": DEFAULT_AMBIENT_NAME,
         },
-    }
+    },
 }
 
 
