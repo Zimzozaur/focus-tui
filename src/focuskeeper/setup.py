@@ -5,95 +5,80 @@ import yaml
 
 from focuskeeper.db import DatabaseManager
 from focuskeeper.fake_api_client import FakeAPIClient
-from focuskeeper.config import AppPaths
-from focuskeeper.settings import (
+from focuskeeper.constants import (
     DEFAULT_ALARM_NAME,
     DEFAULT_SIGNAL_NAME,
-    DEFAULT_AMBIENT_NAME
+    DEFAULT_AMBIENT_NAME,
+    MAIN_DIR_PATH,
+    SOUNDS_PATH,
+    SHORT_PATH,
+    LONGS_PATH,
+    THEMES_PATH,
+    QUEUES_PATH,
+    DB_FILE_PATH,
+    CONFIG_FILE_PATH,
 )
 
+fake_api = FakeAPIClient()
+db = DatabaseManager()
 
-class AppSetup(AppPaths):
-    def __init__(self):
-        super().__init__()
-        self.fake_api = FakeAPIClient()
-        self.db = DatabaseManager()
+default_config = {
+    "used_sounds": {
+        "alarm": {
+            "name": DEFAULT_ALARM_NAME,
+        },
+        "signal": {
+            "name": DEFAULT_SIGNAL_NAME,
+        },
+        "ambient": {
+            "name": DEFAULT_AMBIENT_NAME,
+        },
+    }
+}
 
-    def setup_app(self):
+
+def setup_app() -> None:
+    """Create app folder with all subfolder and files"""
+    if not MAIN_DIR_PATH.exists():
         # Create app directory
-        if not self.main_dir_path.exists():
-            print('Creating .Focus-Keeper folder')
-            self.main_dir_path.mkdir()
+        MAIN_DIR_PATH.mkdir()
 
-        # Create directory app usage
-        if not self.app_data_path.exists():
-            print('Creating .app_data folder')
-            self.app_data_path.mkdir()
+    if not SOUNDS_PATH.exists():
+        # Create app directory
+        SOUNDS_PATH.mkdir()
 
-        # Create inner structure
-        if not self.sounds_path.exists():
-            self.sounds_path.mkdir()
-            print('Creating sounds folder')
-            for sound in self.fake_api.get_shorts():
-                shutil.copy(sound, self.sounds_path)
-                print('Copying:', sound)
+    if not SHORT_PATH.exists():
+        # Create shorts folder
+        SHORT_PATH.mkdir()
+        for sound in fake_api.get_shorts():
+            shutil.copy(sound, SHORT_PATH)
+            print("Copying:", sound)
 
-        if not self.ambiences_path.exists():
-            print('Creating ambiences folder')
-            self.ambiences_path.mkdir()
-            for sound in self.fake_api.get_longs():
-                shutil.copy(sound, self.ambiences_path)
-                print('Copying:', sound)
+    if not LONGS_PATH.exists():
+        # Create longs folder
+        LONGS_PATH.mkdir()
+        for sound in fake_api.get_longs():
+            shutil.copy(sound, LONGS_PATH)
+            print("Copying:", sound)
 
-        # Create SQLite database file (empty for now)
-        if not self.db_file_path.exists():
-            print('Creating focus_keeper.db file')
-            Path(self.db_file_path).touch()
-            with open(self.db_file_path, 'w'):
-                # This is the only place where
-                # this methods should be used
-                self.db.db_setup()
+    if not THEMES_PATH.exists():
+        # Create themes folder
+        THEMES_PATH.mkdir()
 
-        # Create config.yaml file
-        if not self.config_file_path.exists():
-            print('Creating config.yaml file')
-            Path(self.config_file_path).touch()
+    if not QUEUES_PATH.exists():
+        # Create queues folder
+        QUEUES_PATH.mkdir()
+
+    if not DB_FILE_PATH.exists():
+        # Create SQLite database file
+        Path(DB_FILE_PATH).touch()
+        with open(DB_FILE_PATH, "w"):
             # This is the only place where
             # this methods should be used
-            self.config_setup()
+            db.db_setup()
 
-        # Create directory for app users
-        if not self.user_data_path.exists():
-            print('Creating user_data folder')
-            self.user_data_path.mkdir()
-
-        # Create directory for user sounds
-        if not self.user_sounds_path.exists():
-            print('Creating user_sounds folder')
-            self.user_sounds_path.mkdir()
-
-        # Create directory for user ambiences
-        if not self.user_ambiences_path.exists():
-            print('Creating user_ambiences folder')
-            self.user_ambiences_path.mkdir()
-
-        # TODO: download sounds
-
-    def config_setup(self):
-        """Method used only to set up CONFIG on app initialization"""
-        default_config = {
-            'used_sounds': {
-                'alarm': {
-                    'name': DEFAULT_ALARM_NAME,
-                },
-                'signal': {
-                    'name': DEFAULT_SIGNAL_NAME,
-                },
-                'ambient': {
-                    'name': DEFAULT_AMBIENT_NAME,
-                }
-            }
-        }
-        with open(self.config_file_path, 'w') as file:
+    if not CONFIG_FILE_PATH.exists():
+        # Create config.yaml file
+        Path(CONFIG_FILE_PATH).touch()
+        with open(CONFIG_FILE_PATH, "w") as file:
             yaml.dump(default_config, file, sort_keys=False)
-

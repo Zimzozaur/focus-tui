@@ -3,16 +3,14 @@ from textual.widgets import Button, Footer, Static
 from textual.screen import Screen
 from textual.containers import Container, VerticalScroll
 
-from focuskeeper.widgets import (
-    AppHeader, SoundSettings, AboutSettings
-)
+from focuskeeper.widgets import AppHeader, SoundSettings, AboutSettings
 
 
 class SettingsScreen(Screen):
-    TITLE = 'Settings'
+    TITLE = "Settings"
     BINDINGS = [
-        ('ctrl+q', 'quit_app', 'Quit App'),
-        ('escape', 'close_settings', 'Close Settings'),
+        ("ctrl+q", "quit_app", "Quit App"),
+        ("escape", "close_settings", "Close Settings"),
     ]
 
     def action_quit_app(self):
@@ -24,39 +22,39 @@ class SettingsScreen(Screen):
 
     def __init__(self):
         super().__init__()
-        self.account_settings = Static(classes='settings-section')
-        self.account_settings.border_title = 'Account'
+        self.account_settings = Static(classes="settings-section")
+        self.account_settings.border_title = "Account"
 
-        self.social_settings = Static(classes='settings-section')
-        self.social_settings.border_title = 'Social'
+        self.social_settings = Static(classes="settings-section")
+        self.social_settings.border_title = "Social"
 
-        self.sound_settings = Static(classes='settings-section')
-        self.sound_settings.border_title = 'Sound'
+        self.sound_settings = Static(classes="settings-section")
+        self.sound_settings.border_title = "Sound"
 
-        self.theme_settings = Static(classes='settings-section')
-        self.theme_settings.border_title = 'Theme'
+        self.theme_settings = Static(classes="settings-section")
+        self.theme_settings.border_title = "Theme"
 
-        self.theme_store_settings = Static(classes='settings-section')
-        self.theme_store_settings.border_title = 'Theme Store'
+        self.theme_store_settings = Static(classes="settings-section")
+        self.theme_store_settings.border_title = "Theme Store"
 
-        self.about = Static(classes='settings-section')
-        self.about.border_title = 'About'
+        self.about = Static(classes="settings-section")
+        self.about.border_title = "About"
 
     def compose(self) -> ComposeResult:
-        self.app.title = 'Settings'
+        self.app.title = "Settings"
         yield AppHeader()
-        with (VerticalScroll(id='settings-wrapper')):
-            with Container(id='settings-body'):
+        with VerticalScroll(id="settings-wrapper"):
+            with Container(id="settings-body"):
                 with self.account_settings:
-                    yield Button('PLACEHOLDER')
+                    yield Button("PLACEHOLDER")
                 with self.social_settings:
-                    yield Button('PLACEHOLDER')
+                    yield Button("PLACEHOLDER")
                 with self.sound_settings:
                     yield SoundSettings()
                 with self.theme_settings:
-                    yield Button('PLACEHOLDER')
+                    yield Button("PLACEHOLDER")
                 with self.theme_store_settings:
-                    yield Button('PLACEHOLDER')
+                    yield Button("PLACEHOLDER")
                 with self.about:
                     yield AboutSettings()
         yield Footer()

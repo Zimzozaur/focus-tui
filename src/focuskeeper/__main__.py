@@ -1,9 +1,9 @@
 from focuskeeper.app import FocusKeeper
-from focuskeeper.setup import AppSetup
+from focuskeeper.setup import setup_app
 
 
 def main():
-    AppSetup().setup_app()
+    setup_app()
     FocusKeeper().run()
 
 

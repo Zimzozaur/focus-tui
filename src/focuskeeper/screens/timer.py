@@ -8,17 +8,18 @@ from focuskeeper.validators import ValueFrom5to300
 from focuskeeper.modals import ConfirmPopup
 from focuskeeper.db import DatabaseManager
 from focuskeeper.sound_manager import SoundManager
-from focuskeeper.settings import MINUTE
+from focuskeeper.constants import MINUTE
 from focuskeeper.widgets import ClockDisplay
 from focuskeeper.screens import SettingsScreen
+from focuskeeper.constants import MIN_SESSION_LEN
 
 
 class TimerScreen(Screen):
-    TITLE = 'Timer'
+    TITLE = "Timer"
     BINDINGS = [
-        ('ctrl+q', 'quit_app', 'Quit App'),
-        ('ctrl+t', 'stopwatch_mode', 'Stopwatch'),
-        ('ctrl+s', 'open_settings', 'Settings'),
+        ("ctrl+q", "quit_app", "Quit App"),
+        ("ctrl+t", "stopwatch_mode", "Stopwatch"),
+        ("ctrl+s", "open_settings", "Settings"),
     ]
 
     def action_quit_app(self):
@@ -27,6 +28,7 @@ class TimerScreen(Screen):
     def action_stopwatch_mode(self):
         """Switch screen to Stopwatch"""
         from focuskeeper.screens import StopwatchScreen
+
         self.app.switch_screen(StopwatchScreen())
 
     def action_open_settings(self):
@@ -41,13 +43,13 @@ class TimerScreen(Screen):
         super().__init__()
         # Widgets
         self._clock_display = ClockDisplay()
-        self._focus_button = Button('Focus', variant='success', id='focus-bt')
+        self._focus_button = Button("Focus", variant="success", id="focus-bt")
         self._input_filed = Input(
-            value='45',
-            placeholder='Type 5 to 300',
-            restrict=r'^\d{1,3}$',
+            value="45",
+            placeholder=f"Type {MIN_SESSION_LEN} to 300",
+            restrict=r"^\d{1,3}$",
             validators=[ValueFrom5to300()],
-            id='session-duration'
+            id="session-duration",
         )
         # Mode
         self.active_session = False
@@ -63,30 +65,30 @@ class TimerScreen(Screen):
         self.sm = SoundManager()
 
     def compose(self):
-        self.app.title = 'Timer'
+        self.app.title = "Timer"
         yield AppHeader()
-        with Horizontal(id='clock-wrapper'):
+        with Horizontal(id="clock-wrapper"):
             yield self._clock_display
-        with Vertical(id='focus-wrapper'):
+        with Vertical(id="focus-wrapper"):
             yield self._input_filed
             yield self._focus_button
         yield Footer()
 
-    @on(Button.Pressed, '#focus-bt')
+    @on(Button.Pressed, "#focus-bt")
     def _focus_button_clicked(self) -> None:
         """Start, Cancel, Kill session"""
         # Started Session
-        if self._focus_button.variant == 'success':
+        if self._focus_button.variant == "success":
             self.active_session = True
             self.app.refresh_bindings()  # Deactivate Bindings
             self._input_filed.visible = False
             self._start_session()
         # Cancel Session
-        elif self._focus_button.variant == 'warning':
+        elif self._focus_button.variant == "warning":
             self._reset_timer()
         # Kill Session
         else:
-            popup = ConfirmPopup(message='Do you want to kill the session?')
+            popup = ConfirmPopup(message="Do you want to kill the session?")
             self.app.push_screen(popup, self._not_successful_session)
 
     def _start_session(self) -> None:
@@ -101,7 +103,7 @@ class TimerScreen(Screen):
         self._intervals.append(self.set_interval(1, self._cancel_session))
 
         # Set button variant to 'warning' to indicate session is ongoing
-        self._focus_button.variant = 'warning'
+        self._focus_button.variant = "warning"
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer, update displayed time and
@@ -134,10 +136,10 @@ class TimerScreen(Screen):
     def _reset_timer(self) -> None:
         """Set all clock properties to default"""
         # Reset Timer
-        self._clock_display.update_time('0', '00')
+        self._clock_display.update_time("0", "00")
         # Reset Button
-        self._focus_button.variant = 'success'
-        self._focus_button.label = 'Focus'
+        self._focus_button.variant = "success"
+        self._focus_button.label = "Focus"
         # Unhidden Input
         self._input_filed.visible = True
         # Session Variable
@@ -156,14 +158,13 @@ class TimerScreen(Screen):
         """
         self._cancel_session_remaining -= 1
         if self._cancel_session_remaining > 0:
-            self._focus_button.label = f'Cancel ({self._cancel_session_remaining})'
+            self._focus_button.label = f"Cancel ({self._cancel_session_remaining})"
         else:
             # Set button when the cancel time has ended
-            self._focus_button.label = 'Kill'
-            self._focus_button.variant = 'error'
+            self._focus_button.label = "Kill"
+            self._focus_button.variant = "error"
 
-    @on(Input.Changed, '#session-duration')
+    @on(Input.Changed, "#session-duration")
     def _is_valid_session_length(self, event: Input.Changed) -> None:
         """If the session duration is not correct block start button."""
         self._focus_button.disabled = not event.input.is_valid
-

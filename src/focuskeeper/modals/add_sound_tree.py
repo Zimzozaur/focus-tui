@@ -15,25 +15,29 @@ def get_users_folder() -> str:
     """Return name of users folder"""
     users_system = platform.system()
 
-    if users_system == 'Linux':
-        return '/home'
-    elif users_system == 'Windows':
+    if users_system == "Linux":
+        return "/home"
+    elif users_system == "Windows":
         return os.path.expandvars("%SystemDrive%\\Users")
-    elif users_system == 'Darwin':
-        return '/Users'
+    elif users_system == "Darwin":
+        return "/Users"
     else:
-        raise NotImplementedError("Functionality not implemented for this operating system.")
+        raise NotImplementedError(
+            "Functionality not implemented for this operating system."
+        )
 
 
 def soundify(sound: str):
     """Remove all characters that are not a letter, number, - or _"""
-    return ''.join(map(lambda char: char if char.isalnum() or char in {'_', '-'} else '_', sound))
+    return "".join(
+        map(lambda char: char if char.isalnum() or char in {"_", "-"} else "_", sound)
+    )
 
 
 class AddSoundTree(ModalScreen):
     BINDINGS = [
-        ('ctrl+q', 'quit_app', 'Quit App'),
-        ('escape', 'close_popup', 'Close Popup')
+        ("ctrl+q", "quit_app", "Quit App"),
+        ("escape", "close_popup", "Close Popup"),
     ]
 
     def action_quit_app(self):
@@ -51,7 +55,7 @@ class AddSoundTree(ModalScreen):
         if is_background:
             self.dismiss(True)
 
-    def __init__(self, sound_type: Literal['short', 'long'], *args, **kwargs):
+    def __init__(self, sound_type: Literal["short", "long"], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sound_type = sound_type
         self.sm = SoundManager()
@@ -62,14 +66,15 @@ class AddSoundTree(ModalScreen):
     @on(MusicDirectoryTree.FileSelected)
     def file_selected(self, event: MusicDirectoryTree.FileSelected) -> None:
         """Add sounds to chosen folder type"""
-        sound = soundify(event.path.name.split('.')[0])
+        sound = soundify(event.path.name.split(".")[0])
 
         if self.sm.sound_name_exist(sound):
-            message = ("Sound name already in use.\n"
-                       "Please change it before importing.")
-            self.notify(message, severity='error')
+            message = (
+                "Sound name already in use.\n" "Please change it before importing."
+            )
+            self.notify(message, severity="error")
             return None
 
         extension = f'.{event.path.name.split('.')[1]}'
         self.sm.add_sound(event.path, sound, extension, self.sound_type)
-        self.notify(f'Imported: {sound}')
+        self.notify(f"Imported: {sound}")

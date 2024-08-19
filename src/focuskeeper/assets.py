@@ -1,4 +1,4 @@
-_NULL = ''
+_NULL = ""
 
 _COLON = """
 
@@ -208,8 +208,16 @@ _NINE = """
 """
 
 NUMBERS_DICT = {
-    '1': _ONE, '2': _TWO, '3': _THREE,
-    '4': _FOUR, '5': _FIVE, '6': _SIX,
-    '7': _SEVEN, '8': _EIGHT, '9': _NINE,
-    'null': _NULL, '0': _ZERO, ':': _COLON,
+    "1": _ONE,
+    "2": _TWO,
+    "3": _THREE,
+    "4": _FOUR,
+    "5": _FIVE,
+    "6": _SIX,
+    "7": _SEVEN,
+    "8": _EIGHT,
+    "9": _NINE,
+    "null": _NULL,
+    "0": _ZERO,
+    ":": _COLON,
 }

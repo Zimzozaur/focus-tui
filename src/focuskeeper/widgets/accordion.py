@@ -9,6 +9,7 @@ class Accordion(Container):
     Accordion class is a container for Collapsibles
     that turns them into Accordion
     """
+
     def __init__(
         self,
         *children: Widget,
@@ -18,11 +19,7 @@ class Accordion(Container):
         disabled: bool = False,
     ) -> None:
         super().__init__(
-            *children,
-            name=name,
-            id=id,
-            classes=classes,
-            disabled=disabled
+            *children, name=name, id=id, classes=classes, disabled=disabled
         )
         self._currently_expanded: Collapsible | None = None
 
@@ -34,6 +31,3 @@ class Accordion(Container):
         elif self._currently_expanded is not None:
             self._currently_expanded.collapsed = True
         self._currently_expanded = event.collapsible
-
-
-

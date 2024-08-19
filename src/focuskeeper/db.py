@@ -1,12 +1,12 @@
 from sqlite3 import connect
 from datetime import datetime
 
-from focuskeeper.app_paths import AppPaths
+from focuskeeper.constants import DB_FILE_PATH
 
 
 class DatabaseManager:
     def __init__(self):
-        self.db_file = AppPaths().db_file_path
+        self.db_file = DB_FILE_PATH
 
     def db_setup(self) -> None:
         """Method used only to set up DB on app initialization"""
@@ -27,5 +27,5 @@ class DatabaseManager:
             con.cursor().execute("""
                 INSERT INTO study_sessions(length, date, done)
                 VALUES (?, ?, ?)
-            """, (length, datetime.now(), is_successful)
+            """, (length, datetime.now(), is_successful),
             )
