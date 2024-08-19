@@ -41,3 +41,8 @@ paths = ["src/focuskeeper/static/**"]
 
 [project.scripts]
 focuskeeper = "focuskeeper.__main__:main"
+
+[tool.ruff.lint]
+select = [
+    'ALL'
+]
