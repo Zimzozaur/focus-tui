@@ -42,7 +42,11 @@ paths = ["src/focuskeeper/static/**"]
 [project.scripts]
 focuskeeper = "focuskeeper.__main__:main"
 
+[tool.ruff]
+exclude = ["src/focuskeeper/assets.py"]
+
 [tool.ruff.lint]
 select = [
     'ALL'
 ]
+ignore = ["D203", "D213"]
