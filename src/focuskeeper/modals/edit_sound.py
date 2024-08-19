@@ -39,8 +39,6 @@ class EditSound(ModalScreen):
         else:
             self.sounds_names = self.sm.user_longs_list
 
-        self.notify(str(self.sounds_names))
-
     def action_close_popup(self):
         self.dismiss(True)
 
