@@ -1,4 +1,4 @@
-"""Collection of Popups(ModalScreen)"""
+"""Collection of Popups(ModalScreen)."""
 
 # Local imports.
 from focuskeeper.modals.add_sound_tree import AddSoundTree

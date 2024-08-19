@@ -5,11 +5,11 @@ from focuskeeper.constants import DB_FILE_PATH
 
 
 class DatabaseManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db_file = DB_FILE_PATH
 
     def db_setup(self) -> None:
-        """Method used only to set up DB on app initialization"""
+        """Method used only to set up DB on app initialization."""
         with connect(self.db_file) as con:
             # Setup Session table
             con.cursor().execute("""
@@ -22,7 +22,7 @@ class DatabaseManager:
             """)
             con.commit()
 
-    def create_session_entry(self, length: int, is_successful: int):
+    def create_session_entry(self, length: int, is_successful: int) -> None:
         with connect(self.db_file) as con:
             con.cursor().execute("""
                 INSERT INTO study_sessions(length, date, done)

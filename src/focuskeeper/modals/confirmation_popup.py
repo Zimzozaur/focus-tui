@@ -6,9 +6,9 @@ from textual.widgets import Button, Static
 
 
 class ConfirmPopup(ModalScreen[bool]):
-    """ModalScreen to ask user for confirmation of certain action"""
+    """ModalScreen to ask user for confirmation of certain action."""
 
-    def __init__(self, *args, message: str, **kwargs):
+    def __init__(self, *args, message: str, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.message: str = message
 
@@ -20,11 +20,11 @@ class ConfirmPopup(ModalScreen[bool]):
                 yield Button("Yes", variant="success", id="yes-button")
 
     @on(Button.Pressed, "#no-button")
-    def reject(self):
-        """Return False to callback"""
+    def reject(self) -> None:
+        """Return False to callback."""
         self.dismiss(False)
 
     @on(Button.Pressed, "#yes-button")
-    def confirm(self):
-        """Return True to callback"""
+    def confirm(self) -> None:
+        """Return True to callback."""
         self.dismiss(True)

@@ -13,10 +13,10 @@ from focuskeeper.sound_manager import SoundManager
 
 class SoundSettings(Grid):
     """SoundSettings allow user to change used sounds,
-    test any sound and open EditSound modal
+    test any sound and open EditSound modal.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         # External classes
         self.db = DatabaseManager()
@@ -28,7 +28,7 @@ class SoundSettings(Grid):
         self.test_sound = None
         self.initialize_attributes()
 
-    def initialize_attributes(self):
+    def initialize_attributes(self) -> None:
         # Set alarm Select
         self.select_alarm = Select.from_values(self.sm.all_shorts_list)
         self.select_alarm.prompt = f"Alarm: {self.sm.get_used_alarm}"
@@ -57,7 +57,7 @@ class SoundSettings(Grid):
 
     @on(Select.Changed)
     def select_changed(self, event: Select.Changed) -> None:
-        """Change sound connected to type and update config"""
+        """Change sound connected to type and update config."""
         # If #test-sound, press blank or already chosen return
         if event.select.id == "test-sound" or event.value == Select.BLANK:
             return
@@ -75,9 +75,9 @@ class SoundSettings(Grid):
             self.select_ambient.prompt = f"Ambient: {self.sm.get_used_ambient}"
 
     @on(Button.Pressed, ".sound-edit-bt")
-    def open_edit_sound_popup(self, event: Button.Pressed):
+    def open_edit_sound_popup(self, event: Button.Pressed) -> None:
         """Open Sounds Edit menu and refresh page if changes
-        where applied
+        where applied.
         """
         self.app.push_screen(
             EditSound(cast(Literal["short", "long"], event.button.id)),
@@ -86,21 +86,22 @@ class SoundSettings(Grid):
 
     @on(Select.Changed, "#test-sound")
     def listen_to_sound(self, event: Select.Changed) -> None:
-        """Play sound selected from list"""
+        """Play sound selected from list."""
         if event.value == Select.BLANK:
             return
 
         if event.value in self.sm.all_sounds_list:
             self.sm.play_sound(event.value)
         else:
-            raise FileNotFoundError("Sound is not in expected folder")
+            msg = "Sound is not in expected folder"
+            raise FileNotFoundError(msg)
 
     @on(Button.Pressed, "#test-sound-bt")
-    def stop_playing_sound(self):
-        """Stop playing any sound"""
+    def stop_playing_sound(self) -> None:
+        """Stop playing any sound."""
         self.sm.stop_sound()
 
-    async def reinit_and_recompose_self(self, arg):
-        """Restart initialization and recompose"""
+    async def reinit_and_recompose_self(self, arg) -> None:
+        """Restart initialization and recompose."""
         self.initialize_attributes()
         await self.recompose()

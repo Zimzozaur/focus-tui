@@ -13,19 +13,19 @@ from focuskeeper.widgets import Accordion
 
 
 def remove_id_suffix(string: str) -> str:
-    """Remove _something from the end of the string"""
+    """Remove _something from the end of the string."""
     return string[: string.rindex("_")]
 
 
 class EditSound(ModalScreen):
-    """EditSound allow user to perform CUD operation on sounds"""
+    """EditSound allow user to perform CUD operation on sounds."""
 
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
         ("escape", "close_popup", "Close Popup"),
     ]
 
-    def action_quit_app(self):
+    def action_quit_app(self) -> None:
         self.app.exit()
 
     def __init__(self, sound_type: Literal["short", "long"], *args, **kwargs) -> None:
@@ -39,13 +39,13 @@ class EditSound(ModalScreen):
         else:
             self.sounds_names = self.sm.user_longs_list
 
-    def action_close_popup(self):
+    def action_close_popup(self) -> None:
         self.dismiss(True)
 
-    def on_click(self, event: Click):
+    def on_click(self, event: Click) -> None:
         """Close popup when clicked on the background
         and user is not editing
-        Return [self.edited] to give information to call back
+        Return [self.edited] to give information to call back.
         """
         is_background = self.get_widget_at(event.screen_x, event.screen_y)[0] is self
         if is_background:
@@ -86,16 +86,16 @@ class EditSound(ModalScreen):
                 )
 
     @on(Input.Changed)
-    def check_sound_name(self, event: Input.Changed):
-        """Check is new sound name correct"""
+    def check_sound_name(self, event: Input.Changed) -> None:
+        """Check is new sound name correct."""
         query = f"#{remove_id_suffix(event.input.id)}_rename"
         sound_name = event.input.value
         disable = not sound_name or self.sm.exists_in_all_dicts(sound_name)
         self.query_one(query).disabled = disable
 
     @on(Button.Pressed, ".sound-rename-bt")
-    async def change_sound_name(self, event: Button.Pressed):
-        """Change name of a sound and update DOM"""
+    async def change_sound_name(self, event: Button.Pressed) -> None:
+        """Change name of a sound and update DOM."""
         # Change name
         old_name = remove_id_suffix(event.button.id)
         new_name = self.query_one(f"#{old_name}_input", Input).value
@@ -110,13 +110,13 @@ class EditSound(ModalScreen):
         self.query_one(f"#{new_name}_coll", Collapsible).collapsed = False
 
     @on(Button.Pressed, ".sound-remove-bt")
-    async def should_remove_sound(self, event: Button.Pressed):
+    async def should_remove_sound(self, event: Button.Pressed) -> None:
         """Display confirmation screen if users accepts
-        Sound is removed from drive
+        Sound is removed from drive.
         """
 
         async def remove_sound(boolean: bool) -> None:
-            """Remove sound"""
+            """Remove sound."""
             if not boolean:
                 return
             # if removed sound that is already used
@@ -129,12 +129,12 @@ class EditSound(ModalScreen):
         await self.app.push_screen(ConfirmPopup(message=message), remove_sound)
 
     @on(Button.Pressed, "#add-sound-bt")
-    async def open_music_directory_tree(self):
-        """Push AddSoundTree that allow user to add new songs"""
+    async def open_music_directory_tree(self) -> None:
+        """Push AddSoundTree that allow user to add new songs."""
         await self.app.push_screen(AddSoundTree(self.sound_type), self.recompose_)
 
     async def recompose_(self, arg_from_callback) -> None:
-        """Update list before recompose"""
+        """Update list before recompose."""
         if self.sound_type == "short":
             self.sounds_names = self.sm.user_shorts_list
         else:

@@ -11,7 +11,7 @@ from focuskeeper.constants import (
 
 
 def get_used_sound(sound_type: Literal["alarm", "signal", "ambient"]) -> str:
-    """Get from config.yaml name of chosen sound_type"""
+    """Get from config.yaml name of chosen sound_type."""
     with open(CONFIG_FILE_PATH) as file:
         return yaml.safe_load(file)["used_sounds"][sound_type]["name"]
 
@@ -20,7 +20,7 @@ def update_used_sound(
     sound_type: Literal["alarm", "signal", "ambient"],
     name: str,
 ) -> None:
-    """Update config.yaml with sound name and path"""
+    """Update config.yaml with sound name and path."""
     with open(CONFIG_FILE_PATH) as file:
         yaml_file = yaml.safe_load(file)
 
@@ -31,7 +31,7 @@ def update_used_sound(
 
 
 def is_sound_in_config(sound_name: str) -> bool:
-    """Check is sound in config file if yes return True"""
+    """Check is sound in config file if yes return True."""
     with open(CONFIG_FILE_PATH) as file:
         yaml_file = yaml.safe_load(file)
         alarm = yaml_file["used_sounds"]["alarm"]["name"] == sound_name
@@ -41,7 +41,7 @@ def is_sound_in_config(sound_name: str) -> bool:
 
 
 def update_sound_name(old_name: str, new_name: str | None = None) -> None:
-    """Update name to new if old in config"""
+    """Update name to new if old in config."""
     with open(CONFIG_FILE_PATH) as file:
         yaml_file = yaml.safe_load(file)
 

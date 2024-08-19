@@ -13,14 +13,14 @@ class SettingsScreen(Screen):
         ("escape", "close_settings", "Close Settings"),
     ]
 
-    def action_quit_app(self):
+    def action_quit_app(self) -> None:
         self.app.exit()
 
-    def action_close_settings(self):
-        """Method has to return anything to run callback"""
+    def action_close_settings(self) -> None:
+        """Method has to return anything to run callback."""
         self.dismiss()
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.account_settings = Static(classes="settings-section")
         self.account_settings.border_title = "Account"

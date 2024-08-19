@@ -20,24 +20,24 @@ class TimerScreen(Screen):
         ("ctrl+s", "open_settings", "Settings"),
     ]
 
-    def action_quit_app(self):
+    def action_quit_app(self) -> None:
         self.app.exit()
 
-    def action_stopwatch_mode(self):
-        """Switch screen to Stopwatch"""
+    def action_stopwatch_mode(self) -> None:
+        """Switch screen to Stopwatch."""
         from focuskeeper.screens import StopwatchScreen
 
         self.app.switch_screen(StopwatchScreen())
 
-    def action_open_settings(self):
-        """Open settings screen"""
+    def action_open_settings(self) -> None:
+        """Open settings screen."""
         self.app.push_screen(SettingsScreen())
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        """If clock is active refuse to use any shortcuts"""
+        """If clock is active refuse to use any shortcuts."""
         return not self.active_session
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         # Widgets
         self._clock_display = ClockDisplay()
@@ -74,7 +74,7 @@ class TimerScreen(Screen):
 
     @on(Button.Pressed, "#focus-bt")
     def _focus_button_clicked(self) -> None:
-        """Start, Cancel, Kill session"""
+        """Start, Cancel, Kill session."""
         # Started Session
         if self._focus_button.variant == "success":
             self.active_session = True
@@ -105,7 +105,7 @@ class TimerScreen(Screen):
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer, update displayed time and
-        call `TimerScreen._successful_session()` when self._remaining_session == 0
+        call `TimerScreen._successful_session()` when self._remaining_session == 0.
         """
         self._remaining_session -= 1
         # When end of the session
@@ -118,13 +118,13 @@ class TimerScreen(Screen):
             self._clock_display.update_time(minutes_str, seconds_str)
 
     def _successful_session(self) -> None:
-        """Play song, add successful session to DB and reset clock"""
+        """Play song, add successful session to DB and reset clock."""
         self.sm.play_alarm()
         self.db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
 
     def _not_successful_session(self, boolean: bool) -> None:
-        """Add killed session to DB and reset clock"""
+        """Add killed session to DB and reset clock."""
         if not boolean:
             return
 
@@ -133,7 +133,7 @@ class TimerScreen(Screen):
         self._reset_timer()
 
     def _reset_timer(self) -> None:
-        """Set all clock properties to default"""
+        """Set all clock properties to default."""
         # Reset Timer
         self._clock_display.update_time("0", "00")
         # Reset Button
@@ -150,9 +150,9 @@ class TimerScreen(Screen):
         # Return which clock mode biding
         self.app.refresh_bindings()
 
-    def _cancel_session(self):
+    def _cancel_session(self) -> None:
         """Allow user to cancel timer in first
-        `self._cancel_timer_counter_default` seconds
+        `self._cancel_timer_counter_default` seconds.
         """
         self._cancel_session_remaining -= 1
         if self._cancel_session_remaining > 0:

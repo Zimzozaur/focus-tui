@@ -18,24 +18,24 @@ class StopwatchScreen(Screen):
         ("ctrl+s", "open_settings", "Settings"),
     ]
 
-    def action_quit_app(self):
+    def action_quit_app(self) -> None:
         self.app.exit()
 
-    def action_timer_mode(self):
-        """Switch screen to Timer"""
+    def action_timer_mode(self) -> None:
+        """Switch screen to Timer."""
         from focuskeeper.screens import TimerScreen
 
         self.app.switch_screen(TimerScreen())
 
-    def action_open_settings(self):
-        """Open settings screen"""
+    def action_open_settings(self) -> None:
+        """Open settings screen."""
         self.app.push_screen(SettingsScreen())
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        """If Stopwatch is active refuse to use any shortcuts"""
+        """If Stopwatch is active refuse to use any shortcuts."""
         return not self.active_session
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         # Widgets
         self._clock_display = ClockDisplay()
@@ -63,7 +63,7 @@ class StopwatchScreen(Screen):
 
     @on(Button.Pressed, "#focus-bt")
     def _focus_button_clicked(self) -> None:
-        """Start, Cancel, End session"""
+        """Start, Cancel, End session."""
         # Started Session
         if self._focus_button.variant == "success":
             self._start_session()
@@ -88,7 +88,7 @@ class StopwatchScreen(Screen):
         self._intervals.append(self.set_interval(1, self._cancel_session))
 
     def _clock_display_update(self) -> None:
-        """Update variable used by timer and update displayed time"""
+        """Update variable used by timer and update displayed time."""
         # Update session length
         self._session_len += 1
         # Update clock display
@@ -98,13 +98,13 @@ class StopwatchScreen(Screen):
         self._clock_display.update_time(minutes_str, seconds_str)
 
     def _successful_session(self) -> None:
-        """Play song, add successful session to DB and reset clock"""
+        """Play song, add successful session to DB and reset clock."""
         self.sm.play_alarm()
         self.db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
 
     def _reset_timer(self) -> None:
-        """Set all clock properties to default"""
+        """Set all clock properties to default."""
         # Reset Timer
         self._clock_display.update_time("0", "00")
         # Reset Button
@@ -121,8 +121,8 @@ class StopwatchScreen(Screen):
         # Allow user to use shorts
         self.app.refresh_bindings()
 
-    def _cancel_session(self):
-        """Allow user to cancel session in first minute"""
+    def _cancel_session(self) -> None:
+        """Allow user to cancel session in first minute."""
         self._cancel_session_remaining -= 1
         if self._cancel_session_remaining > 0:
             self._focus_button.label = f"Cancel ({self._cancel_session_remaining})"

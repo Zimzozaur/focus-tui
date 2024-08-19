@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 class FakeAPIClient:
-    """This class is made to be used while testing app"""
+    """This class is made to be used while testing app."""
 
     current_dir: Path = Path(__file__)
     root: Path = current_dir.parent.parent.parent
@@ -11,9 +11,9 @@ class FakeAPIClient:
     shorts: Path = sounds / "shorts"
 
     def get_shorts(self) -> list[Path]:
-        """Return list of shorts paths"""
+        """Return list of shorts paths."""
         return list(self.shorts.glob("*"))
 
     def get_longs(self) -> list[Path]:
-        """Return list of longs paths"""
+        """Return list of longs paths."""
         return list(self.longs.glob("*"))

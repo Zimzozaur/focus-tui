@@ -2,7 +2,7 @@ from focuskeeper.app import FocusKeeper
 from focuskeeper.setup import setup_app
 
 
-def main():
+def main() -> None:
     setup_app()
     FocusKeeper().run()
 

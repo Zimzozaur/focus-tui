@@ -9,7 +9,7 @@ from platformdirs import user_data_dir
 #############################
 
 load_dotenv(override=True)
-FK_DEBUG: bool = True if os.getenv("FK_DEBUG") == "True" else False
+FK_DEBUG: bool = os.getenv("FK_DEBUG") == "True"
 
 # Number of seconds in a minute
 _minute = os.getenv("FK_DEBUG_MINUTE")

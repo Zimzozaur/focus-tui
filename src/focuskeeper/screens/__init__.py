@@ -1,4 +1,4 @@
-"""Collection of Screens"""
+"""Collection of Screens."""
 
 # Local imports.
 from .settings_screen import SettingsScreen

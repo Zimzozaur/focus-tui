@@ -10,7 +10,7 @@ from focuskeeper.constants import LONGS_PATH, RESERVED_ALL_SOUNDS, SHORT_PATH
 
 
 class Sound:
-    """Class that represent sound file"""
+    """Class that represent sound file."""
 
     def __init__(
         self,
@@ -23,7 +23,7 @@ class Sound:
         self.full_name = path.name
         self.name: str = path.name.split(".")[0]
         self.extension: str = path.suffix
-        self.is_default: bool = True if self.full_name in RESERVED_ALL_SOUNDS else False
+        self.is_default: bool = self.full_name in RESERVED_ALL_SOUNDS
 
     def __repr__(self) -> str:
         return f"Sound({self.path}, '{self.sound_type}', {self.is_default})"
@@ -42,7 +42,7 @@ class Sound:
 def create_sounds_dict(
     path: Path, sound_type: Literal["short", "long"],
 ) -> dict[str, Sound]:
-    """Return dict of Sounds names and Sounds object mapped to them"""
+    """Return dict of Sounds names and Sounds object mapped to them."""
     allowed_suffixes = {".wav", ".mp3", ".ogg", ".flac", ".opus"}
 
     return {
@@ -54,7 +54,7 @@ def create_sounds_dict(
 
 class SoundManager:
     """Class used to work with sounds in app
-    Allow to perform CRUD on Shorts, Longs and play them
+    Allow to perform CRUD on Shorts, Longs and play them.
 
     This class is a singleton
     """
@@ -63,10 +63,10 @@ class SoundManager:
 
     def __new__(cls):
         if cls._instance is None:
-            cls._instance = super(SoundManager, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Dicts containing all songs found at start up
         self._shorts_dict = create_sounds_dict(SHORT_PATH, "short")
         self._longs_dict = create_sounds_dict(LONGS_PATH, "long")
@@ -82,7 +82,7 @@ class SoundManager:
 
     @property
     def all_shorts_list(self) -> list[str]:
-        return sorted([key for key in self._shorts_dict.keys()])
+        return sorted(self._shorts_dict.keys())
 
     @property
     def user_longs_list(self) -> list[str]:
@@ -92,11 +92,11 @@ class SoundManager:
 
     @property
     def all_longs_list(self) -> list[str]:
-        return sorted([key for key in self._longs_dict.keys()])
+        return sorted(self._longs_dict.keys())
 
     @property
     def all_sounds_list(self) -> list[str]:
-        return sorted([key for key in self._all_sounds_dict.keys()])
+        return sorted(self._all_sounds_dict.keys())
 
     @property
     def get_used_alarm(self) -> str:
@@ -111,7 +111,7 @@ class SoundManager:
         return get_used_sound("ambient")
 
     def get_any_sound(self, name: str) -> Sound:
-        """Get Sound object by passing name of it"""
+        """Get Sound object by passing name of it."""
         return self._all_sounds_dict[name]
 
     def exists_in_all_dicts(self, name: str) -> bool:
@@ -121,7 +121,7 @@ class SoundManager:
     def rename_sound(self, old_name: str, new_name: str) -> None:
         """Rename sound on users drive and remove old sound from
         corresponding dict and create new instance of Sound class
-        if sound was used in config rename it
+        if sound was used in config rename it.
         """
         # Rename on drive
         sound: Sound = self.get_any_sound(old_name)
@@ -147,7 +147,7 @@ class SoundManager:
         extension: str,
         sound_type: Literal["short", "long"],
     ) -> None:
-        """Add sound to right folder, create instance of Sound and to dict"""
+        """Add sound to right folder, create instance of Sound and to dict."""
         if sound_type == "short":
             new_path = SHORT_PATH
             dict_ = self._shorts_dict
@@ -177,15 +177,15 @@ class SoundManager:
         return bool(self._all_sounds_dict.get(name, False))
 
     def play_sound(self, name: str) -> None:
-        """Play chosen sound"""
+        """Play chosen sound."""
         pygame.mixer.music.load(self.get_any_sound(name).path)
         pygame.mixer.music.play()
 
-    def play_alarm(self):
-        """Play alarm sounds"""
+    def play_alarm(self) -> None:
+        """Play alarm sounds."""
         self.play_sound(self.get_used_alarm)
 
     @staticmethod
     def stop_sound() -> None:
-        """Stop all sounds"""
+        """Stop all sounds."""
         pygame.mixer.music.stop()

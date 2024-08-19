@@ -1,4 +1,4 @@
-"""Collection of custom widget"""
+"""Collection of custom widget."""
 
 # Local imports.
 from .about_settings import AboutSettings

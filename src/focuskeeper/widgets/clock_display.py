@@ -5,7 +5,7 @@ from focuskeeper.assets import NUMBERS_DICT
 
 
 class ClockDisplay(Horizontal):
-    """Display time"""
+    """Display time."""
 
     def __init__(self, *args, **kwargs) -> None:
         # Widgets
@@ -30,7 +30,7 @@ class ClockDisplay(Horizontal):
         yield self._u_sec
 
     def update_time(self, minutes: str, seconds: str) -> None:
-        """Update clock number"""
+        """Update clock number."""
         if len(minutes) > 2:
             self._h_min.update(NUMBERS_DICT[minutes[-3]])
         else:

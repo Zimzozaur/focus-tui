@@ -12,7 +12,7 @@ from focuskeeper.widgets import MusicDirectoryTree
 
 
 def get_users_folder() -> str:
-    """Return name of users folder"""
+    """Return name of users folder."""
     users_system = platform.system()
 
     if users_system == "Linux":
@@ -21,15 +21,16 @@ def get_users_folder() -> str:
         return os.path.expandvars("%SystemDrive%\\Users")
     if users_system == "Darwin":
         return "/Users"
+    msg = "Functionality not implemented for this operating system."
     raise NotImplementedError(
-        "Functionality not implemented for this operating system.",
+        msg,
     )
 
 
 def soundify(sound: str):
-    """Remove all characters that are not a letter, number, - or _"""
+    """Remove all characters that are not a letter, number, - or _."""
     return "".join(
-        map(lambda char: char if char.isalnum() or char in {"_", "-"} else "_", sound),
+        char if char.isalnum() or char in {"_", "-"} else "_" for char in sound
     )
 
 
@@ -39,22 +40,22 @@ class AddSoundTree(ModalScreen):
         ("escape", "close_popup", "Close Popup"),
     ]
 
-    def action_quit_app(self):
+    def action_quit_app(self) -> None:
         self.app.exit()
 
-    def action_close_popup(self):
+    def action_close_popup(self) -> None:
         self.dismiss(True)
 
-    def on_click(self, event: Click):
+    def on_click(self, event: Click) -> None:
         """Close popup when clicked on the background
         and user is not editing
-        Return [self.edited] to give information to call back
+        Return [self.edited] to give information to call back.
         """
         is_background = self.get_widget_at(event.screen_x, event.screen_y)[0] is self
         if is_background:
             self.dismiss(True)
 
-    def __init__(self, sound_type: Literal["short", "long"], *args, **kwargs):
+    def __init__(self, sound_type: Literal["short", "long"], *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.sound_type = sound_type
         self.sm = SoundManager()
@@ -64,7 +65,7 @@ class AddSoundTree(ModalScreen):
 
     @on(MusicDirectoryTree.FileSelected)
     def file_selected(self, event: MusicDirectoryTree.FileSelected) -> None:
-        """Add sounds to chosen folder type"""
+        """Add sounds to chosen folder type."""
         sound = soundify(event.path.name.split(".")[0])
 
         if self.sm.sound_name_exist(sound):

@@ -38,7 +38,7 @@ default_config = {
 
 
 def setup_app() -> None:
-    """Create app folder with all subfolder and files"""
+    """Create app folder with all subfolder and files."""
     if not MAIN_DIR_PATH.exists():
         # Create app directory
         MAIN_DIR_PATH.mkdir()
@@ -52,14 +52,12 @@ def setup_app() -> None:
         SHORT_PATH.mkdir()
         for sound in fake_api.get_shorts():
             shutil.copy(sound, SHORT_PATH)
-            print("Copying:", sound)
 
     if not LONGS_PATH.exists():
         # Create longs folder
         LONGS_PATH.mkdir()
         for sound in fake_api.get_longs():
             shutil.copy(sound, LONGS_PATH)
-            print("Copying:", sound)
 
     if not THEMES_PATH.exists():
         # Create themes folder
