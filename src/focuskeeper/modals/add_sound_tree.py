@@ -27,7 +27,7 @@ def get_users_folder() -> str:
 
 def soundify(sound: str):
     """Remove all characters that are not a letter, number, - or _"""
-    return ''.join(map(lambda l: l if l.isalnum() or l in '_-' else '_', sound))
+    return ''.join(map(lambda char: char if char.isalnum() or char in {'_', '-'} else '_', sound))
 
 
 class AddSoundTree(ModalScreen):
