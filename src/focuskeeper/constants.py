@@ -9,23 +9,21 @@ from platformdirs import user_data_dir
 #############################
 
 load_dotenv(override=True)
+
+# is Debug mode on
 FK_DEBUG: bool = os.getenv("FK_DEBUG") == "True"
 
 # Number of seconds in a minute
 _minute = os.getenv("FK_DEBUG_MINUTE")
-
-if FK_DEBUG and _minute is not None:
-    MINUTE: int = int(_minute)
-else:
-    MINUTE: int = 60
+is_custom = FK_DEBUG and _minute is not None
+MINUTE: int = int(_minute) if is_custom else 60
 
 # Min number of minutes that session has to take at minimum
 _min_sessions_len = os.getenv("FK_DEBUG_MIN_SESSION_LEN")
+is_custom = FK_DEBUG and _min_sessions_len is not None
+MIN_SESSION_LEN = int(_min_sessions_len) if is_custom else 5
 
-if FK_DEBUG and _min_sessions_len is not None:
-    MIN_SESSION_LEN: int = int(_min_sessions_len)
-else:
-    MIN_SESSION_LEN: int = 5
+MAX_SESSION_LEN: int = 300
 
 
 #############################
