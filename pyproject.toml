@@ -49,4 +49,12 @@ exclude = ["src/focuskeeper/assets.py"]
 select = [
     'ALL'
 ]
-ignore = ["D203", "D213"]
+ignore = [
+    "A002",
+    "ARG002",
+    "ANN201",
+    "D100",
+    "D102",
+    "D203",
+    "D213",
+]
