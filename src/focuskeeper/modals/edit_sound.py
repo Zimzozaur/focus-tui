@@ -57,6 +57,7 @@ class EditSound(ModalScreen):
             self.dismiss(True)
 
     def compose(self) -> ComposeResult:
+        restriction = r"^[a-zA-Z0-9_-]+$"
         with VerticalScroll(id="edit-sound-body"):
             with Accordion(id="sounds-accordion"):
                 for name in self.sounds_names:
@@ -64,7 +65,7 @@ class EditSound(ModalScreen):
                         title=name, classes="sound-collapsible", id=f"{name}_coll",
                     ):
                         yield Input(
-                            value=name, id=f"{name}_input", restrict=r"^[a-zA-Z0-9_-]+$",
+                            value=name, id=f"{name}_input", restrict=restriction,
                         )
                         with Horizontal(classes="sound-buttons-wrapper"):
                             yield Button(

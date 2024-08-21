@@ -37,16 +37,18 @@ default_config = {
 }
 
 
+def _create_dir_if_not_exist(path: Path) -> None:
+    if not path.exists():
+        # Create app directory
+        path.mkdir()
+
+
 def setup_app() -> None:
     """Create app folder with all subfolder and files."""
-    if not MAIN_DIR_PATH.exists():
-        # Create app directory
-        MAIN_DIR_PATH.mkdir()
-
-    if not SOUNDS_PATH.exists():
-        # Create app directory
-        SOUNDS_PATH.mkdir()
-
+    _create_dir_if_not_exist(MAIN_DIR_PATH)
+    _create_dir_if_not_exist(THEMES_PATH)
+    _create_dir_if_not_exist(QUEUES_PATH)
+    _create_dir_if_not_exist(SOUNDS_PATH)
     if not SHORT_PATH.exists():
         # Create shorts folder
         SHORT_PATH.mkdir()
@@ -58,14 +60,6 @@ def setup_app() -> None:
         LONGS_PATH.mkdir()
         for sound in fake_api.get_longs():
             shutil.copy(sound, LONGS_PATH)
-
-    if not THEMES_PATH.exists():
-        # Create themes folder
-        THEMES_PATH.mkdir()
-
-    if not QUEUES_PATH.exists():
-        # Create queues folder
-        QUEUES_PATH.mkdir()
 
     if not DB_FILE_PATH.exists():
         # Create SQLite database file
