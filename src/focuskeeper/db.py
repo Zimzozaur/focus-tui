@@ -5,6 +5,13 @@ from focuskeeper.constants import DB_FILE_PATH
 
 
 class DatabaseManager:
+    _instance = None
+
+    def __new__(cls) -> "DatabaseManager":
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self) -> None:
         self.db_file = DB_FILE_PATH
 
