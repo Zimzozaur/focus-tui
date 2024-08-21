@@ -5,7 +5,7 @@ from typing import Literal
 
 import pygame
 
-from focuskeeper.config import get_used_sound, is_sound_in_config, update_sound_name
+from focuskeeper.config import ConfigManager
 from focuskeeper.constants import LONGS_PATH, RESERVED_ALL_SOUNDS, SHORT_PATH
 
 
@@ -60,6 +60,7 @@ class SoundManager:
     """
 
     _instance = None
+    _cm = ConfigManager()
 
     def __new__(cls) -> "SoundManager":
         if cls._instance is None:
@@ -100,15 +101,15 @@ class SoundManager:
 
     @property
     def get_used_alarm(self) -> str:
-        return get_used_sound("alarm")
+        return self._cm.get_used_sound("alarm")
 
     @property
     def get_used_signal(self) -> str:
-        return get_used_sound("signal")
+        return self._cm.get_used_sound("signal")
 
     @property
     def get_used_ambient(self) -> str:
-        return get_used_sound("ambient")
+        return self._cm.get_used_sound("ambient")
 
     def get_any_sound(self, name: str) -> Sound:
         """Get Sound object by passing name of it."""
@@ -138,7 +139,7 @@ class SoundManager:
             self._longs_dict[new_name] = Sound(new_file_path, "long")
 
         # Update config if needed
-        update_sound_name(old_name, new_name)
+        self._cm.update_sound_name(old_name, new_name)
 
     def add_sound(
         self,
@@ -162,8 +163,8 @@ class SoundManager:
 
     def remove_sound(self, name: str, sound_type: Literal["short", "long"]) -> None:
         """Remove sound from users drive and update config if needed."""
-        if is_sound_in_config(name):
-            update_sound_name(name)
+        if self._cm.is_sound_in_config(name):
+            self._cm.update_sound_name(name)
         # Remove from drive
         self._all_sounds_dict[name].path.unlink()
         # Remove form dict

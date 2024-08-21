@@ -5,7 +5,7 @@ from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.widgets import Button, Select
 
-from focuskeeper.config import update_used_sound
+from focuskeeper.config import ConfigManager
 from focuskeeper.db import DatabaseManager
 from focuskeeper.modals import EditSound
 from focuskeeper.sound_manager import SoundManager
@@ -19,6 +19,7 @@ class SoundSettings(Grid):
     def __init__(self) -> None:
         super().__init__()
         # External classes
+        self.cm = ConfigManager()
         self.db = DatabaseManager()
         self.sm = SoundManager()
 
@@ -62,7 +63,7 @@ class SoundSettings(Grid):
         if event.select.id == "test-sound" or event.value == Select.BLANK:
             return
 
-        update_used_sound(
+        self.cm.update_used_sound(
             sound_type=cast(Literal["alarm", "signal", "ambient"], event.select.id),
             name=event.value,
         )

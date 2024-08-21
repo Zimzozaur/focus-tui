@@ -44,7 +44,7 @@ QUEUES_PATH: Path = MAIN_DIR_PATH / "queues"
 
 # Files
 DB_FILE_PATH: Path = MAIN_DIR_PATH / "focus_keeper.db"
-CONFIG_FILE_PATH: Path = MAIN_DIR_PATH / "config.yaml"
+CONFIG_FILE_PATH: Path = MAIN_DIR_PATH / "config.json"
 
 # Default sounds
 DEFAULT_ALARM_NAME: str = "Woohoo"
@@ -62,3 +62,15 @@ RESERVED_SHORTS: set = {
 RESERVED_LONG: set = {"Mexican_Forest.wav", "Woodpecker_Forest.flac"}
 
 RESERVED_ALL_SOUNDS: set = RESERVED_SHORTS | RESERVED_LONG
+
+DEFAULT_CONFIG = {
+    "alarm": {
+        "name": DEFAULT_ALARM_NAME,
+    },
+    "signal": {
+        "name": DEFAULT_SIGNAL_NAME,
+    },
+    "ambient": {
+        "name": DEFAULT_AMBIENT_NAME,
+    },
+}

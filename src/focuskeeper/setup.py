@@ -1,14 +1,12 @@
 import shutil
 from pathlib import Path
 
-import yaml
+import json
 
 from focuskeeper.constants import (
     CONFIG_FILE_PATH,
     DB_FILE_PATH,
-    DEFAULT_ALARM_NAME,
-    DEFAULT_AMBIENT_NAME,
-    DEFAULT_SIGNAL_NAME,
+    DEFAULT_CONFIG,
     LONGS_PATH,
     MAIN_DIR_PATH,
     QUEUES_PATH,
@@ -21,20 +19,6 @@ from focuskeeper.fake_api_client import FakeAPIClient
 
 fake_api = FakeAPIClient()
 db = DatabaseManager()
-
-default_config = {
-    "used_sounds": {
-        "alarm": {
-            "name": DEFAULT_ALARM_NAME,
-        },
-        "signal": {
-            "name": DEFAULT_SIGNAL_NAME,
-        },
-        "ambient": {
-            "name": DEFAULT_AMBIENT_NAME,
-        },
-    },
-}
 
 
 def _create_dir_if_not_exist(path: Path) -> None:
@@ -72,4 +56,4 @@ def setup_app() -> None:
         # Create config.yaml file
         Path(CONFIG_FILE_PATH).touch()
         with Path(CONFIG_FILE_PATH).open("w") as file:
-            yaml.dump(default_config, file, sort_keys=False)
+            json.dump(DEFAULT_CONFIG, file, sort_keys=False)
