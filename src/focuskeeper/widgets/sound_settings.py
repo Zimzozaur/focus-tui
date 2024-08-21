@@ -6,7 +6,6 @@ from textual.containers import Grid
 from textual.widgets import Button, Select
 
 from focuskeeper.config import ConfigManager
-from focuskeeper.db import DatabaseManager
 from focuskeeper.modals import EditSound
 from focuskeeper.sound_manager import SoundManager
 
@@ -19,41 +18,40 @@ class SoundSettings(Grid):
     def __init__(self) -> None:
         super().__init__()
         # External classes
-        self.cm = ConfigManager()
-        self.db = DatabaseManager()
-        self.sm = SoundManager()
+        self._cm = ConfigManager()
+        self._sm = SoundManager()
 
-        self.select_alarm = None
-        self.select_signal = None
-        self.select_ambient = None
-        self.test_sound = None
+        self._select_alarm = None
+        self._select_signal = None
+        self._select_ambient = None
+        self._test_sound = None
         self.initialize_attributes()
 
     def initialize_attributes(self) -> None:
         # Set alarm Select
-        self.select_alarm = Select.from_values(self.sm.all_shorts_list)
-        self.select_alarm.prompt = f"Alarm: {self.sm.get_used_alarm}"
-        self.select_alarm.id = "alarm"
+        self._select_alarm = Select.from_values(self._sm.all_shorts_list)
+        self._select_alarm.prompt = f"Alarm: {self._sm.get_used_alarm}"
+        self._select_alarm.id = "alarm"
         # Set signal Select
-        self.select_signal = Select.from_values(self.sm.all_shorts_list)
-        self.select_signal.prompt = f"Signal: {self.sm.get_used_signal}"
-        self.select_signal.id = "signal"
+        self._select_signal = Select.from_values(self._sm.all_shorts_list)
+        self._select_signal.prompt = f"Signal: {self._sm.get_used_signal}"
+        self._select_signal.id = "signal"
         # Set ambient Select
-        self.select_ambient = Select.from_values(self.sm.all_longs_list)
-        self.select_ambient.prompt = f"Ambient: {self.sm.get_used_ambient}"
-        self.select_ambient.id = "ambient"
+        self._select_ambient = Select.from_values(self._sm.all_longs_list)
+        self._select_ambient.prompt = f"Ambient: {self._sm.get_used_ambient}"
+        self._select_ambient.id = "ambient"
         # Set test sound Select
-        self.test_sound = Select.from_values(self.sm.all_sounds_list)
-        self.test_sound.prompt = "Select to play sound"
-        self.test_sound.id = "test-sound"
+        self._test_sound = Select.from_values(self._sm.all_sounds_list)
+        self._test_sound.prompt = "Select to play sound"
+        self._test_sound.id = "test-sound"
 
     def compose(self) -> ComposeResult:
-        yield self.select_alarm
+        yield self._select_alarm
         yield Button("Edit Alarms/Signals", id="short", classes="sound-edit-bt")
-        yield self.select_signal
-        yield self.select_ambient
+        yield self._select_signal
+        yield self._select_ambient
         yield Button("Edit Ambiences", id="long", classes="sound-edit-bt")
-        yield self.test_sound
+        yield self._test_sound
         yield Button("Pause", variant="warning", id="test-sound-bt")
 
     @on(Select.Changed)
@@ -63,17 +61,17 @@ class SoundSettings(Grid):
         if event.select.id == "test-sound" or event.value == Select.BLANK:
             return
 
-        self.cm.update_used_sound(
+        self._cm.update_used_sound(
             sound_type=cast(Literal["alarm", "signal", "ambient"], event.select.id),
             name=event.value,
         )
         # Change prompt value in select menu
         if event.control.id == "alarm":
-            self.select_alarm.prompt = f"Alarm: {self.sm.get_used_alarm}"
+            self._select_alarm.prompt = f"Alarm: {self._sm.get_used_alarm}"
         elif event.control.id == "signal":
-            self.select_signal.prompt = f"Signal: {self.sm.get_used_signal}"
+            self._select_signal.prompt = f"Signal: {self._sm.get_used_signal}"
         else:
-            self.select_ambient.prompt = f"Ambient: {self.sm.get_used_ambient}"
+            self._select_ambient.prompt = f"Ambient: {self._sm.get_used_ambient}"
 
     @on(Button.Pressed, ".sound-edit-bt")
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
@@ -89,8 +87,8 @@ class SoundSettings(Grid):
         if event.value == Select.BLANK:
             return
 
-        if event.value in self.sm.all_sounds_list:
-            self.sm.play_sound(event.value)
+        if event.value in self._sm.all_sounds_list:
+            self._sm.play_sound(event.value)
         else:
             msg = "Sound is not in expected folder"
             raise FileNotFoundError(msg)
@@ -98,7 +96,7 @@ class SoundSettings(Grid):
     @on(Button.Pressed, "#test-sound-bt")
     def stop_playing_sound(self) -> None:
         """Stop playing any sound."""
-        self.sm.stop_sound()
+        self._sm.stop_sound()
 
     async def reinit_and_recompose_self(self, arg) -> None:
         """Restart initialization and recompose."""
