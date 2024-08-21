@@ -3,9 +3,6 @@ from textual.widgets import Button
 
 from focuskeeper.constants import MINUTE
 from focuskeeper.controllers.controller import Controller
-from focuskeeper.db import DatabaseManager
-from focuskeeper.screens import SettingsScreen
-from focuskeeper.sound_manager import SoundManager
 from focuskeeper.widgets import ClockDisplay
 
 
@@ -18,8 +15,6 @@ class StopwatchController(Controller):
     ) -> None:
         super().__init__()
         # External classes
-        self.db = DatabaseManager()
-        self.sm = SoundManager()
         self._screen = screen
         self._clock_display = clock
         self._focus_button = focus_button
@@ -78,8 +73,8 @@ class StopwatchController(Controller):
 
     def _successful_session(self) -> None:
         """Play song, add successful session to DB and reset clock."""
-        self.sm.play_alarm()
-        self.db.create_session_entry(self._session_len // 60, 1)
+        self._sm.play_alarm()
+        self._db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
 
     def _reset_timer(self) -> None:

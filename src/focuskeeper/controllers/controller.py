@@ -1,9 +1,13 @@
 from focuskeeper.app import FOCUS_KEEPER, FocusKeeper
+from focuskeeper.db import DatabaseManager
 from focuskeeper.screens import SettingsScreen
+from focuskeeper.sound_manager import SoundManager
 
 
 class Controller:
     _app_instance: FocusKeeper = FOCUS_KEEPER
+    _db = DatabaseManager()
+    _sm = SoundManager()
 
     @property
     def app(self):

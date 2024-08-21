@@ -3,10 +3,7 @@ from textual.widgets import Button, Input
 
 from focuskeeper.constants import MINUTE
 from focuskeeper.controllers.controller import Controller
-from focuskeeper.db import DatabaseManager
 from focuskeeper.modals import ConfirmPopup
-from focuskeeper.screens import SettingsScreen
-from focuskeeper.sound_manager import SoundManager
 from focuskeeper.widgets import ClockDisplay
 
 
@@ -21,9 +18,6 @@ class TimerController(Controller):
         super().__init__()
         # External classes
         self._screen = screen
-        self._db = DatabaseManager()
-        self._sm = SoundManager()
-
         self._clock_display = clock
         self._focus_button = focus_button
         self._session_len_input = session_len_input
