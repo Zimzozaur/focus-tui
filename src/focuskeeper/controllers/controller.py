@@ -6,8 +6,8 @@ from focuskeeper.sound_manager import SoundManager
 
 class Controller:
     _app_instance: FocusKeeper = FOCUS_KEEPER
-    _db = DatabaseManager()
-    _sm = SoundManager()
+    _db: DatabaseManager = DatabaseManager()
+    _sm: SoundManager = SoundManager()
 
     @property
     def app(self):
