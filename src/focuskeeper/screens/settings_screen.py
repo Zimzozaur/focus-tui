@@ -17,7 +17,7 @@ class SettingsScreen(Screen):
         self.app.exit()
 
     def action_close_settings(self) -> None:
-        """Method has to return anything to run callback."""
+        """Return anything to run callback."""
         self.dismiss()
 
     def __init__(self) -> None:

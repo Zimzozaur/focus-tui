@@ -1,7 +1,7 @@
 import shutil
 from collections import ChainMap
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
 import pygame
 
@@ -28,12 +28,12 @@ class Sound:
     def __repr__(self) -> str:
         return f"Sound({self.path}, '{self.sound_type}', {self.is_default})"
 
-    def __gt__(self, other: Any) -> bool:
+    def __gt__(self, other) -> bool:
         if not isinstance(other, Sound):
             raise NotImplementedError
         return self.name > other.name
 
-    def __lt__(self, other: Any) -> bool:
+    def __lt__(self, other) -> bool:
         if not isinstance(other, Sound):
             raise NotImplementedError
         return self.name < other.name

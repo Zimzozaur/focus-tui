@@ -28,7 +28,12 @@ class EditSound(ModalScreen):
     def action_quit_app(self) -> None:
         self.app.exit()
 
-    def __init__(self, sound_type: Literal["short", "long"], *args, **kwargs) -> None:
+    def __init__(
+            self,
+            sound_type: Literal["short", "long"],
+            *args: tuple,
+            **kwargs: dict,
+    ) -> None:
         super().__init__(*args, **kwargs)
         # Imported classes
         self.sm = SoundManager()

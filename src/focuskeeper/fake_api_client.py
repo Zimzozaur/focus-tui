@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 class FakeAPIClient:
-    """This class is made to be used while testing app."""
+    """Used while testing app."""
 
     current_dir: Path = Path(__file__)
     root: Path = current_dir.parent.parent.parent

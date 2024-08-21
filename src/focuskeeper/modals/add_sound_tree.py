@@ -55,7 +55,12 @@ class AddSoundTree(ModalScreen):
         if is_background:
             self.dismiss(True)
 
-    def __init__(self, sound_type: Literal["short", "long"], *args, **kwargs) -> None:
+    def __init__(
+            self,
+            sound_type: Literal["short", "long"],
+            *args: tuple,
+            **kwargs: dict,
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.sound_type = sound_type
         self.sm = SoundManager()

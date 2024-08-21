@@ -1,7 +1,7 @@
 from textual.validation import ValidationResult, Validator
 
-from focuskeeper.constants import MIN_SESSION_LEN as MIN_S_LEN
 from focuskeeper.constants import MAX_SESSION_LEN as MAX_S_LEN
+from focuskeeper.constants import MIN_SESSION_LEN as MIN_S_LEN
 
 
 class ValueFrom5to300(Validator):

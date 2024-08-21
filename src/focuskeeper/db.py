@@ -9,7 +9,7 @@ class DatabaseManager:
         self.db_file = DB_FILE_PATH
 
     def db_setup(self) -> None:
-        """Method used only to set up DB on app initialization."""
+        """Use only to set up DB on app initialization."""
         with connect(self.db_file) as con:
             # Setup Session table
             con.cursor().execute("""
