@@ -1,3 +1,4 @@
+from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Label, Static
 
@@ -7,8 +8,7 @@ from focuskeeper.assets import NUMBERS_DICT
 class ClockDisplay(Horizontal):
     """Display time."""
 
-    def __init__(self, *args, **kwargs) -> None:
-        # Widgets
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         super().__init__(*args, **kwargs)
         self._h_min = Static("", classes="clock-display-digit")
         self._t_min = Static("", classes="clock-display-digit")
@@ -16,7 +16,7 @@ class ClockDisplay(Horizontal):
         self._t_sec = Static(NUMBERS_DICT["0"], classes="clock-display-digit")
         self._u_sec = Static(NUMBERS_DICT["0"], classes="clock-display-digit")
 
-    def compose(self):
+    def compose(self) -> ComposeResult:
         yield self._h_min
         yield Label(" ")
         yield self._t_min
@@ -31,12 +31,15 @@ class ClockDisplay(Horizontal):
 
     def update_time(self, minutes: str, seconds: str) -> None:
         """Update clock number."""
-        if len(minutes) > 2:
+        hundreds_length: int = 2
+        tens_length: int = 1
+
+        if len(minutes) > hundreds_length:
             self._h_min.update(NUMBERS_DICT[minutes[-3]])
         else:
             self._h_min.update("")
 
-        if len(minutes) > 1:
+        if len(minutes) > tens_length:
             self._t_min.update(NUMBERS_DICT[minutes[-2]])
         else:
             self._t_min.update("")

@@ -58,7 +58,7 @@ class SoundSettings(Grid):
     @on(Select.Changed)
     def select_changed(self, event: Select.Changed) -> None:
         """Change sound connected to type and update config."""
-        # If #test-sound, press blank or already chosen return
+        # If button's id is 'test-sound' press blank or already chosen return
         if event.select.id == "test-sound" or event.value == Select.BLANK:
             return
 
@@ -76,9 +76,7 @@ class SoundSettings(Grid):
 
     @on(Button.Pressed, ".sound-edit-bt")
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
-        """Open Sounds Edit menu and refresh page if changes
-        where applied.
-        """
+        """Open Sounds Edit menu and refresh page if changes where applied."""
         self.app.push_screen(
             EditSound(cast(Literal["short", "long"], event.button.id)),
             self.reinit_and_recompose_self,

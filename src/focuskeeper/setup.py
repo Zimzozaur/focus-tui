@@ -70,13 +70,12 @@ def setup_app() -> None:
     if not DB_FILE_PATH.exists():
         # Create SQLite database file
         Path(DB_FILE_PATH).touch()
-        with open(DB_FILE_PATH, "w"):
-            # This is the only place where
-            # this methods should be used
-            db.db_setup()
+        # This is the only place where
+        # this methods should be used
+        db.db_setup()
 
     if not CONFIG_FILE_PATH.exists():
         # Create config.yaml file
         Path(CONFIG_FILE_PATH).touch()
-        with open(CONFIG_FILE_PATH, "w") as file:
+        with Path(CONFIG_FILE_PATH).open("w") as file:
             yaml.dump(default_config, file, sort_keys=False)

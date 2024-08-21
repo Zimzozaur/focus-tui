@@ -1,7 +1,7 @@
 import shutil
 from collections import ChainMap
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import pygame
 
@@ -28,12 +28,12 @@ class Sound:
     def __repr__(self) -> str:
         return f"Sound({self.path}, '{self.sound_type}', {self.is_default})"
 
-    def __gt__(self, other):
+    def __gt__(self, other: Any) -> bool:
         if not isinstance(other, Sound):
             raise NotImplementedError
         return self.name > other.name
 
-    def __lt__(self, other):
+    def __lt__(self, other: Any) -> bool:
         if not isinstance(other, Sound):
             raise NotImplementedError
         return self.name < other.name
@@ -56,12 +56,12 @@ class SoundManager:
     """Class used to work with sounds in app
     Allow to perform CRUD on Shorts, Longs and play them.
 
-    This class is a singleton
+    This class is a singleton.
     """
 
     _instance = None
 
-    def __new__(cls):
+    def __new__(cls) -> "SoundManager":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance

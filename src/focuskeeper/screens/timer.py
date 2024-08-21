@@ -123,9 +123,9 @@ class TimerScreen(Screen):
         self.db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
 
-    def _not_successful_session(self, boolean: bool) -> None:
+    def _not_successful_session(self, should_kill: bool) -> None:
         """Add killed session to DB and reset clock."""
-        if not boolean:
+        if not should_kill:
             return
 
         focused_for = (self._session_len - self._remaining_session) // MINUTE

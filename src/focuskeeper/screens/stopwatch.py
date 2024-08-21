@@ -35,7 +35,7 @@ class StopwatchScreen(Screen):
         """If Stopwatch is active refuse to use any shortcuts."""
         return not self.active_session
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         super().__init__(*args, **kwargs)
         # Widgets
         self._clock_display = ClockDisplay()

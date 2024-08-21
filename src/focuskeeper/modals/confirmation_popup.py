@@ -8,9 +8,9 @@ from textual.widgets import Button, Static
 class ConfirmPopup(ModalScreen[bool]):
     """ModalScreen to ask user for confirmation of certain action."""
 
-    def __init__(self, *args, message: str, **kwargs) -> None:
+    def __init__(self, *args: tuple, message: str, **kwargs: dict) -> None:
         super().__init__(*args, **kwargs)
-        self.message: str = message
+        self.message = message
 
     def compose(self) -> ComposeResult:
         with Container(id="confirm-popup-body"):

@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from pathlib import Path
 
 from textual.widgets import DirectoryTree
@@ -6,7 +7,7 @@ from textual.widgets import DirectoryTree
 class MusicDirectoryTree(DirectoryTree):
     show_root = False
 
-    def filter_paths(self, paths):
+    def filter_paths(self, paths: Iterable[Path]) -> Iterable[Path]:
         def not_hidden(path: Path) -> bool:
             return path.is_dir() and not path.name.startswith(".")
 
