@@ -6,7 +6,7 @@ from typing import Literal
 import pygame
 
 from focuskeeper.config import ConfigManager
-from focuskeeper.constants import LONGS_PATH, RESERVED_ALL_SOUNDS, SHORT_PATH
+from focuskeeper.constants import LONGS_PATH, RESERVED_ALL_SOUNDS, SHORT_PATH, LengthType
 
 
 class Sound:
@@ -15,11 +15,11 @@ class Sound:
     def __init__(
         self,
         path: Path,
-        sound_type: Literal["short", "long"],
+        sound_type: LengthType,
     ) -> None:
         self.path: Path = path
         self.parent: Path = path.parent
-        self.sound_type: Literal["short", "long"] = sound_type
+        self.sound_type = sound_type
         self.full_name = path.name
         self.name: str = path.name.split(".")[0]
         self.extension: str = path.suffix
@@ -40,7 +40,7 @@ class Sound:
 
 
 def create_sounds_dict(
-    path: Path, sound_type: Literal["short", "long"],
+    path: Path, sound_type: LengthType,
 ) -> dict[str, Sound]:
     """Return dict of Sounds names and Sounds object mapped to them."""
     allowed_suffixes = {".wav", ".mp3", ".ogg", ".flac", ".opus"}
@@ -146,7 +146,7 @@ class SoundManager:
         path: Path,
         name: str,
         extension: str,
-        sound_type: Literal["short", "long"],
+        sound_type: LengthType,
     ) -> None:
         """Add sound to right folder, create instance of Sound and to dict."""
         if sound_type == "short":
@@ -161,7 +161,7 @@ class SoundManager:
         dict_[name] = sound
         shutil.copy(path, sound.path)
 
-    def remove_sound(self, name: str, sound_type: Literal["short", "long"]) -> None:
+    def remove_sound(self, name: str, sound_type: LengthType) -> None:
         """Remove sound from users drive and update config if needed."""
         if self._cm.is_sound_in_config(name):
             self._cm.update_sound_name(name)
@@ -177,9 +177,10 @@ class SoundManager:
         """Check if the sound is already imported."""
         return bool(self._all_sounds_dict.get(name, False))
 
-    def play_sound(self, name: str) -> None:
+    def play_sound(self, name: str, ) -> None:
         """Play chosen sound."""
         pygame.mixer.music.load(self.get_any_sound(name).path)
+        pygame.mixer.music.set_volume()
         pygame.mixer.music.play()
 
     def play_alarm(self) -> None:

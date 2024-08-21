@@ -1,4 +1,4 @@
-from typing import Literal, cast
+from typing import cast
 
 from textual import on
 from textual.app import ComposeResult
@@ -6,6 +6,7 @@ from textual.containers import Grid
 from textual.widgets import Button, Select, Input
 
 from focuskeeper.config import ConfigManager
+from focuskeeper.constants import VolumeType, SoundType, LengthType
 from focuskeeper.modals import EditSound
 from focuskeeper.sound_manager import SoundManager
 from focuskeeper.constants import MAX_VOLUME_LEVEL, MIN_VOLUME_LEVEL
@@ -106,7 +107,7 @@ class SoundSettings(Grid):
             return
 
         self._cm.update_used_sound(
-            sound_type=cast(Literal["alarm", "signal", "ambient"], event.select.id),
+            sound_type=cast(SoundType, event.select.id),
             name=event.value,
         )
         # Change prompt value in select menu
@@ -121,7 +122,7 @@ class SoundSettings(Grid):
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
         """Open Sounds Edit menu and refresh page if changes where applied."""
         self.app.push_screen(
-            EditSound(cast(Literal["short", "long"], event.button.id)),
+            EditSound(cast(LengthType, event.button.id)),
             self.reinit_and_recompose_self,
         )
 
@@ -149,7 +150,7 @@ class SoundSettings(Grid):
 
     @on(SoundVolumeInput.Submitted)
     def change_volume_config(self, event: SoundVolumeInput.Submitted) -> None:
-        _type = cast(Literal["alarm_volume", "signal_volume", "ambient_volume", "test_volume"], event.input.id)
+        _type = cast(VolumeType, event.input.id)
         value = int(event.input.value)
         self._cm.change_volume_value(_type, value)
         msg = f"Value of {_type.replace('_', ' ')} was changed!"

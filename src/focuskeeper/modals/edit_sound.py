@@ -2,7 +2,7 @@ from typing import Literal
 
 from textual import on
 from textual.app import ComposeResult
-from textual.containers import Center, Horizontal, VerticalScroll
+from textual.containers import Center, Horizontal
 from textual.events import Click
 from textual.screen import ModalScreen
 from textual.widgets import Button, Collapsible, Input, Static
@@ -10,6 +10,7 @@ from textual.widgets import Button, Collapsible, Input, Static
 from focuskeeper.modals import AddSoundTree, ConfirmPopup
 from focuskeeper.sound_manager import SoundManager
 from focuskeeper.widgets import Accordion
+from focuskeeper.constants import LengthType
 
 
 def remove_id_suffix(string: str) -> str:
@@ -30,7 +31,7 @@ class EditSound(ModalScreen):
 
     def __init__(
             self,
-            sound_type: Literal["short", "long"],
+            sound_type: LengthType,
             *args: tuple,
             **kwargs: dict,
     ) -> None:

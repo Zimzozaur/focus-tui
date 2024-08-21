@@ -1,6 +1,5 @@
 import os
 import platform
-from typing import Literal
 
 from textual import on
 from textual.app import ComposeResult
@@ -9,6 +8,7 @@ from textual.screen import ModalScreen
 
 from focuskeeper.sound_manager import SoundManager
 from focuskeeper.widgets import MusicDirectoryTree
+from focuskeeper.constants import LengthType
 
 
 def get_users_folder() -> str:
@@ -57,7 +57,7 @@ class AddSoundTree(ModalScreen):
 
     def __init__(
             self,
-            sound_type: Literal["short", "long"],
+            sound_type: LengthType,
             *args: tuple,
             **kwargs: dict,
     ) -> None:

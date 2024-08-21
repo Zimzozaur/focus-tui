@@ -1,14 +1,15 @@
 import json
 from pathlib import Path
-from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel
 
 from focuskeeper.constants import (
     CONFIG_FILE_PATH,
     DEFAULT_ALARM_NAME,
     DEFAULT_AMBIENT_NAME,
     DEFAULT_SIGNAL_NAME,
+    VolumeType,
+    SoundType
 )
 
 """
@@ -44,13 +45,13 @@ class ConfigManager:
         with open(CONFIG_FILE_PATH) as file:
             self.config: ConfigModel = ConfigModel.model_validate(json.load(file))
 
-    def get_used_sound(self, sound_type: Literal["alarm", "signal", "ambient"]) -> str:
+    def get_used_sound(self, sound_type: SoundType) -> str:
         """Get from config.json name of chosen sound_type."""
         return getattr(self.config, sound_type).name
 
     def update_used_sound(
         self,
-        sound_type: Literal["alarm", "signal", "ambient"],
+        sound_type: SoundType,
         name: str,
     ) -> None:
         """Update config.yaml with sound name and path."""
@@ -79,7 +80,7 @@ class ConfigManager:
 
     def change_volume_value(
         self,
-        volume_type: Literal["alarm_volume", "signal_volume", "ambient_volume", "test_volume"],
+        volume_type: VolumeType,
         value: int
     ) -> None:
         setattr(self.config, volume_type, value)

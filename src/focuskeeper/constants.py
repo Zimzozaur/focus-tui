@@ -1,8 +1,19 @@
 import os
 from pathlib import Path
+from typing import Literal
 
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
+
+
+#############################
+#       Custom Types        #
+#############################
+
+VolumeType = Literal["alarm_volume", "signal_volume", "ambient_volume", "test_volume"]
+SoundType = Literal["alarm", "signal", "ambient"]
+LengthType = Literal["short", "long"]
+
 
 #############################
 #      Custom Settings      #
