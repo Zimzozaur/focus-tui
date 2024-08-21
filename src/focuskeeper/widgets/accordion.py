@@ -9,17 +9,9 @@ class Accordion(Container):
     that turns them into Accordion.
     """
 
-    def __init__(
-        self,
-        *children: Widget,
-        name: str | None = None,
-        id: str | None = None,
-        classes: str | None = None,
-        disabled: bool = False,
-    ) -> None:
-        super().__init__(
-            *children, name=name, id=id, classes=classes, disabled=disabled,
-        )
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+        """Initialize `_currently_expanded` variable."""
+        super().__init__(*args, **kwargs)
         self._currently_expanded: Collapsible | None = None
 
     @on(Collapsible.Expanded)
