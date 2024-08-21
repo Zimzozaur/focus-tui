@@ -58,30 +58,29 @@ class EditSound(ModalScreen):
 
     def compose(self) -> ComposeResult:
         restriction = r"^[a-zA-Z0-9_-]+$"
-        with VerticalScroll(id="edit-sound-body"):
-            with Accordion(id="sounds-accordion"):
-                for name in self.sounds_names:
-                    with Collapsible(
-                        title=name, classes="sound-collapsible", id=f"{name}_coll",
-                    ):
-                        yield Input(
-                            value=name, id=f"{name}_input", restrict=restriction,
+        with Accordion(id="sounds-accordion"):
+            for name in self.sounds_names:
+                with Collapsible(
+                    title=name, classes="sound-collapsible", id=f"{name}_coll",
+                ):
+                    yield Input(
+                        value=name, id=f"{name}_input", restrict=restriction,
+                    )
+                    with Horizontal(classes="sound-buttons-wrapper"):
+                        yield Button(
+                            "Rename",
+                            variant="success",
+                            disabled=True,
+                            id=f"{name}_rename",
+                            classes="sound-rename-bt",
                         )
-                        with Horizontal(classes="sound-buttons-wrapper"):
-                            yield Button(
-                                "Rename",
-                                variant="success",
-                                disabled=True,
-                                id=f"{name}_rename",
-                                classes="sound-rename-bt",
-                            )
-                            yield Static(classes="sound-buttons-divider")
-                            yield Button(
-                                "Remove",
-                                variant="error",
-                                id=f"{name}_remove",
-                                classes="sound-remove-bt",
-                            )
+                        yield Static(classes="sound-buttons-divider")
+                        yield Button(
+                            "Remove",
+                            variant="error",
+                            id=f"{name}_remove",
+                            classes="sound-remove-bt",
+                        )
 
             yield Static(id="add-sound-divider")
             with Center(id="add-sound-wrapper"):

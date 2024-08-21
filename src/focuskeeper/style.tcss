@@ -146,18 +146,15 @@ EditSound {
     height: auto;
 }
 
-#edit-sound-body {
+#sounds-accordion {
+    layout: vertical;
+    overflow-x: hidden;
+    overflow-y: auto;
     min-width: 50;
     max-width: 70;
     height: 30;
     padding: 1 2;
     background: $surface;
-}
-
-#sounds-accordion {
-    min-width: 50;
-    max-width: 70;
-    height: auto;
 }
 
 .sound-buttons-wrapper {
