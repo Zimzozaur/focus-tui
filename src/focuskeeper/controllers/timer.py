@@ -5,7 +5,7 @@ from focuskeeper.constants import MINUTE
 from focuskeeper.controllers.controller import Controller
 from focuskeeper.db import DatabaseManager
 from focuskeeper.modals import ConfirmPopup
-from focuskeeper.screens import SettingsScreen, StopwatchScreen
+from focuskeeper.screens import SettingsScreen
 from focuskeeper.sound_manager import SoundManager
 from focuskeeper.widgets import ClockDisplay
 
@@ -38,18 +38,23 @@ class TimerController(Controller):
         # Intervals
         self._intervals = []
 
-    def stopwatch_to_stopwatch(self):
+    @property
+    def active_session(self):
+        return self._active_session
+
+    def switch_to_stopwatch(self):
+        from focuskeeper.screens import StopwatchScreen
         self.app.switch_screen(StopwatchScreen())
 
     def open_settings(self):
         self.app.push_screen(SettingsScreen())
 
-    @property
-    def active_session(self):
-        return self._active_session
-
     def set_app_title(self):
         self.app.title = "Timer"
+
+    def is_valid_session_length(self, event: Input.Changed):
+        """If the session duration is not correct block start button."""
+        self._focus_button.disabled = not event.input.is_valid
 
     def focus_button_clicked(self):
         """Start, Cancel, Kill session."""
@@ -81,7 +86,6 @@ class TimerController(Controller):
 
         # Set button variant to 'warning' to indicate session is ongoing
         self._focus_button.variant = "warning"
-
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer, update displayed time and
@@ -141,7 +145,3 @@ class TimerController(Controller):
             # Set button when the cancel time has ended
             self._focus_button.label = "Kill"
             self._focus_button.variant = "error"
-
-    def is_valid_session_length(self, event: Input.Changed):
-        """If the session duration is not correct block start button."""
-        self._focus_button.disabled = not event.input.is_valid

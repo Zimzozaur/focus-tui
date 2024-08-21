@@ -22,7 +22,7 @@ class TimerScreen(Screen):
 
     def action_stopwatch_mode(self) -> None:
         """Switch screen to Stopwatch."""
-        self._ctrl.stopwatch_to_stopwatch()
+        self._ctrl.switch_to_stopwatch()
 
     def action_open_settings(self) -> None:
         """Open settings screen."""
