@@ -41,7 +41,7 @@ class StopwatchScreen(Screen):
         )
 
     def compose(self):
-        self._ctrl.change_app_title()
+        self._ctrl.set_app_title("Stopwatch")
         yield AppHeader()
         with Horizontal(id="clock-wrapper"):
             yield self._clock_display

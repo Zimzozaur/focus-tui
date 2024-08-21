@@ -36,15 +36,9 @@ class StopwatchController(Controller):
     def active_session(self):
         return self._active_session
 
-    def open_settings(self):
-        self.app.push_screen(SettingsScreen())
-
     def switch_to_timer(self):
         from focuskeeper.screens import TimerScreen
         self.app.switch_screen(TimerScreen())
-
-    def change_app_title(self):
-        self.app.title = "Stopwatch"
 
     def focus_button_clicked(self):
         """Start, Cancel, End session."""

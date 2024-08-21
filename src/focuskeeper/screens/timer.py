@@ -51,7 +51,7 @@ class TimerScreen(Screen):
         )
 
     def compose(self):
-        self._ctrl.set_app_title()
+        self._ctrl.set_app_title("Timer")
         yield AppHeader()
         with Horizontal(id="clock-wrapper"):
             yield self._clock_display

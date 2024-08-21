@@ -46,12 +46,6 @@ class TimerController(Controller):
         from focuskeeper.screens import StopwatchScreen
         self.app.switch_screen(StopwatchScreen())
 
-    def open_settings(self):
-        self.app.push_screen(SettingsScreen())
-
-    def set_app_title(self):
-        self.app.title = "Timer"
-
     def is_valid_session_length(self, event: Input.Changed):
         """If the session duration is not correct block start button."""
         self._focus_button.disabled = not event.input.is_valid
