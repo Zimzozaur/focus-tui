@@ -20,9 +20,9 @@ class TimerController(Controller):
     ) -> None:
         super().__init__()
         # External classes
-        self.screen = screen
-        self.db = DatabaseManager()
-        self.sm = SoundManager()
+        self._screen = screen
+        self._db = DatabaseManager()
+        self._sm = SoundManager()
 
         self._clock_display = clock
         self._focus_button = focus_button
@@ -71,12 +71,12 @@ class TimerController(Controller):
         """Start a Timer session."""
         # Initialize cancel timer counter
         self._cancel_session_remaining = MINUTE
-        self._session_len = int(self.screen.query_one(Input).value) * MINUTE
+        self._session_len = int(self._screen.query_one(Input).value) * MINUTE
         self._remaining_session = self._session_len
 
         # Set intervals for updating clock and managing cancel timer
-        update_clock = self.screen.set_interval(1, self._clock_display_update)
-        cancel_session = self.screen.set_interval(1, self._cancel_session)
+        update_clock = self._screen.set_interval(1, self._clock_display_update)
+        cancel_session = self._screen.set_interval(1, self._cancel_session)
         self._intervals.extend([update_clock, cancel_session])
 
         # Set button variant to 'warning' to indicate session is ongoing
@@ -99,8 +99,8 @@ class TimerController(Controller):
 
     def _successful_session(self) -> None:
         """Play song, add successful session to DB and reset clock."""
-        self.sm.play_alarm()
-        self.db.create_session_entry(self._session_len // 60, 1)
+        self._sm.play_alarm()
+        self._db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
 
     def _not_successful_session(self, should_kill: bool) -> None:
@@ -109,7 +109,7 @@ class TimerController(Controller):
             return
 
         focused_for = (self._session_len - self._remaining_session) // MINUTE
-        self.db.create_session_entry(focused_for, 0)
+        self._db.create_session_entry(focused_for, 0)
         self._reset_timer()
 
     def _reset_timer(self) -> None:

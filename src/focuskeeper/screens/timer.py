@@ -18,19 +18,19 @@ class TimerScreen(Screen):
     ]
 
     def action_quit_app(self) -> None:
-        self.ctrl.quit_app()
+        self._ctrl.quit_app()
 
     def action_stopwatch_mode(self) -> None:
         """Switch screen to Stopwatch."""
-        self.ctrl.stopwatch_to_stopwatch()
+        self._ctrl.stopwatch_to_stopwatch()
 
     def action_open_settings(self) -> None:
         """Open settings screen."""
-        self.ctrl.open_settings()
+        self._ctrl.open_settings()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If clock is active refuse to use any shortcuts."""
-        return not self.ctrl.active_session
+        return not self._ctrl.active_session
 
     def __init__(self) -> None:
         super().__init__()
@@ -43,7 +43,7 @@ class TimerScreen(Screen):
             validators=[ValueFrom5to300()],
             id="session-duration",
         )
-        self.ctrl = TimerController(
+        self._ctrl = TimerController(
             screen=self,
             clock=self._clock_display,
             focus_button=self._focus_button,
@@ -51,7 +51,7 @@ class TimerScreen(Screen):
         )
 
     def compose(self):
-        self.ctrl.set_app_title()
+        self._ctrl.set_app_title()
         yield AppHeader()
         with Horizontal(id="clock-wrapper"):
             yield self._clock_display
@@ -63,9 +63,9 @@ class TimerScreen(Screen):
     @on(Button.Pressed, "#focus-bt")
     def _focus_button_clicked(self) -> None:
         """Start, Cancel, Kill session."""
-        self.ctrl.focus_button_clicked()
+        self._ctrl.focus_button_clicked()
 
     @on(Input.Changed, "#session-duration")
     def _is_valid_session_length(self, event: Input.Changed) -> None:
         """If the session duration is not correct block start button."""
-        self.ctrl.is_valid_session_length(event)
+        self._ctrl.is_valid_session_length(event)
