@@ -22,7 +22,6 @@ MINUTE: int = int(_minute) if is_custom else 60
 _min_sessions_len = os.getenv("FK_DEBUG_MIN_SESSION_LEN")
 is_custom = FK_DEBUG and _min_sessions_len is not None
 MIN_SESSION_LEN = int(_min_sessions_len) if is_custom else 5
-
 MAX_SESSION_LEN: int = 300
 
 
@@ -58,10 +57,11 @@ RESERVED_SHORTS: set = {
     "Landing_forcefield.flac",
     "Woohoo.flac",
 }
-
 RESERVED_LONG: set = {"Mexican_Forest.wav", "Woodpecker_Forest.flac"}
-
 RESERVED_ALL_SOUNDS: set = RESERVED_SHORTS | RESERVED_LONG
+
+MIN_VOLUME_LEVEL: int = 1
+MAX_VOLUME_LEVEL: int = 100
 
 DEFAULT_CONFIG = {
     "alarm": {
@@ -73,4 +73,8 @@ DEFAULT_CONFIG = {
     "ambient": {
         "name": DEFAULT_AMBIENT_NAME,
     },
+    "alarm_volume": 50,
+    "signal_volume": 50,
+    "ambient_volume": 50,
+    "test_volume": 50,
 }

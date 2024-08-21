@@ -97,14 +97,18 @@ ClockDisplay {
 # ##########################################
 
 SoundSettings {
-    grid-size: 2 4;
-    grid-columns: 3fr 1fr;
-    
+    height: auto;
+    grid-size: 3 4;
+    grid-columns: 3fr 1fr 1fr;
 
     height: auto;
     & > * {
         height: auto;
     }
+}
+
+#volume-static {
+    align: center middle;
 }
 
 #short {

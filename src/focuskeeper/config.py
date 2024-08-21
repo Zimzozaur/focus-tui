@@ -26,6 +26,10 @@ class ConfigModel(BaseModel):
     alarm: SoundModel
     signal: SoundModel
     ambient: SoundModel
+    alarm_volume: int
+    signal_volume: int
+    ambient_volume: int
+    test_volume: int
 
 
 class ConfigManager:
@@ -71,6 +75,14 @@ class ConfigManager:
         if self.config.ambient.name == old_name:
             self.config.ambient.name = new_name or DEFAULT_AMBIENT_NAME
 
+        self._save_config()
+
+    def change_volume_value(
+        self,
+        volume_type: Literal["alarm_volume", "signal_volume", "ambient_volume", "test_volume"],
+        value: int
+    ) -> None:
+        setattr(self.config, volume_type, value)
         self._save_config()
 
     def _save_config(self):

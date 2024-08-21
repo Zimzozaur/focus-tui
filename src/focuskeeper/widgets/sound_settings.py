@@ -3,11 +3,26 @@ from typing import Literal, cast
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Grid
-from textual.widgets import Button, Select
+from textual.widgets import Button, Select, Input
 
 from focuskeeper.config import ConfigManager
 from focuskeeper.modals import EditSound
 from focuskeeper.sound_manager import SoundManager
+from focuskeeper.constants import MAX_VOLUME_LEVEL, MIN_VOLUME_LEVEL
+from focuskeeper.validators import ValueFrom1to100
+
+
+class SoundVolumeInput(Input):
+    def __init__(
+            self, **kwargs,
+    ) -> None:
+        super().__init__(
+            placeholder=f"{MIN_VOLUME_LEVEL} - {MAX_VOLUME_LEVEL}",
+            restrict=r"^(100|[1-9][0-9]?|0?[1-9])$",
+            validators=[ValueFrom1to100()],
+            type="integer",
+            **kwargs
+        )
 
 
 class SoundSettings(Grid):
@@ -25,6 +40,10 @@ class SoundSettings(Grid):
         self._select_signal = None
         self._select_ambient = None
         self._test_sound = None
+        self._alarm_input = None
+        self._signal_input = None
+        self._ambient_input = None
+        self._test_sound_input = None
         self.initialize_attributes()
 
     def initialize_attributes(self) -> None:
@@ -44,14 +63,39 @@ class SoundSettings(Grid):
         self._test_sound = Select.from_values(self._sm.all_sounds_list)
         self._test_sound.prompt = "Select to play sound"
         self._test_sound.id = "test-sound"
+        # Set volume
+        self._alarm_input = SoundVolumeInput(
+            value=str(self._cm.config.alarm_volume),
+            tooltip="Set alarm volume",
+            id="alarm_volume",
+        )
+        self._signal_input = SoundVolumeInput(
+            value=str(self._cm.config.signal_volume),
+            tooltip="Set signal volume",
+            id="signal_volume",
+        )
+        self._ambient_input = SoundVolumeInput(
+            value=str(self._cm.config.ambient_volume),
+            tooltip="Set ambient volume",
+            id="ambient_volume",
+        )
+        self._test_sound_input = SoundVolumeInput(
+            value=str(self._cm.config.test_volume),
+            tooltip="Set test volume",
+            id="test_volume",
+        )
 
     def compose(self) -> ComposeResult:
         yield self._select_alarm
-        yield Button("Edit Alarms/Signals", id="short", classes="sound-edit-bt")
+        yield self._alarm_input
+        yield Button("Alarms\nSignals", id="short", classes="sound-edit-bt")
         yield self._select_signal
+        yield self._signal_input
         yield self._select_ambient
-        yield Button("Edit Ambiences", id="long", classes="sound-edit-bt")
+        yield self._ambient_input
+        yield Button("Ambiences", id="long", classes="sound-edit-bt")
         yield self._test_sound
+        yield self._test_sound_input
         yield Button("Pause", variant="warning", id="test-sound-bt")
 
     @on(Select.Changed)
@@ -102,3 +146,11 @@ class SoundSettings(Grid):
         """Restart initialization and recompose."""
         self.initialize_attributes()
         await self.recompose()
+
+    @on(SoundVolumeInput.Submitted)
+    def change_volume_config(self, event: SoundVolumeInput.Submitted) -> None:
+        _type = cast(Literal["alarm_volume", "signal_volume", "ambient_volume", "test_volume"], event.input.id)
+        value = int(event.input.value)
+        self._cm.change_volume_value(_type, value)
+        msg = f"Value of {_type.replace('_', ' ')} was changed!"
+        self.notify(msg)
