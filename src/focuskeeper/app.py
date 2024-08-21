@@ -1,8 +1,6 @@
 import pygame
 from textual.app import App
 
-from focuskeeper.screens import TimerScreen
-
 
 class FocusKeeper(App, inherit_bindings=False):
     ENABLE_COMMAND_PALETTE = False
@@ -14,4 +12,8 @@ class FocusKeeper(App, inherit_bindings=False):
         pygame.mixer.init()
 
     def on_mount(self) -> None:
+        from focuskeeper.screens import TimerScreen
         self.push_screen(TimerScreen())
+
+
+FOCUS_KEEPER = FocusKeeper()
