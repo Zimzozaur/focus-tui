@@ -31,9 +31,15 @@ class StopwatchController(Controller):
     def active_session(self):
         return self._active_session
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """If clock is active allow to play ambient and hide rest."""
+        if action == "play_ambient":
+            return self.active_session
+        return not self.active_session
+
     def switch_to_timer(self):
         from focuskeeper.screens import TimerScreen
-        self.app.switch_screen(TimerScreen())
+        self._app.switch_screen(TimerScreen())
 
     def focus_button_clicked(self):
         """Start, Cancel, End session."""
@@ -54,12 +60,15 @@ class StopwatchController(Controller):
 
         # Deactivate Bindings
         self._active_session = True
-        self.app.refresh_bindings()
+        self._app.refresh_bindings()
 
         # Set intervals for updating clock and managing cancel timer
         update_clock = self._screen.set_interval(1, self._clock_display_update)
         cancel_session = self._screen.set_interval(1, self._cancel_session)
         self._intervals.extend([update_clock, cancel_session])
+
+        # Start playing ambient in the background
+        self.start_ambient()
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer and update displayed time."""
@@ -73,9 +82,9 @@ class StopwatchController(Controller):
 
     def _successful_session(self) -> None:
         """Play song, add successful session to DB and reset clock."""
-        self._sm.play_alarm()
         self._db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
+        self.play_alarm()
 
     def _reset_timer(self) -> None:
         """Set all clock properties to default."""
@@ -84,16 +93,19 @@ class StopwatchController(Controller):
         # Reset Button
         self._focus_button.variant = "success"
         self._focus_button.label = "Focus"
-        # Session Variable
+        # Allow user to use shorts
         self._active_session = False
+        self._app.refresh_bindings()
         # Reset Counters
         self._session_len = 0
         self._cancel_session_remaining = MINUTE
         # Stop intervals
         for interval in self._intervals:
             interval.stop()
-        # Allow user to use shorts
-        self.app.refresh_bindings()
+        # Restart ambient variable to not play at the start
+        self._ambient_silent = True
+        # Stop playing ambient in the background
+        self.stop_ambient()
 
     def _cancel_session(self) -> None:
         """Allow user to cancel session in first minute."""

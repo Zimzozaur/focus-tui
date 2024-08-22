@@ -13,6 +13,7 @@ class StopwatchScreen(Screen):
         ("ctrl+q", "quit_app", "Quit App"),
         ("ctrl+t", "timer_mode", "Timer Mode"),
         ("ctrl+s", "open_settings", "Settings"),
+        ("ctrl+a", "play_ambient", "Play/Pause Ambient"),
     ]
 
     def action_quit_app(self) -> None:
@@ -26,9 +27,12 @@ class StopwatchScreen(Screen):
         """Open settings screen."""
         self._ctrl.open_settings()
 
+    def action_play_ambient(self):
+        self._ctrl.toggle_ambient()
+
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If Stopwatch is active refuse to use any shortcuts."""
-        return not self._ctrl.active_session
+        return self._ctrl.check_action(action, parameters)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         super().__init__(*args, **kwargs)

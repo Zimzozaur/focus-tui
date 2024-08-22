@@ -18,6 +18,7 @@ class TimerScreen(Screen):
         ("ctrl+q", "quit_app", "Quit App"),
         ("ctrl+t", "stopwatch_mode", "Stopwatch"),
         ("ctrl+s", "open_settings", "Settings"),
+        ("ctrl+a", "play_ambient", "Play/Pause Ambient"),
     ]
 
     def action_quit_app(self) -> None:
@@ -31,9 +32,12 @@ class TimerScreen(Screen):
         """Open settings screen."""
         self._ctrl.open_settings()
 
+    def action_play_ambient(self):
+        self._ctrl.toggle_ambient()
+
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If clock is active refuse to use any shortcuts."""
-        return not self._ctrl.active_session
+        return self._ctrl.check_action(action, parameters)
 
     def __init__(self) -> None:
         super().__init__()

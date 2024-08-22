@@ -36,9 +36,15 @@ class TimerController(Controller):
     def active_session(self):
         return self._active_session
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """If clock is active allow to play ambient and hide rest."""
+        if action == "play_ambient":
+            return self.active_session
+        return not self.active_session
+
     def switch_to_stopwatch(self):
         from focuskeeper.screens import StopwatchScreen
-        self.app.switch_screen(StopwatchScreen())
+        self._app.switch_screen(StopwatchScreen())
 
     def is_valid_session_length(self, event: Input.Changed):
         """If the session duration is not correct block start button."""
@@ -48,9 +54,6 @@ class TimerController(Controller):
         """Start, Cancel, Kill session."""
         # Started Session
         if self._focus_button.variant == "success":
-            self._active_session = True
-            self.app.refresh_bindings()  # Deactivate Bindings
-            self._session_len_input.visible = False
             self._start_session()
         # Cancel Session
         elif self._focus_button.variant == "warning":
@@ -58,10 +61,14 @@ class TimerController(Controller):
         # Kill Session
         else:
             popup = ConfirmPopup(message="Do you want to kill the session?")
-            self.app.push_screen(popup, self._not_successful_session)
+            self._app.push_screen(popup, self._not_successful_session)
 
     def _start_session(self) -> None:
         """Start a Timer session."""
+        self._active_session = True
+        self._app.refresh_bindings()  # Deactivate Bindings
+        self._session_len_input.visible = False
+
         # Initialize cancel timer counter
         self._cancel_session_remaining = MINUTE
         self._session_len = int(self._screen.query_one(Input).value) * MINUTE
@@ -74,6 +81,9 @@ class TimerController(Controller):
 
         # Set button variant to 'warning' to indicate session is ongoing
         self._focus_button.variant = "warning"
+
+        # Start playing ambient in the background
+        self.start_ambient()
 
     def _clock_display_update(self) -> None:
         """Update variable used by timer, update displayed time and
@@ -91,9 +101,9 @@ class TimerController(Controller):
 
     def _successful_session(self) -> None:
         """Play song, add successful session to DB and reset clock."""
-        self._sm.play_alarm()
         self._db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
+        self.play_alarm()
 
     def _not_successful_session(self, should_kill: bool) -> None:
         """Add killed session to DB and reset clock."""
@@ -120,7 +130,11 @@ class TimerController(Controller):
             interval.stop()
         self._intervals.clear()
         # Return which clock mode biding
-        self.app.refresh_bindings()
+        self._app.refresh_bindings()
+        # Restart ambient variable to not play at the start
+        self._ambient_silent = True
+        # Stop playing ambient in the background
+        self.stop_ambient()
 
     def _cancel_session(self) -> None:
         """Allow user to cancel timer in first
