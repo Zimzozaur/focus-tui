@@ -1,7 +1,6 @@
+import json
 import shutil
 from pathlib import Path
-
-import json
 
 from focuskeeper.constants import (
     CONFIG_FILE_PATH,

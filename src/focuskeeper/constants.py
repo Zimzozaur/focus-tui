@@ -5,7 +5,6 @@ from typing import Literal
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
-
 #############################
 #       Custom Types        #
 #############################

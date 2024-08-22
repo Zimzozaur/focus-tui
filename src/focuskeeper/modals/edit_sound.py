@@ -1,4 +1,3 @@
-from typing import Literal
 
 from textual import on
 from textual.app import ComposeResult
@@ -7,10 +6,10 @@ from textual.events import Click
 from textual.screen import ModalScreen
 from textual.widgets import Button, Collapsible, Input, Static
 
+from focuskeeper.constants import LengthType
 from focuskeeper.modals import AddSoundTree, ConfirmPopup
 from focuskeeper.sound_manager import SoundManager
 from focuskeeper.widgets import Accordion
-from focuskeeper.constants import LengthType
 
 
 def remove_id_suffix(string: str) -> str:

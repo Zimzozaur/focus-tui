@@ -8,8 +8,8 @@ from focuskeeper.constants import (
     DEFAULT_ALARM_NAME,
     DEFAULT_AMBIENT_NAME,
     DEFAULT_SIGNAL_NAME,
+    SoundType,
     VolumeType,
-    SoundType
 )
 
 """
@@ -81,7 +81,7 @@ class ConfigManager:
     def change_volume_value(
         self,
         volume_type: VolumeType,
-        value: int
+        value: int,
     ) -> None:
         setattr(self.config, volume_type, value)
         self._save_config()
