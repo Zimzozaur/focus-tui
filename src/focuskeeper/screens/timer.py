@@ -3,10 +3,13 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Input
 
-from focuskeeper.constants import MIN_SESSION_LEN
+from focuskeeper.constants import MIN_SESSION_LEN, MAX_SESSION_LEN
 from focuskeeper.controllers import TimerController
 from focuskeeper.validators import ValueFrom5to300
 from focuskeeper.widgets import AppHeader, ClockDisplay
+
+tooltip = (f"Type value between {MIN_SESSION_LEN} and "
+           f"{MAX_SESSION_LEN}\nto set focus session length.")
 
 
 class TimerScreen(Screen):
@@ -38,10 +41,12 @@ class TimerScreen(Screen):
         self._focus_button = Button("Focus", variant="success", id="focus-bt")
         self._session_len_input = Input(
             value="45",
-            placeholder=f"Type {MIN_SESSION_LEN} to 300",
+            placeholder=f"Type {MIN_SESSION_LEN} to {MAX_SESSION_LEN}",
             restrict=r"^\d{1,3}$",
             validators=[ValueFrom5to300()],
             id="session-duration",
+            tooltip=tooltip,
+
         )
         self._ctrl = TimerController(
             screen=self,

@@ -33,7 +33,8 @@ class SoundVolumeInput(Input):
 
 def create_tooltip(volume_type: SoundType | Literal["test"]) -> str:
     """Return a tooltip string with volume_type interpolated."""
-    return f"Set {volume_type} volume.\nPress enter to save."
+    return (f"Type value between {MIN_VOLUME_LEVEL} and {MAX_VOLUME_LEVEL}\nto "
+            f"set {volume_type} volume.\nPress enter to save.")
 
 
 class SoundSettings(Grid):
