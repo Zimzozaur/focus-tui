@@ -202,21 +202,21 @@ class SoundManager:
         self.play_sound(self.get_used_alarm, "alarm")
 
     def play_ambient_in_background(self) -> None:
-        """Play ambient in background with set volume to 0"""
+        """Play ambient in background with set volume to 0."""
         self._ambient_channel.set_volume(0)
         sound_path = self.get_any_sound(self._cm.config.ambient.name).path
         sound = pygame.mixer.Sound(sound_path)
         self._ambient_channel.play(sound)
 
     def stop_ambient_in_background(self) -> None:
-        """Stop playing ambient in the background"""
+        """Stop playing ambient in the background."""
         self._ambient_channel.stop()
 
     def toggle_ambient(self, quite: bool) -> None:
-        """Turn on and off ambient"""
+        """Turn on and off ambient."""
         volume = 0 if quite else self._cm.config.ambient_volume / 100
         self._ambient_channel.set_volume(volume)
 
     def stop_sound(self) -> None:
-        """Stop playing sound"""
+        """Stop playing sound."""
         self._sound_channel.stop()

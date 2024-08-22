@@ -41,8 +41,8 @@ class ConfigManager:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
-        with open(CONFIG_FILE_PATH) as file:
+    def __init__(self) -> None:
+        with Path(CONFIG_FILE_PATH).open() as file:
             self.config: ConfigModel = ConfigModel.model_validate(json.load(file))
 
     def get_used_sound(self, sound_type: SoundType) -> str:
@@ -86,7 +86,7 @@ class ConfigManager:
         setattr(self.config, volume_type, value)
         self._save_config()
 
-    def _save_config(self):
+    def _save_config(self) -> None:
         with Path(CONFIG_FILE_PATH).open("w") as file:
             json.dump(self.config.model_dump(), file, sort_keys=False)
 
