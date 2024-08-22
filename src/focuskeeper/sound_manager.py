@@ -11,7 +11,6 @@ from focuskeeper.constants import (
     RESERVED_ALL_SOUNDS,
     SHORT_PATH,
     LengthType,
-    SoundType,
 )
 
 
@@ -190,7 +189,7 @@ class SoundManager:
     def play_sound(
         self,
         sound_name: str,
-        sound_type: Literal["alarm", "signal", "test"]
+        sound_type: Literal["alarm", "signal", "test"],
     ) -> None:
         """Play chosen sound."""
         volume_level = getattr(self._cm.config, f"{sound_type}_volume") / 100
@@ -215,7 +214,7 @@ class SoundManager:
 
     def toggle_ambient(self, quite: bool) -> None:
         """Turn on and off ambient"""
-        volume = 0 if quite else getattr(self._cm.config, "ambient_volume") / 100
+        volume = 0 if quite else self._cm.config.ambient_volume / 100
         self._ambient_channel.set_volume(volume)
 
     def stop_sound(self) -> None:

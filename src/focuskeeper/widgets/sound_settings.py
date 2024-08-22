@@ -1,4 +1,4 @@
-from typing import cast, Literal
+from typing import Literal, cast
 
 from textual import on
 from textual.app import ComposeResult
@@ -145,7 +145,7 @@ class SoundSettings(Grid):
 
         if event.value in self._sm.all_sounds_list:
             self._sm.play_sound(event.value, "test")
-            event.select.prompt = f'Last: {event.value}'
+            event.select.prompt = f"Last: {event.value}"
             event.select.clear()
         else:
             msg = "Sound is not in expected folder"

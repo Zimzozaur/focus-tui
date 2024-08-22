@@ -3,7 +3,7 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Input
 
-from focuskeeper.constants import MIN_SESSION_LEN, MAX_SESSION_LEN
+from focuskeeper.constants import MAX_SESSION_LEN, MIN_SESSION_LEN
 from focuskeeper.controllers import TimerController
 from focuskeeper.validators import ValueFrom5to300
 from focuskeeper.widgets import AppHeader, ClockDisplay
