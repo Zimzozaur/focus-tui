@@ -74,6 +74,8 @@ class SoundManager:
         return cls._instance
 
     def __init__(self) -> None:
+        pygame.mixer.init(channels=2)
+        """Channel 1 is for alarm and signal, Channel 2 is for ambient"""
         # Dicts containing all songs found at start up
         self._shorts_dict = create_sounds_dict(SHORT_PATH, "short")
         self._longs_dict = create_sounds_dict(LONGS_PATH, "long")

@@ -9,7 +9,6 @@ class FocusKeeper(App, inherit_bindings=False):
     def __init__(self) -> None:
         super().__init__()
         pygame.init()
-        pygame.mixer.init()
 
     def on_mount(self) -> None:
         from focuskeeper.screens import TimerScreen
