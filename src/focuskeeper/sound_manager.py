@@ -6,7 +6,13 @@ from typing import Literal
 import pygame
 
 from focuskeeper.config import ConfigManager
-from focuskeeper.constants import LONGS_PATH, RESERVED_ALL_SOUNDS, SHORT_PATH, LengthType
+from focuskeeper.constants import (
+    LONGS_PATH,
+    RESERVED_ALL_SOUNDS,
+    SHORT_PATH,
+    LengthType,
+    SoundType,
+)
 
 
 class Sound:
@@ -177,15 +183,16 @@ class SoundManager:
         """Check if the sound is already imported."""
         return bool(self._all_sounds_dict.get(name, False))
 
-    def play_sound(self, name: str, ) -> None:
+    def play_sound(self, name: str, sound_type: SoundType | Literal["test"]) -> None:
         """Play chosen sound."""
         pygame.mixer.music.load(self.get_any_sound(name).path)
-        pygame.mixer.music.set_volume()
+        volume_level = getattr(self._cm.config, f"{sound_type}_volume")
+        pygame.mixer.music.set_volume(volume_level / 100)
         pygame.mixer.music.play()
 
     def play_alarm(self) -> None:
         """Play alarm sounds."""
-        self.play_sound(self.get_used_alarm)
+        self.play_sound(self.get_used_alarm, "alarm")
 
     @staticmethod
     def stop_sound() -> None:

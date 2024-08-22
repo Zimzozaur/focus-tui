@@ -3,13 +3,18 @@ from typing import cast
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Grid
-from textual.widgets import Button, Select, Input
+from textual.widgets import Button, Input, Select
 
 from focuskeeper.config import ConfigManager
-from focuskeeper.constants import VolumeType, SoundType, LengthType
+from focuskeeper.constants import (
+    MAX_VOLUME_LEVEL,
+    MIN_VOLUME_LEVEL,
+    LengthType,
+    SoundType,
+    VolumeType,
+)
 from focuskeeper.modals import EditSound
 from focuskeeper.sound_manager import SoundManager
-from focuskeeper.constants import MAX_VOLUME_LEVEL, MIN_VOLUME_LEVEL
 from focuskeeper.validators import ValueFrom1to100
 
 
@@ -22,7 +27,7 @@ class SoundVolumeInput(Input):
             restrict=r"^(100|[1-9][0-9]?|0?[1-9])$",
             validators=[ValueFrom1to100()],
             type="integer",
-            **kwargs
+            **kwargs,
         )
 
 
@@ -133,7 +138,7 @@ class SoundSettings(Grid):
             return
 
         if event.value in self._sm.all_sounds_list:
-            self._sm.play_sound(event.value)
+            self._sm.play_sound(event.value, "test")
         else:
             msg = "Sound is not in expected folder"
             raise FileNotFoundError(msg)
