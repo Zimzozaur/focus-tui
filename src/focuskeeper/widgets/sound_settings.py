@@ -1,4 +1,4 @@
-from typing import cast
+from typing import cast, Literal
 
 from textual import on
 from textual.app import ComposeResult
@@ -29,6 +29,11 @@ class SoundVolumeInput(Input):
             type="integer",
             **kwargs,
         )
+
+
+def create_tooltip(volume_type: SoundType | Literal["test"]) -> str:
+    """Return a tooltip string with volume_type interpolated."""
+    return f"Set {volume_type} volume.\nPress enter to save."
 
 
 class SoundSettings(Grid):
@@ -72,22 +77,22 @@ class SoundSettings(Grid):
         # Set volume
         self._alarm_input = SoundVolumeInput(
             value=str(self._cm.config.alarm_volume),
-            tooltip="Set alarm volume",
+            tooltip=create_tooltip("alarm"),
             id="alarm_volume",
         )
         self._signal_input = SoundVolumeInput(
             value=str(self._cm.config.signal_volume),
-            tooltip="Set signal volume",
+            tooltip=create_tooltip("signal"),
             id="signal_volume",
         )
         self._ambient_input = SoundVolumeInput(
             value=str(self._cm.config.ambient_volume),
-            tooltip="Set ambient volume",
+            tooltip=create_tooltip("ambient"),
             id="ambient_volume",
         )
         self._test_sound_input = SoundVolumeInput(
             value=str(self._cm.config.test_volume),
-            tooltip="Set test volume",
+            tooltip=create_tooltip("test"),
             id="test_volume",
         )
 
@@ -139,6 +144,8 @@ class SoundSettings(Grid):
 
         if event.value in self._sm.all_sounds_list:
             self._sm.play_sound(event.value, "test")
+            event.select.prompt = f'Last: {event.value}'
+            event.select.clear()
         else:
             msg = "Sound is not in expected folder"
             raise FileNotFoundError(msg)
