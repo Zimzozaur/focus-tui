@@ -75,6 +75,8 @@ class SoundManager:
 
     def __init__(self) -> None:
         pygame.mixer.init(channels=2)
+        self._ambient_channel = pygame.mixer.Channel(1)
+        self._sound_channel = pygame.mixer.Channel(2)
         """Channel 1 is for alarm and signal, Channel 2 is for ambient"""
         # Dicts containing all songs found at start up
         self._shorts_dict = create_sounds_dict(SHORT_PATH, "short")
@@ -185,18 +187,37 @@ class SoundManager:
         """Check if the sound is already imported."""
         return bool(self._all_sounds_dict.get(name, False))
 
-    def play_sound(self, name: str, sound_type: SoundType | Literal["test"]) -> None:
+    def play_sound(
+        self,
+        sound_name: str,
+        sound_type: Literal["alarm", "signal", "test"]
+    ) -> None:
         """Play chosen sound."""
-        pygame.mixer.music.load(self.get_any_sound(name).path)
-        volume_level = getattr(self._cm.config, f"{sound_type}_volume")
-        pygame.mixer.music.set_volume(volume_level / 100)
-        pygame.mixer.music.play()
+        volume_level = getattr(self._cm.config, f"{sound_type}_volume") / 100
+        self._sound_channel.set_volume(volume_level)
+        sound = pygame.mixer.Sound(self.get_any_sound(sound_name).path)
+        self._sound_channel.play(sound)
 
     def play_alarm(self) -> None:
         """Play alarm sounds."""
         self.play_sound(self.get_used_alarm, "alarm")
 
-    @staticmethod
-    def stop_sound() -> None:
-        """Stop all sounds."""
-        pygame.mixer.music.stop()
+    def play_ambient_in_background(self) -> None:
+        """Play ambient in background with set volume to 0"""
+        self._ambient_channel.set_volume(0)
+        sound_path = self.get_any_sound(self._cm.config.ambient.name).path
+        sound = pygame.mixer.Sound(sound_path)
+        self._ambient_channel.play(sound)
+
+    def stop_ambient_in_background(self) -> None:
+        """Stop playing ambient in the background"""
+        self._ambient_channel.stop()
+
+    def toggle_ambient(self, quite: bool) -> None:
+        """Turn on and off ambient"""
+        volume = 0 if quite else getattr(self._cm.config, "ambient_volume") / 100
+        self._ambient_channel.set_volume(volume)
+
+    def stop_sound(self) -> None:
+        """Stop playing sound"""
+        self._sound_channel.stop()
