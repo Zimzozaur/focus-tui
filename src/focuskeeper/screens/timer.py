@@ -2,12 +2,11 @@ from textual import on
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, Footer, Input
 
+from focuskeeper.constants import MAX_SESSION_LEN, MIN_SESSION_LEN, MINUTE
 from focuskeeper.modals import ConfirmPopup
 from focuskeeper.screens import BaseScreen
-from focuskeeper.constants import MAX_SESSION_LEN, MIN_SESSION_LEN, MINUTE
 from focuskeeper.validators import ValueFrom5to300
 from focuskeeper.widgets import AppHeader, ClockDisplay
-
 
 tooltip = (f"Type value between {MIN_SESSION_LEN} and "
            f"{MAX_SESSION_LEN}\nto set focus session length.")

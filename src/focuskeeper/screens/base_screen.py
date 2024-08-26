@@ -1,8 +1,8 @@
 from textual.screen import Screen
 
+from focuskeeper.config_manager import ConfigManager
 from focuskeeper.db import DatabaseManager
 from focuskeeper.sound_manager import SoundManager
-from focuskeeper.config import ConfigManager
 
 
 class BaseScreen(Screen):

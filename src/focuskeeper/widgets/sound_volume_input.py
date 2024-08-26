@@ -1,6 +1,6 @@
 from textual.widgets import Input
 
-from focuskeeper.constants import MIN_VOLUME_LEVEL, MAX_VOLUME_LEVEL
+from focuskeeper.constants import MAX_VOLUME_LEVEL, MIN_VOLUME_LEVEL
 from focuskeeper.validators import ValueFrom1to100
 
 

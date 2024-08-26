@@ -96,7 +96,7 @@ ClockDisplay {
 # SoundSettings - Widget
 # ##########################################
 
-#sound-settings-grid {
+SoundSettings {
     height: auto;
     grid-size: 3 4;
     grid-columns: 3fr 1fr 1fr;

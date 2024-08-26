@@ -91,5 +91,5 @@ DEFAULT_CONFIG = {
 
 
 DISCORD_INVITATION = "https://discord.gg/a2TyMhXQ"
-PROJECT_GITHUB = "https://github.com/Zimzozaur/FocusKeeper-TUI",
+PROJECT_GITHUB = "https://github.com/Zimzozaur/FocusKeeper-TUI"
 SIMONS_X_ACCOUNT = "https://x.com/zimzozaur"

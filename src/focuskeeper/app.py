@@ -16,4 +16,5 @@ class FocusKeeper(App, inherit_bindings=False):
         self.push_screen(TimerScreen())
 
     def open_settings(self):
+        """Push settings screen."""
         self.push_screen(SettingsScreen())

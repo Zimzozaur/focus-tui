@@ -5,7 +5,7 @@ from typing import Literal
 
 import pygame
 
-from focuskeeper.config import ConfigManager
+from focuskeeper.config_manager import ConfigManager
 from focuskeeper.constants import (
     LONGS_PATH,
     RESERVED_ALL_SOUNDS,

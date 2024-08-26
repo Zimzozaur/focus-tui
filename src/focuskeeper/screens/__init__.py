@@ -7,4 +7,9 @@ from .stopwatch import StopwatchScreen
 from .timer import TimerScreen
 
 # Public symbols
-__all__ = ["BaseScreen", "SettingsScreen", "TimerScreen", "StopwatchScreen"]
+__all__ = [
+    "BaseScreen",
+    "SettingsScreen",
+    "TimerScreen",
+    "StopwatchScreen",
+]

@@ -1,5 +1,5 @@
-from focuskeeper.setup import setup_app
 from focuskeeper.app import FocusKeeper
+from focuskeeper.setup import setup_app
 
 
 def main() -> None:
