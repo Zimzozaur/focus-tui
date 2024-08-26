@@ -1,8 +1,5 @@
-from typing import TYPE_CHECKING
-
 from textual import on
 from textual.containers import Horizontal, Vertical
-from textual.screen import Screen
 from textual.widgets import Button, Footer
 
 from focuskeeper.constants import MINUTE
@@ -29,8 +26,7 @@ class StopwatchScreen(BaseScreen):
 
     def action_open_settings(self) -> None:
         """Open settings screen."""
-        from focuskeeper.screens import SettingsScreen
-        self.app.push_screen(SettingsScreen())
+        self.app.open_settings()
 
     def action_play_ambient(self):
         self._ambient_silent = not self._ambient_silent

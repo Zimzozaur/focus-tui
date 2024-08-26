@@ -32,8 +32,7 @@ class TimerScreen(BaseScreen):
 
     def action_open_settings(self) -> None:
         """Open settings screen."""
-        from focuskeeper.screens import SettingsScreen
-        self.app.push_screen(SettingsScreen())
+        self.app.open_settings()
 
     def action_play_ambient(self):
         self._ambient_silent = not self._ambient_silent
