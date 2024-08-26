@@ -2,10 +2,10 @@ from textual import on
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, Footer
 
+from focuskeeper.composite_widgets import ClockDisplay
 from focuskeeper.constants import MINUTE
 from focuskeeper.screens import BaseScreen
 from focuskeeper.widgets import AppHeader
-from focuskeeper.composite_widgets import ClockDisplay
 
 
 class StopwatchScreen(BaseScreen):
