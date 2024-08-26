@@ -3,7 +3,8 @@ from textual.containers import Container, VerticalScroll
 from textual.widgets import Button, Footer, Static
 
 from focuskeeper.screens import BaseScreen
-from focuskeeper.widgets import AboutSettings, AppHeader, SoundSettings
+from focuskeeper.widgets import AppHeader
+from focuskeeper.composite_widgets import AboutSettings, SoundSettings
 
 
 class SettingsScreen(BaseScreen):
