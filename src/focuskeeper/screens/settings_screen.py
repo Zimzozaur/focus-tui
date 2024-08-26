@@ -42,7 +42,6 @@ class SettingsScreen(BaseScreen):
         self.about.border_title = "About"
 
     def compose(self) -> ComposeResult:
-        self.app.title = "Settings"
         yield AppHeader()
         with VerticalScroll(id="settings-wrapper"):
             with Container(id="settings-body"):

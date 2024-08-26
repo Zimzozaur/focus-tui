@@ -54,7 +54,6 @@ class StopwatchScreen(BaseScreen):
         self._ambient_silent: bool = True
 
     def compose(self):
-        self.app.title = "Stopwatch"
         yield AppHeader()
         with Horizontal(id="clock-wrapper"):
             yield self._clock_display
