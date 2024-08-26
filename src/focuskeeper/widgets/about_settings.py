@@ -5,6 +5,8 @@ from textual.app import ComposeResult
 from textual.containers import Container, Grid
 from textual.widgets import Button, Static
 
+from focuskeeper.constants import DISCORD_INVITATION, PROJECT_GITHUB, SIMONS_X_ACCOUNT
+
 
 class AboutSettings(Container):
     def compose(self) -> ComposeResult:
@@ -18,12 +20,12 @@ class AboutSettings(Container):
 
     @on(Button.Pressed, "#discord")
     def discord_pressed(self) -> None:
-        webbrowser.open("https://discord.gg/a2TyMhXQ")
+        webbrowser.open(DISCORD_INVITATION)
 
     @on(Button.Pressed, "#github")
     def github_pressed(self) -> None:
-        webbrowser.open("https://github.com/Zimzozaur/FocusKeeper-TUI")
+        webbrowser.open(PROJECT_GITHUB)
 
     @on(Button.Pressed, "#x")
     def x_pressed(self) -> None:
-        webbrowser.open("https://x.com/zimzozaur")
+        webbrowser.open(SIMONS_X_ACCOUNT)
