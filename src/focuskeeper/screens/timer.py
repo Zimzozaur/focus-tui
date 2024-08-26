@@ -39,8 +39,7 @@ class TimerScreen(BaseScreen):
         self._sm.toggle_ambient(self._ambient_silent)
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        """If clock is active refuse to use any shortcuts."""
-        """If clock is active allow to play ambient and hide rest."""
+        """If clock is active allow to toggle ambient and hide rest."""
         if action == "play_ambient":
             return self._active_session
         return not self._active_session
@@ -82,7 +81,6 @@ class TimerScreen(BaseScreen):
     @on(Button.Pressed, "#focus-bt")
     def _focus_button_clicked(self) -> None:
         """Start, Cancel, Kill session."""
-        """Start, Cancel, Kill session."""
         # Started Session
         if self._focus_button.variant == "success":
             self._start_session()
@@ -96,7 +94,6 @@ class TimerScreen(BaseScreen):
 
     @on(Input.Changed, "#session-duration")
     def _is_valid_session_length(self, event: Input.Changed) -> None:
-        """If the session duration is not correct block start button."""
         """If the session duration is not correct block start button."""
         self._focus_button.disabled = not event.input.is_valid
 
