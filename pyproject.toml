@@ -1,5 +1,5 @@
 [project]
-name = "focustui"
+name = "focus-tui"
 version = "0.1.0"
 authors = [
   { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
@@ -27,8 +27,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Zimzozaur/FocusTUI"
-Issues = "https://github.com/Zimzozaur/FocusTUI/issues"
+Homepage = "https://github.com/Zimzozaur/focus-tui"
+Issues = "https://github.com/Zimzozaur/focus-tui/issues"
 
 [build-system]
 requires = ["hatchling"]
