@@ -2,8 +2,8 @@ from textual.app import ComposeResult
 from textual.containers import Container, VerticalScroll
 from textual.widgets import Button, Footer, Static
 
-from focuskeeper.composite_widgets import AboutSettings, SoundSettings
-from focuskeeper.screens import BaseScreen
+from focustui.composite_widgets import AboutSettings, SoundSettings
+from focustui.screens import BaseScreen
 
 
 class SettingsScreen(BaseScreen):

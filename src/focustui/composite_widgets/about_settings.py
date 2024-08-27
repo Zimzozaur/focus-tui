@@ -5,7 +5,7 @@ from textual.app import ComposeResult
 from textual.containers import Container, Grid
 from textual.widgets import Button, Static
 
-from focuskeeper.constants import DISCORD_INVITATION, PROJECT_GITHUB, SIMONS_X_ACCOUNT
+from focustui.constants import DISCORD_INVITATION, PROJECT_GITHUB, SIMONS_X_ACCOUNT
 
 
 class AboutSettings(Container):

@@ -5,8 +5,8 @@ from typing import Literal
 
 import pygame
 
-from focuskeeper.config_manager import ConfigManager
-from focuskeeper.constants import (
+from focustui.config_manager import ConfigManager
+from focustui.constants import (
     LONGS_PATH,
     RESERVED_ALL_SOUNDS,
     SHORT_PATH,

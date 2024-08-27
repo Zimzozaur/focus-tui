@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlite3 import connect
 
-from focuskeeper.constants import DB_FILE_PATH
+from focustui.constants import DB_FILE_PATH
 
 
 class DatabaseManager:

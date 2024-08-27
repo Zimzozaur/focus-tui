@@ -5,17 +5,17 @@ from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.widgets import Button, Select
 
-from focuskeeper.config_manager import ConfigManager
-from focuskeeper.constants import (
+from focustui.config_manager import ConfigManager
+from focustui.constants import (
     MAX_VOLUME_LEVEL,
     MIN_VOLUME_LEVEL,
     LengthType,
     SoundType,
     VolumeType,
 )
-from focuskeeper.modals import EditSound
-from focuskeeper.sound_manager import SoundManager
-from focuskeeper.widgets import SoundVolumeInput
+from focustui.modals import EditSound
+from focustui.sound_manager import SoundManager
+from focustui.widgets import SoundVolumeInput
 
 
 def create_tooltip(volume_type: SoundType | Literal["test"]) -> str:

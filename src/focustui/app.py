@@ -1,10 +1,10 @@
 import pygame
 from textual.app import App
 
-from focuskeeper.screens import FocusScreen, SettingsScreen
+from focustui.screens import FocusScreen, SettingsScreen
 
 
-class FocusKeeper(App, inherit_bindings=False):
+class FocusTUI(App, inherit_bindings=False):
     ENABLE_COMMAND_PALETTE = False
     CSS_PATH = "style.tcss"
 

@@ -1,5 +1,5 @@
 [project]
-name = "FocusKeeper"
+name = "FocusTUI"
 version = "0.1.0"
 authors = [
   { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
@@ -8,7 +8,6 @@ dependencies = [
     "textual~=0.73.0",
     "pygame-ce~=2.5.0",
     "platformdirs~=4.2.2",
-    "PyYAML~=6.0.1",
     "python-dotenv~=1.0.1",
     "pydantic~=2.8.2",
 ]
@@ -24,27 +23,28 @@ classifiers = [
 [project.optional-dependencies]
 dev = [
     "textual-dev~=1.5.1",
+    "ruff~=0.6.1"
 ]
 
 [project.urls]
-Homepage = "https://github.com/Zimzozaur/FocusKeeper-TUI"
-Issues = "https://github.com/Zimzozaur/FocusKeeper-TUI/issues"
+Homepage = "https://github.com/Zimzozaur/FocusTUI"
+Issues = "https://github.com/Zimzozaur/FocusTUI/issues"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.sdist]
-paths = ["src/focuskeeper/static/**"]
+paths = ["src/focustui/static/**"]
 
 [tool.hatch.build.targets.wheel]
-paths = ["src/focuskeeper/static/**"]
+paths = ["src/focustui/static/**"]
 
 [project.scripts]
-focuskeeper = "focuskeeper.__main__:main"
+focustui = "focustui.__main__:main"
 
 [tool.ruff]
-exclude = ["src/focuskeeper/assets.py"]
+exclude = ["src/focustui/assets.py"]
 
 [tool.ruff.lint]
 select = [

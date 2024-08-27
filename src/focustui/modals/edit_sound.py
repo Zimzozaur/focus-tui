@@ -5,10 +5,10 @@ from textual.events import Click
 from textual.screen import ModalScreen
 from textual.widgets import Button, Collapsible, Input, Static
 
-from focuskeeper.constants import LengthType
-from focuskeeper.modals import AddSoundTree, ConfirmPopup
-from focuskeeper.sound_manager import SoundManager
-from focuskeeper.widgets import Accordion
+from focustui.constants import LengthType
+from focustui.modals import AddSoundTree, ConfirmPopup
+from focustui.sound_manager import SoundManager
+from focustui.widgets import Accordion
 
 
 def remove_id_suffix(string: str) -> str:

@@ -1,7 +1,7 @@
 from textual.widgets import Input
 
-from focuskeeper.constants import MAX_VOLUME_LEVEL, MIN_VOLUME_LEVEL
-from focuskeeper.validators import ValueFrom1to100
+from focustui.constants import MAX_VOLUME_LEVEL, MIN_VOLUME_LEVEL
+from focustui.validators import ValueFrom1to100
 
 
 class SoundVolumeInput(Input):

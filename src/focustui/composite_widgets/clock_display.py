@@ -2,7 +2,7 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Label, Static
 
-from focuskeeper.assets import NUMBERS_DICT
+from focustui.assets import NUMBERS_DICT
 
 
 class ClockDisplay(Horizontal):

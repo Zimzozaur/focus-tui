@@ -4,11 +4,11 @@ from textual import on
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, Footer, Input
 
-from focuskeeper.composite_widgets import ClockDisplay
-from focuskeeper.constants import MAX_SESSION_LEN, MIN_SESSION_LEN, MINUTE
-from focuskeeper.modals import ConfirmPopup
-from focuskeeper.screens import BaseScreen
-from focuskeeper.validators import StopwatchOrTimer
+from focustui.composite_widgets import ClockDisplay
+from focustui.constants import MAX_SESSION_LEN, MIN_SESSION_LEN, MINUTE
+from focustui.modals import ConfirmPopup
+from focustui.screens import BaseScreen
+from focustui.validators import StopwatchOrTimer
 
 tooltip = (f"Type 0 to set stopwatch or\nbetween {MIN_SESSION_LEN} and "
            f"{MAX_SESSION_LEN} to set timer.")

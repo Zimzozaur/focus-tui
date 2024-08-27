@@ -2,7 +2,7 @@ import json
 import shutil
 from pathlib import Path
 
-from focuskeeper.constants import (
+from focustui.constants import (
     CONFIG_FILE_PATH,
     DB_FILE_PATH,
     DEFAULT_CONFIG,
@@ -13,8 +13,8 @@ from focuskeeper.constants import (
     SOUNDS_PATH,
     THEMES_PATH,
 )
-from focuskeeper.db import DatabaseManager
-from focuskeeper.fake_api_client import FakeAPIClient
+from focustui.db import DatabaseManager
+from focustui.fake_api_client import FakeAPIClient
 
 fake_api = FakeAPIClient()
 db = DatabaseManager()

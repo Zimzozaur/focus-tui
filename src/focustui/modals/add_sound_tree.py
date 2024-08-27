@@ -6,9 +6,9 @@ from textual.app import ComposeResult
 from textual.events import Click
 from textual.screen import ModalScreen
 
-from focuskeeper.constants import LengthType
-from focuskeeper.sound_manager import SoundManager
-from focuskeeper.widgets import MusicDirectoryTree
+from focustui.constants import LengthType
+from focustui.sound_manager import SoundManager
+from focustui.widgets import MusicDirectoryTree
 
 
 def get_users_folder() -> str:

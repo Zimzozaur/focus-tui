@@ -1,9 +1,9 @@
 from textual.validation import ValidationResult, Validator
 
-from focuskeeper.constants import MAX_SESSION_LEN as MAX_S_LEN
-from focuskeeper.constants import MAX_VOLUME_LEVEL as MAX_V_LEV
-from focuskeeper.constants import MIN_SESSION_LEN as MIN_S_LEN
-from focuskeeper.constants import MIN_VOLUME_LEVEL as MIN_V_LEV
+from focustui.constants import MAX_SESSION_LEN as MAX_S_LEN
+from focustui.constants import MAX_VOLUME_LEVEL as MAX_V_LEV
+from focustui.constants import MIN_SESSION_LEN as MIN_S_LEN
+from focustui.constants import MIN_VOLUME_LEVEL as MIN_V_LEV
 
 
 class StopwatchOrTimer(Validator):

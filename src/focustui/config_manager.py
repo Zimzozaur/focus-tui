@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from focuskeeper.constants import (
+from focustui.constants import (
     CONFIG_FILE_PATH,
     DEFAULT_ALARM_NAME,
     DEFAULT_AMBIENT_NAME,
