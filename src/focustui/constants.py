@@ -40,7 +40,7 @@ MAX_SESSION_LEN: int = 300
 #############################
 
 # Root
-MAIN_DIR_PATH: Path = Path(user_data_dir()) / "focus-keeper"
+MAIN_DIR_PATH: Path = Path(user_data_dir()) / "focus-tui"
 
 # Sounds path
 SOUNDS_PATH: Path = MAIN_DIR_PATH / "sounds"
@@ -52,7 +52,7 @@ THEMES_PATH: Path = MAIN_DIR_PATH / "themes"
 QUEUES_PATH: Path = MAIN_DIR_PATH / "queues"
 
 # Files
-DB_FILE_PATH: Path = MAIN_DIR_PATH / "focus_keeper.db"
+DB_FILE_PATH: Path = MAIN_DIR_PATH / "focus-tui.db"
 CONFIG_FILE_PATH: Path = MAIN_DIR_PATH / "config.json"
 
 # Default sounds

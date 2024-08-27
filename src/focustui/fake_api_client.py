@@ -4,9 +4,8 @@ from pathlib import Path
 class FakeAPIClient:
     """Used while testing app."""
 
-    current_dir: Path = Path(__file__)
-    root: Path = current_dir.parent.parent.parent
-    sounds: Path = root / "static" / "sounds"
+    current_dir: Path = Path(__file__).parent
+    sounds: Path = current_dir / "static" / "sounds"
     longs: Path = sounds / "longs"
     shorts: Path = sounds / "shorts"
 
