@@ -23,7 +23,7 @@ classifiers = [
 [project.optional-dependencies]
 dev = [
     "textual-dev~=1.5.1",
-    "ruff~=0.6.1".
+    "ruff~=0.6.1"
 ]
 
 [project.urls]
