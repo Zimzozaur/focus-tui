@@ -101,7 +101,7 @@ class FocusScreen(BaseScreen):
 
         cancel_session = self.set_interval(1, self._cancel_session)
         self._intervals.extend([update_clock, cancel_session])
-        self._cm.update_session_length(self._session_len)
+        self._cm.update_session_length(int(self._session_len_input.value))
         self._focus_button.variant = "warning"
         self._sm.play_ambient_in_background()
 
