@@ -62,9 +62,9 @@ DEFAULT_AMBIENT_NAME: str = "Woodpecker_Forest"
 
 # Reserved Sounds
 RESERVED_SHORTS: set = {
-    "Acid_bassline.flac",
+    "Acid_Bassline.flac",
     "Braam.flac",
-    "Landing_forcefield.flac",
+    "Landing_Forcefield.flac",
     "Woohoo.flac",
 }
 RESERVED_LONG: set = {"Mexican_Forest.wav", "Woodpecker_Forest.flac"}
