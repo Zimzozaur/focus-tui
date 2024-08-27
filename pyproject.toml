@@ -27,8 +27,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Zimzozaur/focus-tui"
-Issues = "https://github.com/Zimzozaur/focus-tui/issues"
+Homepage = "https://github.com/Zimzozaur/FocusTUI"
+Issues = "https://github.com/Zimzozaur/FocusTUI/issues"
 
 [build-system]
 requires = ["hatchling"]
