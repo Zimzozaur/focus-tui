@@ -1,6 +1,6 @@
 [project]
-name = "focus-tui"
-version = "0.1.0"
+name = "focustui"
+version = "0.1.1"
 authors = [
   { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
 ]
