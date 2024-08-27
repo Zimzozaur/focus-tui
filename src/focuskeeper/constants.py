@@ -87,6 +87,7 @@ DEFAULT_CONFIG = {
     "signal_volume": 50,
     "ambient_volume": 50,
     "test_volume": 50,
+    "session_length": 45,
 }
 
 

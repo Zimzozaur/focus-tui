@@ -1,7 +1,7 @@
 import pygame
 from textual.app import App
 
-from focuskeeper.screens import SettingsScreen, TimerScreen
+from focuskeeper.screens import FocusScreen, SettingsScreen
 
 
 class FocusKeeper(App, inherit_bindings=False):
@@ -13,7 +13,7 @@ class FocusKeeper(App, inherit_bindings=False):
         pygame.init()
 
     def on_mount(self):
-        self.push_screen(TimerScreen())
+        self.push_screen(FocusScreen())
 
     def open_settings(self):
         """Push settings screen."""

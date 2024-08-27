@@ -4,7 +4,6 @@ from textual.widgets import Button, Footer, Static
 
 from focuskeeper.composite_widgets import AboutSettings, SoundSettings
 from focuskeeper.screens import BaseScreen
-from focuskeeper.widgets import AppHeader
 
 
 class SettingsScreen(BaseScreen):
@@ -42,7 +41,6 @@ class SettingsScreen(BaseScreen):
         self.about.border_title = "About"
 
     def compose(self) -> ComposeResult:
-        yield AppHeader()
         with VerticalScroll(id="settings-wrapper"):
             with Container(id="settings-body"):
                 with self.account_settings_border:

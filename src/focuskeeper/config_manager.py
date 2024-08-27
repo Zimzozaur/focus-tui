@@ -31,6 +31,7 @@ class ConfigModel(BaseModel):
     signal_volume: int
     ambient_volume: int
     test_volume: int
+    session_length: int
 
 
 class ConfigManager:
@@ -86,8 +87,13 @@ class ConfigManager:
         setattr(self.config, volume_type, value)
         self._save_config()
 
+    def get_session_length(self) -> int:
+        return self.config.session_length
+
+    def update_session_length(self, new_length: int):
+        self.config.session_length = new_length
+        self._save_config()
+
     def _save_config(self) -> None:
         with Path(CONFIG_FILE_PATH).open("w") as file:
             json.dump(self.config.model_dump(), file, sort_keys=False)
-
-
