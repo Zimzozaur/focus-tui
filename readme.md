@@ -23,12 +23,12 @@ Disclaimer: The image displayed represents a potential appearance and features o
 #### For Windows:
 
 1. **Python Installation:**
-   - Download Python from the official [website](https://www.python.org/downloads/).
-   - During installation, make sure to check the checkbox that says **“Add Python to PATH”**. This will allow you to run Python and related tools from any command line or terminal.
-2. **Install Scoop:**
+   -  If you don’t have it installed, download Python from the official [website](https://www.python.org/downloads/).
+   - During installation, make sure to check the checkbox that says **“Add Python to PATH”**.
+2. **Install `Scoop`:**
    - Scoop is a command-line installer for Windows. If you don’t have it installed, follow the instructions on the
      Scoop official [website](https://scoop.sh).
-3.	Install pipx:
+3. **Install `pipx`:**
 ```bash
 scoop install pipx
 pipx ensurepath
@@ -36,28 +36,29 @@ pipx ensurepath
 
 #### For macOS:
 
-1.	Install Homebrew
-Homebrew is a package manager for macOS - [link](https://brew.sh/).
-2. Install pipx:
+1. **Install `Homebrew`:**
+	- Homebrew is a package manager for macOS. If you don’t have it installed, follow the instructions on the
+     Homebrew official [website](https://brew.sh/).
+2. **Install `pipx`:**
 ```bash
 brew install pipx
 pipx ensurepath
 ```
 
 #### For Linux:
-1. **Install pipx:**
-   - Install pipx using your package manager - [link](https://github.com/pypa/pipx?tab=readme-ov-file#on-linux)
+1. **Install `pipx`:**
+   - Install pipx using your package [manager](https://github.com/pypa/pipx?tab=readme-ov-file#on-linux)
 
 ### FocusTUI Installation (every OS)
-Once you have `pipx` installed, you can easily install FocusTUI:
+Once you have `pipx` installed, you can easily install `FocusTUI`:
 
-1.	Install FocusTUI:
+1. **Install `FocusTUI`:**
 ```bash
 pipx install focustui
 ```
 
-#### Run the App
-After installation, you can start FocusTUI by typing:
+### Run the App
+After installation, you can start `FocusTUI` by typing:
 ```bash
 focustui
 ```
