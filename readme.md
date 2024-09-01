@@ -47,7 +47,7 @@ pipx ensurepath
 
 #### For Linux:
 1. **Install `pipx`:**
-   - Install pipx using your package [manager](https://github.com/pypa/pipx?tab=readme-ov-file#on-linux)
+   - Install pipx using your package [manager](https://github.com/pypa/pipx?tab=readme-ov-file#on-linux).
 
 ### FocusTUI Installation (every OS)
 Once you have `pipx` installed, you can easily install `FocusTUI`:
