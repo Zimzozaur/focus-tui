@@ -36,5 +36,5 @@ class FocusTUI(App, inherit_bindings=False):
         self.switch_screen(SettingsScreen(cm=self._cm, sm=self._sm))
 
     def open_focus(self):
-        """Switch to focus screen"""
+        """Switch to focus screen."""
         self.switch_screen(FocusScreen(cm=self._cm, db=self._db, sm=self._sm))
