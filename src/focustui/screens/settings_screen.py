@@ -1,12 +1,18 @@
+from typing import TYPE_CHECKING
+
 from textual.app import ComposeResult
 from textual.containers import Container, VerticalScroll
+from textual.screen import Screen
 from textual.widgets import Button, Footer, Static
 
 from focustui.composite_widgets import AboutSettings, SoundSettings
-from focustui.screens import BaseScreen
+
+if TYPE_CHECKING:
+    from focustui.config_manager import ConfigManager
+    from focustui.sound_manager import SoundManager
 
 
-class SettingsScreen(BaseScreen):
+class SettingsScreen(Screen):
     TITLE = "Settings"
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
@@ -18,10 +24,17 @@ class SettingsScreen(BaseScreen):
 
     def action_close_settings(self) -> None:
         """Return anything to run callback."""
-        self.dismiss()
+        self.app.open_focus()
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        cm: "ConfigManager",
+        sm: "SoundManager",
+    ) -> None:
         super().__init__()
+        self._cm = cm
+        self._sm = sm
+
         self.account_settings_border = Static(classes="settings-section")
         self.account_settings_border.border_title = "Account"
 
@@ -48,7 +61,7 @@ class SettingsScreen(BaseScreen):
                 with self.social_settings_border:
                     yield Button("PLACEHOLDER")
                 with self.sound_settings_border:
-                    yield SoundSettings()
+                    yield SoundSettings(cm=self._cm, sm=self._sm)
                 with self.theme_settings_border:
                     yield Button("PLACEHOLDER")
                 with self.theme_store_settings_border:

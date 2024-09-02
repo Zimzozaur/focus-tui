@@ -10,7 +10,7 @@ from focustui.constants import DISCORD_INVITATION, PROJECT_GITHUB, SIMONS_X_ACCO
 
 class AboutSettings(Container):
     def compose(self) -> ComposeResult:
-        yield Static("Focus Keeper is your best buddy for working or studying.")
+        yield Static("FocusTUI is your best buddy for working or studying.")
         yield Static("If you want to learn more, share your ideas, or report bugs...")
         yield Static("Check out our media!")
         with Grid(id="get-into-social"):

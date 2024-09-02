@@ -1,11 +1,10 @@
-from typing import Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.widgets import Button, Select
 
-from focustui.config_manager import ConfigManager
 from focustui.constants import (
     MAX_VOLUME_LEVEL,
     MIN_VOLUME_LEVEL,
@@ -14,14 +13,17 @@ from focustui.constants import (
     VolumeType,
 )
 from focustui.modals import EditSound
-from focustui.sound_manager import SoundManager
 from focustui.widgets import SoundVolumeInput
+
+if TYPE_CHECKING:
+    from focustui.config_manager import ConfigManager
+    from focustui.sound_manager import SoundManager
 
 
 def create_tooltip(volume_type: SoundType | Literal["test"]) -> str:
     """Return a tooltip string with volume_type interpolated."""
     return (f"Type value between {MIN_VOLUME_LEVEL} and {MAX_VOLUME_LEVEL}\nto "
-            f"set {volume_type} volume.\nPress enter to save.")
+            f"set {volume_type} volume.")
 
 
 class SoundSettings(Grid):
@@ -29,10 +31,14 @@ class SoundSettings(Grid):
     test any sound and open EditSound modal.
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        cm: "ConfigManager",
+        sm: "SoundManager",
+    ) -> None:
         super().__init__()
-        self._cm = ConfigManager()
-        self._sm = SoundManager()
+        self._cm = cm
+        self._sm = sm
         # Those attributes are set to None and initialized
         # by function to updated them when users applies changes
         self.select_alarm: Select | None = None
@@ -91,7 +97,7 @@ class SoundSettings(Grid):
             await self.recompose()
 
         self.app.push_screen(
-            EditSound(cast(LengthType, event.button.id)),
+            EditSound(cast(LengthType, event.button.id), sm=self._sm),
             reinit_and_recompose_sound_settings,
         )
 
@@ -114,13 +120,17 @@ class SoundSettings(Grid):
         """Stop playing any sound."""
         self._sm.stop_sound()
 
-    @on(SoundVolumeInput.Submitted)
+    @on(SoundVolumeInput.Changed)
     def new_volume_submitted(self, event: SoundVolumeInput.Submitted) -> None:
+        if event.value == "":
+            return
+
+        if not MIN_VOLUME_LEVEL <= int(event.value) <= MAX_VOLUME_LEVEL:
+            return
+
         _type = cast(VolumeType, event.input.id)
         value = int(event.input.value)
         self._cm.change_volume_value(_type, value)
-        msg = f"Value of {_type.replace('_', ' ')} was changed!"
-        self.notify(msg)
 
     def initialize_sound_attributes(self) -> None:
         # Set alarm Select
@@ -141,17 +151,17 @@ class SoundSettings(Grid):
         self.test_sound.id = "test-sound"
         # Set volume
         self.alarm_input = SoundVolumeInput(
-            value=str(self._cm.config.alarm_volume),
+            value=str(self._cm.config.alarm.volume),
             tooltip=create_tooltip("alarm"),
             id="alarm_volume",
         )
         self.signal_input = SoundVolumeInput(
-            value=str(self._cm.config.signal_volume),
+            value=str(self._cm.config.signal.volume),
             tooltip=create_tooltip("signal"),
             id="signal_volume",
         )
         self.ambient_input = SoundVolumeInput(
-            value=str(self._cm.config.ambient_volume),
+            value=str(self._cm.config.ambient.volume),
             tooltip=create_tooltip("ambient"),
             id="ambient_volume",
         )

@@ -1,17 +1,19 @@
 import shutil
 from collections import ChainMap
 from pathlib import Path
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import pygame
 
-from focustui.config_manager import ConfigManager
 from focustui.constants import (
     LONGS_PATH,
     RESERVED_ALL_SOUNDS,
     SHORT_PATH,
     LengthType,
 )
+
+if TYPE_CHECKING:
+    from focustui.config_manager import ConfigManager
 
 
 class Sound:
@@ -65,14 +67,14 @@ class SoundManager:
     """
 
     _instance = None
-    _cm = ConfigManager()
 
-    def __new__(cls) -> "SoundManager":
+    def __new__(cls, cm: "ConfigManager") -> "SoundManager":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self) -> None:
+    def __init__(self, cm: "ConfigManager") -> None:
+        self._cm = cm
         pygame.mixer.init(channels=2)
         self._ambient_channel = pygame.mixer.Channel(1)
         self._sound_channel = pygame.mixer.Channel(2)

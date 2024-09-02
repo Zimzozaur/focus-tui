@@ -1,20 +1,26 @@
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from textual import on
 from textual.containers import Horizontal, Vertical
+from textual.screen import Screen
 from textual.widgets import Button, Footer, Input
 
 from focustui.composite_widgets import ClockDisplay
 from focustui.constants import MAX_SESSION_LEN, MIN_SESSION_LEN, MINUTE
 from focustui.modals import ConfirmPopup
-from focustui.screens import BaseScreen
 from focustui.validators import StopwatchOrTimer
+
+if TYPE_CHECKING:
+    from focustui.config_manager import ConfigManager
+    from focustui.db import DatabaseManager
+    from focustui.sound_manager import SoundManager
+
 
 tooltip = (f"Type 0 to set stopwatch or\nbetween {MIN_SESSION_LEN} and "
            f"{MAX_SESSION_LEN} to set timer.")
 
 
-class FocusScreen(BaseScreen):
+class FocusScreen(Screen):
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
         ("ctrl+s", "open_settings", "Settings"),
@@ -38,8 +44,17 @@ class FocusScreen(BaseScreen):
             return self._active_session
         return not self._active_session
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        cm: "ConfigManager",
+        db: "DatabaseManager",
+        sm: "SoundManager",
+    ) -> None:
         super().__init__()
+        self._cm = cm
+        self._db = db
+        self._sm = sm
+
         self._clock_display = ClockDisplay()
         self._focus_button = Button("Focus", variant="success", id="focus-bt")
         self._session_len_input = Input(

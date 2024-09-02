@@ -1,5 +1,6 @@
 import os
 import platform
+from typing import TYPE_CHECKING
 
 from textual import on
 from textual.app import ComposeResult
@@ -7,8 +8,10 @@ from textual.events import Click
 from textual.screen import ModalScreen
 
 from focustui.constants import LengthType
-from focustui.sound_manager import SoundManager
 from focustui.widgets import MusicDirectoryTree
+
+if TYPE_CHECKING:
+    from focustui.sound_manager import SoundManager
 
 
 def get_users_folder() -> str:
@@ -58,12 +61,13 @@ class AddSoundTree(ModalScreen):
     def __init__(
             self,
             sound_type: LengthType,
+            sm: "SoundManager",
             *args: tuple,
             **kwargs: dict,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.sound_type = sound_type
-        self.sm = SoundManager()
+        self._sm = sm
 
     def compose(self) -> ComposeResult:
         yield MusicDirectoryTree(get_users_folder())
@@ -73,7 +77,7 @@ class AddSoundTree(ModalScreen):
         """Add sounds to chosen folder type."""
         sound = soundify(event.path.name.split(".")[0])
 
-        if self.sm.sound_name_exist(sound):
+        if self._sm.sound_name_exist(sound):
             message = (
                 "Sound name already in use.\nPlease change it before importing."
             )
@@ -81,5 +85,10 @@ class AddSoundTree(ModalScreen):
             return
 
         extension = f".{event.path.name.split('.')[1]}"
-        self.sm.add_sound(event.path, sound, extension, self.sound_type)
+        self._sm.add_sound(
+            event.path,
+            sound,
+            extension,
+            self.sound_type,
+        )
         self.notify(f"Imported: {sound}")

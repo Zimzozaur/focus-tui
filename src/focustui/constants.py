@@ -33,6 +33,7 @@ _min_sessions_len = os.getenv("FK_DEBUG_MIN_SESSION_LEN")
 is_custom = FK_DEBUG and _min_sessions_len is not None
 MIN_SESSION_LEN = int(_min_sessions_len) if is_custom else 5
 MAX_SESSION_LEN: int = 300
+DEFAULT_SESSION_LEN: int = 45
 
 
 #############################
@@ -70,26 +71,9 @@ RESERVED_SHORTS: set = {
 RESERVED_LONG: set = {"Mexican_Forest.wav", "Woodpecker_Forest.flac"}
 RESERVED_ALL_SOUNDS: set = RESERVED_SHORTS | RESERVED_LONG
 
+DEFAULT_SOUND_VOLUME: int = 50
 MIN_VOLUME_LEVEL: int = 1
 MAX_VOLUME_LEVEL: int = 100
-
-DEFAULT_CONFIG = {
-    "alarm": {
-        "name": DEFAULT_ALARM_NAME,
-    },
-    "signal": {
-        "name": DEFAULT_SIGNAL_NAME,
-    },
-    "ambient": {
-        "name": DEFAULT_AMBIENT_NAME,
-    },
-    "alarm_volume": 50,
-    "signal_volume": 50,
-    "ambient_volume": 50,
-    "test_volume": 50,
-    "session_length": 45,
-}
-
 
 DISCORD_INVITATION = "https://discord.gg/sztAyNdu"
 PROJECT_GITHUB = "https://github.com/Zimzozaur/focus-tui"

@@ -2,10 +2,10 @@ import json
 import shutil
 from pathlib import Path
 
+from focustui.config_manager import ConfigModel
 from focustui.constants import (
     CONFIG_FILE_PATH,
     DB_FILE_PATH,
-    DEFAULT_CONFIG,
     LONGS_PATH,
     MAIN_DIR_PATH,
     QUEUES_PATH,
@@ -52,7 +52,9 @@ def setup_app() -> None:
         db.db_setup()
 
     if not CONFIG_FILE_PATH.exists():
-        # Create config.yaml file
+        # Create config.json file
         Path(CONFIG_FILE_PATH).touch()
         with Path(CONFIG_FILE_PATH).open("w") as file:
-            json.dump(DEFAULT_CONFIG, file, sort_keys=False)
+            json_config = json.loads(ConfigModel().model_dump_json())
+            json.dump(json_config, file, sort_keys=False, indent=4)
+
