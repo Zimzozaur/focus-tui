@@ -21,16 +21,16 @@ LengthType = Literal["short", "long"]
 load_dotenv(override=True)
 
 # is Debug mode on
-FK_DEBUG: bool = os.getenv("FK_DEBUG") == "True"
+FOCUSTUI_DEBUG: bool = os.getenv("FOCUSTUI_DEBUG") == "True"
 
 # Number of seconds in a minute
-_minute = os.getenv("FK_DEBUG_MINUTE")
-is_custom = FK_DEBUG and _minute is not None
+_minute = os.getenv("FOCUSTUI_DEBUG_MINUTE")
+is_custom = FOCUSTUI_DEBUG and _minute is not None
 MINUTE: int = int(_minute) if is_custom else 60
 
 # Min number of minutes that session has to take at minimum
-_min_sessions_len = os.getenv("FK_DEBUG_MIN_SESSION_LEN")
-is_custom = FK_DEBUG and _min_sessions_len is not None
+_min_sessions_len = os.getenv("FOCUSTUI_DEBUG_MIN_SESSION_LEN")
+is_custom = FOCUSTUI_DEBUG and _min_sessions_len is not None
 MIN_SESSION_LEN = int(_min_sessions_len) if is_custom else 5
 MAX_SESSION_LEN: int = 300
 DEFAULT_SESSION_LEN: int = 45
