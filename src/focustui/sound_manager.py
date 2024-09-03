@@ -216,7 +216,7 @@ class SoundManager:
 
     def toggle_ambient(self, quite: bool) -> None:
         """Turn on and off ambient."""
-        volume = 0 if quite else self._cm.config.ambient_volume / 100
+        volume = 0 if quite else self._cm.config.ambient.volume / 100
         self._ambient_channel.set_volume(volume)
 
     def stop_sound(self) -> None:
