@@ -13,6 +13,7 @@ from focustui.widgets import Accordion
 
 if TYPE_CHECKING:
     from focustui.sound_manager import SoundManager
+    from focustui.config_manager import ConfigManager
 
 
 def remove_id_suffix(string: str) -> str:
@@ -35,10 +36,12 @@ class EditSound(ModalScreen):
             self,
             sound_type: LengthType,
             sm: "SoundManager",
+            cm: "ConfigManager",
             *args: tuple,
             **kwargs: dict,
     ) -> None:
         super().__init__(*args, **kwargs)
+        self._cm = cm
         self._sm = sm
         # Type of sound, either 'alarm' or 'ambient'
         self.sound_type = sound_type
@@ -108,6 +111,9 @@ class EditSound(ModalScreen):
         old_name = remove_id_suffix(event.button.id)
         new_name = self.query_one(f"#{old_name}_input", Input).value
         self._sm.rename_sound(old_name, new_name)
+        # Update config if needed
+        self._cm.update_sound_name(old_name, new_name)
+
         # Update DOM
         await self.recompose_(None)
         if self.sound_type == "long":
@@ -128,6 +134,8 @@ class EditSound(ModalScreen):
             if not boolean:
                 return
             # if removed sound that is already used
+            if self._cm.is_sound_in_config(sound_name):
+                self._cm.update_sound_name(sound_name)
             self._sm.remove_sound(sound_name, self.sound_type)
             self.notify("Sound has been remove")
             await self.recompose_(None)

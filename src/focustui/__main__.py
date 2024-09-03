@@ -7,14 +7,10 @@ from focustui.sound_manager import SoundManager
 
 def main() -> None:
     setup_app()
-
-    cm = ConfigManager()
-    sm = SoundManager(cm)
-
     FocusTUI(
         db=DatabaseManager(),
-        cm=cm,
-        sm=sm,
+        cm=ConfigManager(),
+        sm=SoundManager(),
     ).run()
 
 

@@ -81,11 +81,11 @@ class SoundSettings(Grid):
         )
         # Change prompt value in select menu
         if event.control.id == "alarm":
-            self.select_alarm.prompt = f"Alarm: {self._sm.get_used_alarm}"
+            self.select_alarm.prompt = f"Alarm: {self._cm.config.alarm.name}"
         elif event.control.id == "signal":
-            self.select_alarm.prompt = f"Signal: {self._sm.get_used_signal}"
+            self.select_alarm.prompt = f"Signal: {self._cm.config.signal.name}"
         else:
-            self.select_alarm.prompt = f"Ambient: {self._sm.get_used_ambient}"
+            self.select_alarm.prompt = f"Ambient: {self._cm.config.ambient.name}"
 
     @on(Button.Pressed, ".sound-edit-bt")
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
@@ -97,7 +97,11 @@ class SoundSettings(Grid):
             await self.recompose()
 
         self.app.push_screen(
-            EditSound(cast(LengthType, event.button.id), sm=self._sm),
+            EditSound(
+                cast(LengthType, event.button.id),
+                sm=self._sm,
+                cm=self._cm,
+            ),
             reinit_and_recompose_sound_settings,
         )
 
@@ -108,7 +112,10 @@ class SoundSettings(Grid):
             return
 
         if event.value in self._sm.all_sounds_list:
-            self._sm.play_sound(event.value, "test")
+            self._sm.play_sound(
+                sound_name=event.value,
+                sound_volume=self._cm.config.test_volume,
+            )
             event.select.prompt = f"Last: {event.value}"
             event.select.clear()
         else:
@@ -135,15 +142,15 @@ class SoundSettings(Grid):
     def initialize_sound_attributes(self) -> None:
         # Set alarm Select
         self.select_alarm = Select.from_values(self._sm.all_shorts_list)
-        self.select_alarm.prompt = f"Alarm: {self._sm.get_used_alarm}"
+        self.select_alarm.prompt = f"Alarm: {self._cm.config.alarm.name}"
         self.select_alarm.id = "alarm"
         # Set signal Select
         self.select_signal = Select.from_values(self._sm.all_shorts_list)
-        self.select_signal.prompt = f"Signal: {self._sm.get_used_signal}"
+        self.select_signal.prompt = f"Signal: {self._cm.config.signal.name}"
         self.select_signal.id = "signal"
         # Set ambient Select
         self.select_ambient = Select.from_values(self._sm.all_longs_list)
-        self.select_ambient.prompt = f"Ambient: {self._sm.get_used_ambient}"
+        self.select_ambient.prompt = f"Ambient: {self._cm.config.ambient.name}"
         self.select_ambient.id = "ambient"
         # Set test sound Select
         self.test_sound = Select.from_values(self._sm.all_sounds_list)

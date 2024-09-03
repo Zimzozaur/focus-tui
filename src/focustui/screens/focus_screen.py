@@ -36,7 +36,10 @@ class FocusScreen(Screen):
 
     def action_play_ambient(self):
         self._ambient_silent = not self._ambient_silent
-        self._sm.toggle_ambient(self._ambient_silent)
+        self._sm.toggle_ambient(
+            self._ambient_silent,
+            self._cm.config.ambient.volume,
+        )
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If clock is active allow to toggle ambient and hide rest."""
@@ -118,7 +121,9 @@ class FocusScreen(Screen):
         self._intervals.extend([update_clock, cancel_session])
         self._cm.update_session_length(int(self._session_len_input.value))
         self._focus_button.variant = "warning"
-        self._sm.play_ambient_in_background()
+        self._sm.play_ambient_in_background(
+            ambient_name=self._cm.config.ambient.name,
+        )
 
     def _timer_display_update(self) -> None:
         """Update variable used by timer, update displayed time and
@@ -145,7 +150,11 @@ class FocusScreen(Screen):
         """Play song, add successful session to DB and reset clock."""
         self._db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
-        self._sm.play_alarm()
+        alarm = self._cm.config.alarm
+        self._sm.play_sound(
+            sound_name=alarm.name,
+            sound_volume=alarm.volume,
+        )
 
     def _not_successful_session(self, should_kill: bool) -> None:
         """Add killed session to DB and reset clock."""

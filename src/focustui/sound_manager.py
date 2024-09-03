@@ -1,7 +1,6 @@
 import shutil
 from collections import ChainMap
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
 
 import pygame
 
@@ -11,9 +10,6 @@ from focustui.constants import (
     SHORT_PATH,
     LengthType,
 )
-
-if TYPE_CHECKING:
-    from focustui.config_manager import ConfigManager
 
 
 class Sound:
@@ -68,13 +64,12 @@ class SoundManager:
 
     _instance = None
 
-    def __new__(cls, cm: "ConfigManager") -> "SoundManager":
+    def __new__(cls) -> "SoundManager":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, cm: "ConfigManager") -> None:
-        self._cm = cm
+    def __init__(self) -> None:
         pygame.mixer.init(channels=2)
         self._ambient_channel = pygame.mixer.Channel(1)
         self._sound_channel = pygame.mixer.Channel(2)
@@ -110,18 +105,6 @@ class SoundManager:
     def all_sounds_list(self) -> list[str]:
         return sorted(self._all_sounds_dict.keys())
 
-    @property
-    def get_used_alarm(self) -> str:
-        return self._cm.get_used_sound("alarm")
-
-    @property
-    def get_used_signal(self) -> str:
-        return self._cm.get_used_sound("signal")
-
-    @property
-    def get_used_ambient(self) -> str:
-        return self._cm.get_used_sound("ambient")
-
     def get_any_sound(self, name: str) -> Sound:
         """Get Sound object by passing name of it."""
         return self._all_sounds_dict[name]
@@ -132,8 +115,7 @@ class SoundManager:
 
     def rename_sound(self, old_name: str, new_name: str) -> None:
         """Rename sound on users drive and remove old sound from
-        corresponding dict and create new instance of Sound class
-        if sound was used in config rename it.
+        corresponding dict and create new instance of Sound class.
         """
         # Rename on drive
         sound: Sound = self.get_any_sound(old_name)
@@ -148,9 +130,6 @@ class SoundManager:
         else:
             del self._longs_dict[sound.name]
             self._longs_dict[new_name] = Sound(new_file_path, "long")
-
-        # Update config if needed
-        self._cm.update_sound_name(old_name, new_name)
 
     def add_sound(
         self,
@@ -174,8 +153,6 @@ class SoundManager:
 
     def remove_sound(self, name: str, sound_type: LengthType) -> None:
         """Remove sound from users drive and update config if needed."""
-        if self._cm.is_sound_in_config(name):
-            self._cm.update_sound_name(name)
         # Remove from drive
         self._all_sounds_dict[name].path.unlink()
         # Remove form dict
@@ -191,22 +168,17 @@ class SoundManager:
     def play_sound(
         self,
         sound_name: str,
-        sound_type: Literal["alarm", "signal", "test"],
+        sound_volume: int,
     ) -> None:
         """Play chosen sound."""
-        volume_level = getattr(self._cm.config, f"{sound_type}_volume") / 100
-        self._sound_channel.set_volume(volume_level)
+        self._sound_channel.set_volume(sound_volume)
         sound = pygame.mixer.Sound(self.get_any_sound(sound_name).path)
         self._sound_channel.play(sound)
 
-    def play_alarm(self) -> None:
-        """Play alarm sounds."""
-        self.play_sound(self.get_used_alarm, "alarm")
-
-    def play_ambient_in_background(self) -> None:
+    def play_ambient_in_background(self, ambient_name: str) -> None:
         """Play ambient in background with set volume to 0."""
         self._ambient_channel.set_volume(0)
-        sound_path = self.get_any_sound(self._cm.config.ambient.name).path
+        sound_path = self.get_any_sound(ambient_name).path
         sound = pygame.mixer.Sound(sound_path)
         self._ambient_channel.play(sound)
 
@@ -214,9 +186,9 @@ class SoundManager:
         """Stop playing ambient in the background."""
         self._ambient_channel.stop()
 
-    def toggle_ambient(self, quite: bool) -> None:
+    def toggle_ambient(self, quite: bool, ambient_volume: int) -> None:
         """Turn on and off ambient."""
-        volume = 0 if quite else self._cm.config.ambient.volume / 100
+        volume = 0 if quite else ambient_volume / 100
         self._ambient_channel.set_volume(volume)
 
     def stop_sound(self) -> None:
