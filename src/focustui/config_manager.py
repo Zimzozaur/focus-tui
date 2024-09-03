@@ -25,9 +25,6 @@ SoundVolume = Annotated[
         le=MAX_VOLUME_LEVEL,
         default=DEFAULT_SOUND_VOLUME),
 ]
-SessionLength = Annotated[
-    int, Field(ge=MIN_SESSION_LEN, le=MAX_SESSION_LEN, default=DEFAULT_SESSION_LEN),
-]
 
 
 class _SoundModel(BaseModel):
@@ -60,10 +57,16 @@ class ConfigModel(BaseModel):
     alarm: AlarmModel = AlarmModel()
     signal: SignalModel = SignalModel()
     ambient: AmbientModel = AmbientModel()
-    session_length: int = Field(
-        ge=MIN_SESSION_LEN, le=MAX_SESSION_LEN, default=DEFAULT_SESSION_LEN,
-    )
+    session_length: int = DEFAULT_SESSION_LEN
     test_volume: SoundVolume = DEFAULT_SOUND_VOLUME
+
+    @field_validator("session_length")
+    def session_length_validator(cls, value: int):
+        if not (value == 0 or MIN_SESSION_LEN <= value <= MAX_SESSION_LEN):
+            msg = (f"{value=} must be 0 or between "
+                   f"{MIN_SESSION_LEN} and {MAX_SESSION_LEN}")
+            raise ValueError(msg)
+        return value
 
 
 def _load_and_validate_model() -> ConfigModel:
@@ -84,7 +87,7 @@ class ConfigManager:
     def __init__(self) -> None:
         self.config: ConfigModel = _load_and_validate_model()
 
-    def get_used_sound(self, sound_type: SoundType) -> str:
+    def get_sound_name(self, sound_type: SoundType) -> str:
         """Get from config.json name of chosen sound_type."""
         return getattr(self.config, sound_type).name
 
@@ -93,7 +96,7 @@ class ConfigManager:
         sound_type: SoundType,
         name: str,
     ) -> None:
-        """Update config.yaml with sound name and path."""
+        """Update config.json with new name."""
         getattr(self.config, sound_type).name = name
         self._save_config()
 

@@ -142,15 +142,15 @@ class SoundSettings(Grid):
     def initialize_sound_attributes(self) -> None:
         # Set alarm Select
         self.select_alarm = Select.from_values(self._sm.all_shorts_list)
-        self.select_alarm.prompt = f"Alarm: {self._cm.config.alarm.name}"
+        self.select_alarm.prompt = f"Alarm:{self._cm.get_sound_name("alarm")}"
         self.select_alarm.id = "alarm"
         # Set signal Select
         self.select_signal = Select.from_values(self._sm.all_shorts_list)
-        self.select_signal.prompt = f"Signal: {self._cm.config.signal.name}"
+        self.select_signal.prompt = f"Signal:{self._cm.get_sound_name("signal")}"
         self.select_signal.id = "signal"
         # Set ambient Select
         self.select_ambient = Select.from_values(self._sm.all_longs_list)
-        self.select_ambient.prompt = f"Ambient: {self._cm.config.ambient.name}"
+        self.select_ambient.prompt = f"Ambient: {self._cm.get_sound_name("ambient")}"
         self.select_ambient.id = "ambient"
         # Set test sound Select
         self.test_sound = Select.from_values(self._sm.all_sounds_list)
