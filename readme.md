@@ -1,4 +1,4 @@
-# FocusTUI: Your Distraction-Free Focus Session Tracker (WIP)
+# FocusTUI: Your Deep Focus Session Buddy. (WIP)
 ## Are you struggling to maintain focus in a world full of distractions?
 
 Say hello to FocusTUI - the minimalist, distraction-free focus session tracker that works straight from your terminal, no internet required. FocusTUI empowers you to create and track customized focus sessions with a highly personalized touch, ensuring you stay on track with your work, studies, or creative projects.

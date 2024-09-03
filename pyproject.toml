@@ -23,7 +23,9 @@ classifiers = [
 [project.optional-dependencies]
 dev = [
     "textual-dev~=1.5.1",
-    "ruff~=0.6.1"
+    "ruff~=0.6.1",
+    "pytest~=8.3.2",
+    "pytest-asyncio~=0.24.0",
 ]
 
 [project.urls]
@@ -71,3 +73,7 @@ ignore = [
     "RUF012",
     "SIM117"
 ]
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+asyncio_mode = "auto"
