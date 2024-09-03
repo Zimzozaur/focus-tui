@@ -171,7 +171,7 @@ class SoundManager:
         sound_volume: int,
     ) -> None:
         """Play chosen sound."""
-        self._sound_channel.set_volume(sound_volume)
+        self._sound_channel.set_volume(sound_volume / 100)
         sound = pygame.mixer.Sound(self.get_any_sound(sound_name).path)
         self._sound_channel.play(sound)
 
