@@ -26,6 +26,7 @@ dev = [
     "ruff~=0.6.1",
     "pytest~=8.3.2",
     "pytest-asyncio~=0.24.0",
+    "pytest-mock~=3.14.0",
 ]
 
 [project.urls]
@@ -46,7 +47,7 @@ paths = ["src/focustui/static/**"]
 focustui = "focustui.__main__:main"
 
 [tool.ruff]
-exclude = ["src/focustui/assets.py"]
+exclude = ["src/focustui/assets.py", "tests"]
 
 [tool.ruff.lint]
 select = [
@@ -74,6 +75,8 @@ ignore = [
     "SIM117"
 ]
 
+[pytest]
+mock_use_standalone_module = true
+
 [tool.pytest.ini_options]
 python_files = "test_*.py"
-asyncio_mode = "auto"
