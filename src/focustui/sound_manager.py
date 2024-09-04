@@ -18,18 +18,17 @@ class Sound:
     def __init__(
         self,
         path: Path,
-        sound_type: LengthType,
     ) -> None:
         self.path: Path = path
         self.parent: Path = path.parent
-        self.sound_type = sound_type
+        self.sound_type = path.parent.name
         self.full_name = path.name
         self.name: str = path.name.split(".")[0]
         self.extension: str = path.suffix
         self.is_default: bool = self.full_name in RESERVED_ALL_SOUNDS
 
     def __repr__(self) -> str:
-        return f"Sound({self.path}, '{self.sound_type}', {self.is_default})"
+        return f"Sound({self.path})"
 
     def __gt__(self, other) -> bool:
         if not isinstance(other, Sound):
@@ -42,14 +41,12 @@ class Sound:
         return self.name < other.name
 
 
-def create_sounds_dict(
-    path: Path, sound_type: LengthType,
-) -> dict[str, Sound]:
+def create_sounds_dict(path: Path) -> dict[str, Sound]:
     """Return dict of Sounds names and Sounds object mapped to them."""
     allowed_suffixes = {".wav", ".mp3", ".ogg", ".flac", ".opus"}
 
     return {
-        sound.name.split(".")[0]: Sound(sound, sound_type)
+        sound.name.split(".")[0]: Sound(sound)
         for sound in path.glob("*")
         if sound.suffix in allowed_suffixes
     }
@@ -75,8 +72,8 @@ class SoundManager:
         self._sound_channel = pygame.mixer.Channel(2)
         """Channel 1 is for alarm and signal, Channel 2 is for ambient"""
         # Dicts containing all songs found at start up
-        self._shorts_dict = create_sounds_dict(SHORT_PATH, "short")
-        self._longs_dict = create_sounds_dict(LONGS_PATH, "long")
+        self._shorts_dict = create_sounds_dict(SHORT_PATH)
+        self._longs_dict = create_sounds_dict(LONGS_PATH)
 
         # Never change them, those maps are used to check existence or list - GET ONLY
         self._all_sounds_dict = ChainMap(self._shorts_dict, self._longs_dict)
@@ -124,12 +121,12 @@ class SoundManager:
         old_file_path.rename(new_file_path)
 
         # Update dict
-        if sound.sound_type == "short":
+        if sound.sound_type == "shorts":
             del self._shorts_dict[sound.name]
-            self._shorts_dict[new_name] = Sound(new_file_path, "short")
+            self._shorts_dict[new_name] = Sound(new_file_path)
         else:
             del self._longs_dict[sound.name]
-            self._longs_dict[new_name] = Sound(new_file_path, "long")
+            self._longs_dict[new_name] = Sound(new_file_path)
 
     def add_sound(
         self,
@@ -146,7 +143,7 @@ class SoundManager:
             new_path = LONGS_PATH
             dict_ = self._longs_dict
 
-        sound = Sound(new_path / (name + extension), sound_type)
+        sound = Sound(new_path / (name + extension))
 
         dict_[name] = sound
         shutil.copy(path, sound.path)
