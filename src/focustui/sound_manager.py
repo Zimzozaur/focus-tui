@@ -21,7 +21,7 @@ class Sound:
     ) -> None:
         self.path: Path = path
         self.parent: Path = path.parent
-        self.sound_type = path.parent.name
+        self.sound_type = "short" if path.parent.name == "shorts" else "long"
         self.full_name = path.name
         self.name: str = path.name.split(".")[0]
         self.extension: str = path.suffix
@@ -121,7 +121,7 @@ class SoundManager:
         old_file_path.rename(new_file_path)
 
         # Update dict
-        if sound.sound_type == "shorts":
+        if sound.sound_type == "short":
             del self._shorts_dict[sound.name]
             self._shorts_dict[new_name] = Sound(new_file_path)
         else:
