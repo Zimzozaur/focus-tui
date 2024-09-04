@@ -16,7 +16,7 @@ from focustui.constants import (
 from focustui.db import DatabaseManager
 from focustui.sound_file_manager import SoundFileManager
 
-fake_api = SoundFileManager()
+sfm = SoundFileManager()
 db = DatabaseManager()
 
 
@@ -35,13 +35,13 @@ def setup_app() -> None:
     if not SHORT_PATH.exists():
         # Create shorts folder
         SHORT_PATH.mkdir()
-        for sound in fake_api.get_shorts():
+        for sound in sfm.get_shorts():
             shutil.copy(sound, SHORT_PATH)
 
     if not LONGS_PATH.exists():
         # Create longs folder
         LONGS_PATH.mkdir()
-        for sound in fake_api.get_longs():
+        for sound in sfm.get_longs():
             shutil.copy(sound, LONGS_PATH)
 
     if not DB_FILE_PATH.exists():
