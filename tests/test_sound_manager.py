@@ -1,9 +1,9 @@
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
-from focustui.sound_manager import Sound
-
+from focustui.sound_manager import Sound, create_sounds_dict
 
 ROOT = Path(__file__).parent.parent
 SOUND_PATH = "src/focustui/static/sounds/shorts/Braam.flac"
@@ -53,3 +53,28 @@ def test_sound_gt(sound_obj):
 def test_sound_lt(sound_obj):
     other = Sound(ROOT / "src/focustui/static/sounds/shorts/Woohoo.flac")
     assert other > sound_obj
+
+
+@pytest.mark.parametrize(
+    "extension",
+    (".wav", ".mp3", ".ogg", ".flac", ".opus")
+)
+def test_create_sounds_dict_correct_extensions(extension):
+    mock_file = Mock(spec=Path)
+    mock_file.name = f"sound1{extension}"
+    mock_file.suffix = extension
+    mock_path = Mock(spec=Path)
+    mock_path.glob.return_value = [mock_file]
+    assert len(create_sounds_dict(mock_path)) == 1
+
+
+def test_create_sounds_dict_wrong_extension():
+    mock_file = Mock(spec=Path)
+    mock_file.name = f"sound1.jpg"
+    mock_file.suffix = ".jpg"
+    mock_path = Mock(spec=Path)
+    mock_path.glob.return_value = [mock_file]
+    assert len(create_sounds_dict(mock_path)) == 0
+
+
+
