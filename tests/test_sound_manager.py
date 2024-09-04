@@ -2,8 +2,9 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
+from pytest_mock.plugin import MockerFixture
 
-from focustui.constants import LONGS_PATH, SHORTS_PATH, LengthType
+from focustui.constants import LONGS_PATH, SHORTS_PATH
 from focustui.sound_manager import Sound, create_sounds_dict, SoundManager
 
 ROOT = Path(__file__).parent.parent
@@ -16,6 +17,18 @@ LONG_PATH = "src/focustui/static/sounds/longs/"
 def sound_obj() -> Sound:
     path = ROOT / SOUND_PATH
     return Sound(path)
+
+
+@pytest.fixture
+def mock_get_any_sound(mocker: MockerFixture):
+    mock_function = mocker.patch(
+        "focustui.sound_manager.SoundManager.get_any_sound"
+    )
+    mock_function.return_value.path = (
+        Path(__file__).parent.parent
+        / "src/focustui/static/sounds/shorts" / "Acid_Bassline.flac"
+    )
+    return mock_function
 
 
 def test_sound_path(sound_obj):
@@ -78,25 +91,6 @@ def test_create_sounds_dict_wrong_extension():
     mock_path = Mock(spec=Path)
     mock_path.glob.return_value = [mock_file]
     assert len(create_sounds_dict(mock_path)) == 0
-
-
-"""
-Trzeba przygotowac 
-
-2 dzwieki ktorkie - default
-2 dzwieki krotkie - not default
-
-2 dzwieki dlugie - default
-2 dzwieki dlugie - not default
-
-podstawic je pod zmienne
-
-    self._shorts_dict 
-    self._longs_dict 
-
-Testowac funkcje
-
-"""
 
 
 def create_shorts_dict():
@@ -245,4 +239,27 @@ def test_remove_sound_long(sound_manager):
     with patch.object(Path, "unlink"):
         sound_manager.remove_sound("sound_2", "long")
     assert len(sound_manager._longs_dict) == 3
+
+
+def test_play_sound(sound_manager, mock_get_any_sound):
+    sound_manager.play_sound("what_ever", 1)
+    assert sound_manager._sound_channel.get_sound() is not None
+
+
+def test_play_ambient_in_background(sound_manager, mock_get_any_sound):
+    sound_manager.play_ambient_in_background("what_ever")
+    assert sound_manager._ambient_channel.get_volume() == 0
+    assert sound_manager._ambient_channel.get_sound() is not None
+
+
+def test_stop_ambient(sound_manager, mock_get_any_sound):
+    sound_manager.play_ambient_in_background("what_ever")
+    sound_manager.stop_ambient()
+    assert sound_manager._ambient_channel.get_sound() is None
+
+
+def test_stop_sound(sound_manager, mock_get_any_sound):
+    sound_manager.play_sound("what_ever", 1)
+    sound_manager.stop_sound()
+    assert sound_manager._sound_channel.get_sound() is None
 
