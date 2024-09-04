@@ -45,7 +45,7 @@ MAIN_DIR_PATH: Path = Path(user_data_dir()) / "focus-tui"
 
 # Sounds path
 SOUNDS_PATH: Path = MAIN_DIR_PATH / "sounds"
-SHORT_PATH: Path = SOUNDS_PATH / "shorts"
+SHORTS_PATH: Path = SOUNDS_PATH / "shorts"
 LONGS_PATH: Path = SOUNDS_PATH / "longs"
 
 # Others

@@ -7,7 +7,7 @@ import pygame
 from focustui.constants import (
     LONGS_PATH,
     RESERVED_ALL_SOUNDS,
-    SHORT_PATH,
+    SHORTS_PATH,
     LengthType,
 )
 
@@ -72,7 +72,7 @@ class SoundManager:
         self._sound_channel = pygame.mixer.Channel(2)
         """Channel 1 is for alarm and signal, Channel 2 is for ambient"""
         # Dicts containing all songs found at start up
-        self._shorts_dict = create_sounds_dict(SHORT_PATH)
+        self._shorts_dict = create_sounds_dict(SHORTS_PATH)
         self._longs_dict = create_sounds_dict(LONGS_PATH)
 
         # Never change them, those maps are used to check existence or list - GET ONLY
@@ -137,7 +137,7 @@ class SoundManager:
     ) -> None:
         """Add sound to right folder, create instance of Sound and to dict."""
         if sound_type == "short":
-            new_path = SHORT_PATH
+            new_path = SHORTS_PATH
             dict_ = self._shorts_dict
         else:
             new_path = LONGS_PATH

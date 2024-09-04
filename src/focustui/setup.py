@@ -9,7 +9,7 @@ from focustui.constants import (
     LONGS_PATH,
     MAIN_DIR_PATH,
     QUEUES_PATH,
-    SHORT_PATH,
+    SHORTS_PATH,
     SOUNDS_PATH,
     THEMES_PATH,
 )
@@ -32,11 +32,11 @@ def setup_app() -> None:
     _create_dir_if_not_exist(THEMES_PATH)
     _create_dir_if_not_exist(QUEUES_PATH)
     _create_dir_if_not_exist(SOUNDS_PATH)
-    if not SHORT_PATH.exists():
+    if not SHORTS_PATH.exists():
         # Create shorts folder
-        SHORT_PATH.mkdir()
+        SHORTS_PATH.mkdir()
         for sound in sfm.get_shorts():
-            shutil.copy(sound, SHORT_PATH)
+            shutil.copy(sound, SHORTS_PATH)
 
     if not LONGS_PATH.exists():
         # Create longs folder
