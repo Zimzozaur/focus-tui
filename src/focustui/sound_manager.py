@@ -15,10 +15,7 @@ from focustui.constants import (
 class Sound:
     """Class that represent sound file."""
 
-    def __init__(
-        self,
-        path: Path,
-    ) -> None:
+    def __init__(self, path: Path) -> None:
         self.path: Path = path
         self.parent: Path = path.parent
         self.sound_type: str = "short" if self.parent.name == "shorts" else "long"
@@ -106,7 +103,7 @@ class SoundManager:
         """Get Sound object by passing name of it."""
         return self._all_sounds_dict[name]
 
-    def exists_in_all_dicts(self, name: str) -> bool:
+    def is_duplicate(self, name: str) -> bool:
         """Check if the key exists in _all_shorts_longs_dict."""
         return bool(self._all_sounds_dict.get(name, False))
 
@@ -150,17 +147,11 @@ class SoundManager:
 
     def remove_sound(self, name: str, sound_type: LengthType) -> None:
         """Remove sound from users drive and update config if needed."""
-        # Remove from drive
         self._all_sounds_dict[name].path.unlink()
-        # Remove form dict
         if sound_type == "short":
             del self._shorts_dict[name]
         else:
             del self._longs_dict[name]
-
-    def sound_name_exist(self, name: str) -> bool:
-        """Check if the sound is already imported."""
-        return bool(self._all_sounds_dict.get(name, False))
 
     def play_sound(
         self,
