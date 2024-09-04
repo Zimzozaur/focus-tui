@@ -170,7 +170,7 @@ class SoundManager:
         sound = pygame.mixer.Sound(sound_path)
         self._ambient_channel.play(sound)
 
-    def stop_ambient_in_background(self) -> None:
+    def stop_ambient(self) -> None:
         """Stop playing ambient in the background."""
         self._ambient_channel.stop()
 

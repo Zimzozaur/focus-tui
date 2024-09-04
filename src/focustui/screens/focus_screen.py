@@ -179,7 +179,7 @@ class FocusScreen(Screen):
         self._focus_button.variant = "success"
         self._focus_button.label = "Focus"
         self._ambient_silent = True
-        self._sm.stop_ambient_in_background()
+        self._sm.stop_ambient()
 
     def _cancel_session(self) -> None:
         """Allow user to cancel timer in first
