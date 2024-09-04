@@ -1,8 +1,13 @@
 from pathlib import Path
 
 
-class FakeAPIClient:
-    """Used while testing app."""
+class SoundFileManager:
+    """Manages sound files bundled with the application.
+
+    This class provides methods to access the paths of short and long sound files
+    stored within the package. It is primarily used to copy these sound files
+    to the appropriate directories on the user's PC.
+    """
 
     current_dir: Path = Path(__file__).parent
     sounds: Path = current_dir / "static" / "sounds"

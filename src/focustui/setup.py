@@ -14,9 +14,9 @@ from focustui.constants import (
     THEMES_PATH,
 )
 from focustui.db import DatabaseManager
-from focustui.fake_api_client import FakeAPIClient
+from focustui.sound_file_manager import SoundFileManager
 
-fake_api = FakeAPIClient()
+fake_api = SoundFileManager()
 db = DatabaseManager()
 
 
