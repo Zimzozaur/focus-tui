@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Center, Horizontal
@@ -10,10 +8,6 @@ from textual.widgets import Button, Collapsible, Input, Static
 from focustui.constants import LengthType
 from focustui.modals import AddSoundTree, ConfirmPopup
 from focustui.widgets import Accordion
-
-if TYPE_CHECKING:
-    from focustui.sound_manager import SoundManager
-    from focustui.config_manager import ConfigManager
 
 
 def remove_id_suffix(string: str) -> str:
@@ -43,7 +37,6 @@ class EditSound(ModalScreen):
         super().__init__(*args, **kwargs)
         self._cm = cm
         self._sm = sm
-        # Type of sound, either 'alarm' or 'ambient'
         self.sound_type = sound_type
         if self.sound_type == "short":
             self.sounds_names = self._sm.user_shorts_list
@@ -101,7 +94,7 @@ class EditSound(ModalScreen):
         """Check is new sound name correct."""
         query = f"#{remove_id_suffix(event.input.id)}_rename"
         sound_name = event.input.value
-        disable = not sound_name or self._sm.exists_in_all_dicts(sound_name)
+        disable = not sound_name or self._sm.is_duplicate(sound_name)
         self.query_one(query).disabled = disable
 
     @on(Button.Pressed, ".sound-rename-bt")
