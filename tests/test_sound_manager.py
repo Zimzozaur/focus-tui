@@ -1,12 +1,15 @@
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
-from focustui.sound_manager import Sound, create_sounds_dict
+from focustui.constants import LONGS_PATH, SHORTS_PATH, LengthType
+from focustui.sound_manager import Sound, create_sounds_dict, SoundManager
 
 ROOT = Path(__file__).parent.parent
 SOUND_PATH = "src/focustui/static/sounds/shorts/Braam.flac"
+SHORT_PATH = "src/focustui/static/sounds/shorts/"
+LONG_PATH = "src/focustui/static/sounds/longs/"
 
 
 @pytest.fixture
@@ -77,4 +80,169 @@ def test_create_sounds_dict_wrong_extension():
     assert len(create_sounds_dict(mock_path)) == 0
 
 
+"""
+Trzeba przygotowac 
+
+2 dzwieki ktorkie - default
+2 dzwieki krotkie - not default
+
+2 dzwieki dlugie - default
+2 dzwieki dlugie - not default
+
+podstawic je pod zmienne
+
+    self._shorts_dict 
+    self._longs_dict 
+
+Testowac funkcje
+
+"""
+
+
+def create_shorts_dict():
+    paths: list[Path] = [Path(SHORT_PATH + f"sound_{i}.mp3")
+                         for i in [3, 1, 9, 7]]
+
+    mock_path = Mock(spec=Path)
+    mock_path.glob.return_value = paths
+
+    sound_dict: dict[str, Sound] = create_sounds_dict(mock_path)
+    sound_dict["sound_7"].is_default = True
+    sound_dict["sound_9"].is_default = True
+    return sound_dict
+
+
+def create_longs_dict():
+    paths: list[Path] = [Path(LONG_PATH + f"sound_{i}.mp3")
+                         for i in [2, 0, 10, 6]]
+
+    mock_path = Mock(spec=Path)
+    mock_path.glob.return_value = paths
+
+    sound_dict: dict[str, Sound] = create_sounds_dict(mock_path)
+    sound_dict["sound_6"].is_default = True
+    sound_dict["sound_10"].is_default = True
+    return sound_dict
+
+
+def custom_create_sounds_dict(path):
+    if path == SHORTS_PATH:
+        return create_shorts_dict()
+    elif path == LONGS_PATH:
+        return create_longs_dict()
+    raise ValueError
+
+
+@pytest.fixture
+def sound_manager():
+    with patch(
+        'focustui.sound_manager.create_sounds_dict',
+        side_effect=custom_create_sounds_dict
+    ):
+        manager = SoundManager()
+        yield manager
+
+
+def test_user_shorts_list(sound_manager):
+    result = sound_manager.user_shorts_list
+    assert result == ["sound_1", "sound_3"]
+
+
+def test_all_shorts_list(sound_manager):
+    result = sound_manager.all_shorts_list
+    assert result == ["sound_1", "sound_3", "sound_7", "sound_9"]
+
+
+def test_user_longs_list(sound_manager):
+    result = sound_manager.user_longs_list
+    assert result == ["sound_0", "sound_2"]
+
+
+def test_all_longs_list(sound_manager):
+    result = sound_manager.all_longs_list
+    assert result == ["sound_0", "sound_10", "sound_2", "sound_6"]
+
+
+def test_all_sounds_list(sound_manager):
+    print(sound_manager.all_sounds_list)
+    result = sound_manager.all_sounds_list
+    assert result == [
+        "sound_0", "sound_1", "sound_10", "sound_2",
+        "sound_3", "sound_6", "sound_7", "sound_9"
+    ]
+
+
+def test_get_user_short(sound_manager):
+    user_short = "sound_3"
+    result = sound_manager.get_any_sound(user_short)
+    assert result.name == user_short
+
+
+def test_get_short(sound_manager):
+    short = "sound_7"
+    result = sound_manager.get_any_sound(short)
+    assert result.name == short
+
+
+def test_get_user_long(sound_manager):
+    user_long = "sound_2"
+    result = sound_manager.get_any_sound(user_long)
+    assert result.name == user_long
+
+
+def test_get_long(sound_manager):
+    long = "sound_6"
+    result = sound_manager.get_any_sound(long)
+    assert result.name == long
+
+
+def test_is_duplicate_short_dup(sound_manager):
+    assert sound_manager.is_duplicate("sound_1")
+
+
+def test_is_duplicate_short_no_dup(sound_manager):
+    assert not sound_manager.is_duplicate("sound_30")
+
+
+def test_is_duplicate_long_dup(sound_manager):
+    assert sound_manager.is_duplicate("sound_0")
+
+
+def test_is_duplicate_long_no_dup(sound_manager):
+    assert not sound_manager.is_duplicate("sound_30")
+
+
+@pytest.mark.parametrize(
+    ("old_name", "new_name"),
+    (("sound_1", "short"), ("sound_2", "long"))
+)
+def test_rename_sound_short(sound_manager, old_name, new_name):
+    with patch.object(Path, 'rename'):
+        sound_manager.rename_sound(old_name, new_name)
+    assert sound_manager.is_duplicate(new_name)
+    assert not sound_manager.is_duplicate(old_name)
+
+
+def test_add_sound_short(sound_manager):
+    with patch("shutil.copy"):
+        sound_manager.add_sound(Mock(spec=Path), "Mario", ".flac", "short")
+    assert len(sound_manager._shorts_dict) == 5
+
+
+def test_add_sound_long(sound_manager):
+    with patch("shutil.copy"):
+        sound_manager.add_sound(Mock(spec=Path), "Mario", ".flac", "long")
+    assert len(sound_manager._longs_dict) == 5
+
+
+def test_remove_sound_short(sound_manager):
+    with patch.object(Path, "unlink"):
+        sound_manager.remove_sound("sound_3", "short")
+    assert len(sound_manager._shorts_dict) == 3
+
+
+def test_remove_sound_long(sound_manager):
+    with patch.object(Path, "unlink"):
+        sound_manager.remove_sound("sound_2", "long")
+    assert len(sound_manager._longs_dict) == 3
 
