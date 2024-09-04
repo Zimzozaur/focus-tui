@@ -18,7 +18,7 @@ LengthType = Literal["short", "long"]
 #      Custom Settings      #
 #############################
 
-load_dotenv(override=True)
+load_dotenv()
 
 # is Debug mode on
 FOCUSTUI_DEBUG: bool = os.getenv("FOCUSTUI_DEBUG") == "True"
