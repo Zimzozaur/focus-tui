@@ -21,8 +21,8 @@ class Sound:
     ) -> None:
         self.path: Path = path
         self.parent: Path = path.parent
-        self.sound_type = "short" if path.parent.name == "shorts" else "long"
-        self.full_name = path.name
+        self.sound_type: str = "short" if self.parent.name == "shorts" else "long"
+        self.full_name: str = path.name
         self.name: str = path.name.split(".")[0]
         self.extension: str = path.suffix
         self.is_default: bool = self.full_name in RESERVED_ALL_SOUNDS
