@@ -75,6 +75,6 @@ DEFAULT_SOUND_VOLUME: int = 50
 MIN_VOLUME_LEVEL: int = 1
 MAX_VOLUME_LEVEL: int = 100
 
-DISCORD_INVITATION = "https://discord.gg/sztAyNdu"
+DISCORD_INVITATION = "https://discord.gg/JF44rr67Ng"
 PROJECT_GITHUB = "https://github.com/Zimzozaur/focus-tui"
 SIMONS_X_ACCOUNT = "https://x.com/zimzozaur"
