@@ -44,12 +44,12 @@ def setup_app() -> None:
         for sound in sfm.get_longs():
             shutil.copy(sound, LONGS_PATH)
 
-    if not DB_FILE_PATH.exists():
+    # if not DB_FILE_PATH.exists():
         # Create SQLite database file
-        Path(DB_FILE_PATH).touch()
+        # Path(DB_FILE_PATH).touch()
         # This is the only place where
         # this methods should be used
-        db.db_setup()
+        # db.db_setup()
 
     if not CONFIG_FILE_PATH.exists():
         # Create config.json file

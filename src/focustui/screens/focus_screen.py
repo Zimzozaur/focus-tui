@@ -148,7 +148,7 @@ class FocusScreen(Screen):
 
     def _successful_session(self) -> None:
         """Play song, add successful session to DB and reset clock."""
-        self._db.create_session_entry(self._session_len // 60, 1)
+        # self._db.create_session_entry(self._session_len // 60, 1)
         self._reset_timer()
         alarm = self._cm.config.alarm
         self._sm.play_sound(
@@ -162,7 +162,7 @@ class FocusScreen(Screen):
             return
 
         focused_for = (self._session_len - self._remaining_session) // MINUTE
-        self._db.create_session_entry(focused_for, 0)
+        # self._db.create_session_entry(focused_for, 0)
         self._reset_timer()
 
     def _reset_timer(self) -> None:
