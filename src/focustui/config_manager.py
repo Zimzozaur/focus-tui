@@ -29,7 +29,7 @@ SoundVolume = Annotated[
 
 class _SoundModel(BaseModel):
     name: str
-    volume: SoundVolume
+    volume: SoundVolume = SoundVolume()
 
     @field_validator("name")
     def validate_name(cls, string: str) -> str:
