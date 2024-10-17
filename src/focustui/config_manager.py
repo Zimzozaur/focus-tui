@@ -23,13 +23,13 @@ SoundVolume = Annotated[
     int, Field(
         ge=MIN_VOLUME_LEVEL,
         le=MAX_VOLUME_LEVEL,
-        default=DEFAULT_SOUND_VOLUME),
+    ),
 ]
 
 
 class _SoundModel(BaseModel):
     name: str
-    volume: SoundVolume = SoundVolume()
+    volume: SoundVolume = DEFAULT_SOUND_VOLUME
 
     @field_validator("name")
     def validate_name(cls, string: str) -> str:
