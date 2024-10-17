@@ -6,9 +6,10 @@ from textual.screen import Screen
 from textual.widgets import Button, Footer, Input
 
 from focustui.composite_widgets import ClockDisplay
-from focustui.constants import MAX_SESSION_LEN, MIN_SESSION_LEN, MINUTE
+from focustui.constants import MIN_SESSION_LEN, MINUTE
 from focustui.modals import ConfirmPopup
-from focustui.validators import StopwatchOrTimer
+from focustui.widgets import HourMinInput, MinInput
+from focustui.utils import int_to_hour_min
 
 if TYPE_CHECKING:
     from focustui.config_manager import ConfigManager
@@ -16,15 +17,12 @@ if TYPE_CHECKING:
     from focustui.sound_manager import SoundManager
 
 
-tooltip = (f"Type 0 to set stopwatch or\nbetween {MIN_SESSION_LEN} and "
-           f"{MAX_SESSION_LEN} to set timer.")
-
-
 class FocusScreen(Screen):
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
         ("ctrl+s", "open_settings", "Settings"),
         ("ctrl+a", "play_ambient", "Play/Pause Ambient"),
+        ("ctrl+j", "toggle_input", "Toggle Input"),
     ]
 
     def action_quit_app(self) -> None:
@@ -40,6 +38,18 @@ class FocusScreen(Screen):
             self._ambient_silent,
             self._cm.config.ambient.volume,
         )
+
+    async def action_toggle_input(self):
+        """Toggle between _minute_input and _hour_min_input also recompose UI."""
+        if isinstance(self._session_len_input, HourMinInput):
+            self._session_len_input = MinInput(cm=self._cm)
+            self._cm.change_time_input_mode("minute")
+        else:
+            self._session_len_input = HourMinInput(cm=self._cm)
+            self._cm.change_time_input_mode("hour_minute")
+
+        await self.recompose()
+        self._session_len_input.focus()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If clock is active allow to toggle ambient and hide rest."""
@@ -58,17 +68,13 @@ class FocusScreen(Screen):
         self._db = db
         self._sm = sm
 
+        if self._cm.get_time_input_mode() == "minute":
+            self._session_len_input = MinInput(cm=self._cm)
+        else:
+            self._session_len_input = HourMinInput(cm=self._cm)
+
         self._clock_display = ClockDisplay()
         self._focus_button = Button("Focus", variant="success", id="focus-bt")
-        self._session_len_input = Input(
-            value=str(self._cm.get_session_length()),
-            placeholder=f"Type 0 or {MIN_SESSION_LEN}-{MAX_SESSION_LEN}",
-            restrict=r"^(?:[0-9]|[1-9][0-9]{1,2})$",
-            validators=[StopwatchOrTimer()],
-            id="session-duration",
-            tooltip=tooltip,
-
-        )
         self._active_session = False
         self._session_len: int = self._cm.get_session_length()
         self._remaining_session: int = 0
@@ -102,14 +108,19 @@ class FocusScreen(Screen):
     @on(Input.Changed, "#session-duration")
     def _is_valid_session_length(self, event: Input.Changed) -> None:
         """If the session duration is not correct block start button."""
-        self._focus_button.disabled = not event.input.is_valid
+        is_valid: bool = event.input.is_valid
+        self._focus_button.disabled = not is_valid
+        if is_valid:
+            self._cm.update_session_length(
+                self._session_len_input.formated_value,
+            )
 
     def _start_session(self) -> None:
         """Start a Timer session."""
         self._active_session = True
-        self.app.refresh_bindings()  # Deactivate Bindings
+        self.app.refresh_bindings()  # Deactivates Bindings
         self._session_len_input.visible = False
-        self._session_len = int(self._session_len_input.value) * MINUTE
+        self._session_len = self._session_len_input.formated_value * MINUTE
         self._mode = "stopwatch" if self._session_len == 0 else "timer"
         if self._mode == "timer":
             self._remaining_session = self._session_len
@@ -119,7 +130,6 @@ class FocusScreen(Screen):
 
         cancel_session = self.set_interval(1, self._cancel_session)
         self._intervals.extend([update_clock, cancel_session])
-        self._cm.update_session_length(int(self._session_len_input.value))
         self._focus_button.variant = "warning"
         self._sm.play_ambient_in_background(
             ambient_name=self._cm.config.ambient.name,
