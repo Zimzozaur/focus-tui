@@ -11,12 +11,14 @@ from focustui.constants import (
     DEFAULT_SESSION_LEN,
     DEFAULT_SIGNAL_NAME,
     DEFAULT_SOUND_VOLUME,
+    DEFAULT_TIME_INPUT_TYPE,
     MAX_SESSION_LEN,
     MAX_VOLUME_LEVEL,
     MIN_SESSION_LEN,
     MIN_VOLUME_LEVEL,
     SoundType,
     VolumeType,
+    InputModeType,
 )
 
 SoundVolume = Annotated[
@@ -59,6 +61,7 @@ class ConfigModel(BaseModel):
     ambient: AmbientModel = AmbientModel()
     session_length: int = DEFAULT_SESSION_LEN
     test_volume: SoundVolume = DEFAULT_SOUND_VOLUME
+    input_mode_type: InputModeType = DEFAULT_TIME_INPUT_TYPE
 
     @field_validator("session_length")
     def session_length_validator(cls, value: int):
@@ -150,3 +153,10 @@ class ConfigManager:
     def _save_config(self) -> None:
         with Path(CONFIG_FILE_PATH).open("w") as file:
             json.dump(self.config.model_dump(), file, sort_keys=False)
+
+    def get_time_input_mode(self) -> InputModeType:
+        return self.config.input_mode_type
+
+    def change_time_input_mode(self, new: InputModeType) -> None:
+        self.config.input_mode_type = new
+        self._save_config()

@@ -13,6 +13,7 @@ from platformdirs import user_data_dir
 VolumeType = Literal["alarm_volume", "signal_volume", "ambient_volume", "test_volume"]
 SoundType = Literal["alarm", "signal", "ambient"]
 LengthType = Literal["short", "long"]
+InputModeType = Literal["minute", "hour_minute"]
 
 
 #############################
@@ -75,6 +76,8 @@ RESERVED_ALL_SOUNDS: set = RESERVED_SHORTS | RESERVED_LONG
 DEFAULT_SOUND_VOLUME: int = 50
 MIN_VOLUME_LEVEL: int = 1
 MAX_VOLUME_LEVEL: int = 100
+
+DEFAULT_TIME_INPUT_TYPE: InputModeType = "minute"
 
 HOURS_MINUTES_TIMER_PATTERN: re.Pattern = re.compile(r"^(0|[0-3]:[0-5]?[0-9])$")
 
