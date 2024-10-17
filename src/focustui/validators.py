@@ -20,7 +20,7 @@ class StopwatchOrTimer(Validator):
 class StopwatchOrTimerHour(Validator):
     def validate(self, value: str) -> ValidationResult:
         pattern_bool = bool(HOURS_MINUTES_TIMER_PATTERN.match(value))
-        forbidden_patter = ["0:00", "0:0"]
+        forbidden_patter: tuple = ("0:00", "0:0")
         if pattern_bool and value not in forbidden_patter:
             return self.success()
         return self.failure()
