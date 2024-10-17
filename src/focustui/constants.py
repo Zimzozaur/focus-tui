@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from typing import Literal
 
@@ -74,6 +75,8 @@ RESERVED_ALL_SOUNDS: set = RESERVED_SHORTS | RESERVED_LONG
 DEFAULT_SOUND_VOLUME: int = 50
 MIN_VOLUME_LEVEL: int = 1
 MAX_VOLUME_LEVEL: int = 100
+
+HOURS_MINUTES_TIMER_PATTERN: re.Pattern = re.compile(r"^(0|[0-3]:[0-5]?[0-9])$")
 
 DISCORD_INVITATION = "https://discord.gg/JF44rr67Ng"
 PROJECT_GITHUB = "https://github.com/Zimzozaur/focus-tui"
