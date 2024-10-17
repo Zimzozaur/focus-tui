@@ -5,7 +5,7 @@ from focustui.constants import MAX_SESSION_LEN as MAX_S_LEN
 from focustui.constants import MAX_VOLUME_LEVEL as MAX_V_LEV
 from focustui.constants import MIN_SESSION_LEN as MIN_S_LEN
 from focustui.constants import MIN_VOLUME_LEVEL as MIN_V_LEV
-from focustui.widgets import hour_min_session_len
+from focustui.utils import hour_min_session_len
 
 FORBIDDEN_PATTER: tuple = ("0:00", "0:0")
 
@@ -13,6 +13,7 @@ FORBIDDEN_PATTER: tuple = ("0:00", "0:0")
 class StopwatchOrTimer(Validator):
     def validate(self, value: str) -> ValidationResult:
         if (
+                len(value) != 0 and
                 value.isdigit() and
                 (int(value) == 0 or MIN_S_LEN <= int(value) <= MAX_S_LEN)
         ):
