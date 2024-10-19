@@ -23,7 +23,7 @@ def remove_id_suffix(string: str) -> str:
 
 
 class EditSound(ModalScreen):
-    """EditSound allow user to perform CUD operation on sounds."""
+    """EditSound allow user to perform CRUD operation on sounds."""
 
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
