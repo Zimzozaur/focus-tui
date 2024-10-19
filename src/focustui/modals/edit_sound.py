@@ -37,8 +37,8 @@ class EditSound(ModalScreen):
         super().__init__(*args, **kwargs)
         self._cm = cm
         self._sm = sm
-        self.sound_type = sound_type
-        if self.sound_type == "short":
+        self._sound_type = sound_type
+        if self._sound_type == "short":
             self.sounds_names = self._sm.user_shorts_list
         else:
             self.sounds_names = self._sm.user_longs_list
@@ -84,7 +84,7 @@ class EditSound(ModalScreen):
             yield Static(id="add-sound-divider")
             with Center(id="add-sound-wrapper"):
                 yield Button(
-                    f"Add {'Sound' if self.sound_type != 'long' else 'Ambient'}",
+                    f"Add {'Sound' if self._sound_type != 'long' else 'Ambient'}",
                     variant="primary",
                     id="add-sound-bt",
                 )
@@ -109,7 +109,7 @@ class EditSound(ModalScreen):
 
         # Update DOM
         await self.recompose_(None)
-        if self.sound_type == "long":
+        if self._sound_type == "long":
             self.notify("Changed name of an ambient")
         else:
             self.notify("Changed name of a sound")
@@ -129,7 +129,7 @@ class EditSound(ModalScreen):
             # if removed sound that is already used
             if self._cm.is_sound_in_config(sound_name):
                 self._cm.update_sound_name(sound_name)
-            self._sm.remove_sound(sound_name, self.sound_type)
+            self._sm.remove_sound(sound_name, self._sound_type)
             self.notify("Sound has been remove")
             await self.recompose_(None)
 
@@ -142,13 +142,13 @@ class EditSound(ModalScreen):
         """Push AddSoundTree that allow user to add new songs."""
         await self.app.push_screen(
             AddSoundTree(
-                self.sound_type, sm=self._sm),
+                self._sound_type, sm=self._sm),
             self.recompose_,
         )
 
     async def recompose_(self, arg_from_callback) -> None:
         """Update list before recompose."""
-        if self.sound_type == "short":
+        if self._sound_type == "short":
             self.sounds_names = self._sm.user_shorts_list
         else:
             self.sounds_names = self._sm.user_longs_list
