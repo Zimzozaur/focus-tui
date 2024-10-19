@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Center, Horizontal
@@ -8,6 +10,11 @@ from textual.widgets import Button, Collapsible, Input, Static
 from focustui.constants import LengthType
 from focustui.modals import AddSoundTree, ConfirmPopup
 from focustui.widgets import Accordion
+
+if TYPE_CHECKING:
+    from focustui.config_manager import ConfigManager
+    from focustui.sound_manager import SoundManager
+
 
 
 def remove_id_suffix(string: str) -> str:
