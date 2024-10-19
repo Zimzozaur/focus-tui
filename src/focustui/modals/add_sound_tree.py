@@ -76,9 +76,7 @@ class AddSoundTree(ModalScreen):
         sound = soundify(event.path.name.split(".")[0])
 
         if self._sm.is_duplicate(sound):
-            message = (
-                "Sound name already in use.\nPlease change it before importing."
-            )
+            message = "Sound name already in use."
             self.notify(message, severity="error")
             return
 
