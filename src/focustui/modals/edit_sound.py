@@ -46,9 +46,9 @@ class EditSound(ModalScreen):
         self._sm = sm
         self._sound_type = sound_type
         if self._sound_type == "short":
-            self.sounds_names = self._sm.user_shorts_list
+            self._sounds_names = self._sm.user_shorts_list
         else:
-            self.sounds_names = self._sm.user_longs_list
+            self._sounds_names = self._sm.user_longs_list
 
     def action_close_popup(self) -> None:
         self.dismiss(True)
@@ -65,7 +65,7 @@ class EditSound(ModalScreen):
     def compose(self) -> ComposeResult:
         restriction = r"^[a-zA-Z0-9_-]+$"
         with Accordion(id="sounds-accordion"):
-            for name in self.sounds_names:
+            for name in self._sounds_names:
                 with Collapsible(
                         title=name, classes="sound-collapsible", id=f"{name}_coll",
                 ):
@@ -156,7 +156,7 @@ class EditSound(ModalScreen):
     async def recompose_(self, arg_from_callback) -> None:
         """Update list before recompose."""
         if self._sound_type == "short":
-            self.sounds_names = self._sm.user_shorts_list
+            self._sounds_names = self._sm.user_shorts_list
         else:
-            self.sounds_names = self._sm.user_longs_list
+            self._sounds_names = self._sm.user_longs_list
         await self.recompose()
