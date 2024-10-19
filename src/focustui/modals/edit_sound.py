@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 def remove_id_suffix(string: str) -> str:
     """Remove _something from the end of the string."""
-    return string[: string.rindex("_")]
+    return string[:string.rindex("_")]
 
 
 class EditSound(ModalScreen):
@@ -33,12 +33,12 @@ class EditSound(ModalScreen):
         self.app.exit()
 
     def __init__(
-            self,
-            sound_type: LengthType,
-            sm: "SoundManager",
-            cm: "ConfigManager",
-            *args: tuple,
-            **kwargs: dict,
+        self,
+        sound_type: LengthType,
+        sm: "SoundManager",
+        cm: "ConfigManager",
+        *args: tuple,
+        **kwargs: dict,
     ) -> None:
         super().__init__(*args, **kwargs)
         self._cm = cm
