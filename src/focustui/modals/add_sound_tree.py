@@ -24,10 +24,8 @@ def get_users_folder() -> str:
         return os.path.expandvars("%SystemDrive%\\Users")
     if users_system == "Darwin":
         return "/Users"
-    msg = "Functionality not implemented for this operating system."
-    raise NotImplementedError(
-        msg,
-    )
+    msg = "App does not support this operating system."
+    raise NotImplementedError(msg)
 
 
 def soundify(sound: str):
