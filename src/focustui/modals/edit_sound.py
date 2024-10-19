@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from focustui.sound_manager import SoundManager
 
 
-
 def remove_id_suffix(string: str) -> str:
     """Remove _something from the end of the string."""
     return string[: string.rindex("_")]
