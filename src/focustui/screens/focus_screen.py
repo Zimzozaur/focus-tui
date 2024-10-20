@@ -9,7 +9,6 @@ from focustui.composite_widgets import ClockDisplay
 from focustui.constants import MIN_SESSION_LEN, MINUTE
 from focustui.modals import ConfirmPopup
 from focustui.widgets import HourMinInput, MinInput
-from focustui.utils import int_to_hour_min
 
 if TYPE_CHECKING:
     from focustui.config_manager import ConfigManager

@@ -16,9 +16,9 @@ from focustui.constants import (
     MAX_VOLUME_LEVEL,
     MIN_SESSION_LEN,
     MIN_VOLUME_LEVEL,
+    InputModeType,
     SoundType,
     VolumeType,
-    InputModeType,
 )
 
 SoundVolume = Annotated[

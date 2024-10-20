@@ -9,11 +9,7 @@ from focustui.constants import (
     MIN_VOLUME_LEVEL,
 )
 from focustui.utils import hour_min_session_len, int_to_hour_min
-from focustui.validators import (
-    StopwatchOrTimer,
-    StopwatchOrTimerHour,
-    ValueFrom1to100
-)
+from focustui.validators import StopwatchOrTimer, StopwatchOrTimerHour, ValueFrom1to100
 
 if TYPE_CHECKING:
     from focustui.config_manager import ConfigManager
