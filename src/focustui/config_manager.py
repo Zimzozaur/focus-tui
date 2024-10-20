@@ -1,8 +1,7 @@
 import json
 from pathlib import Path
-from typing import Annotated
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from focustui.constants import (
     CONFIG_FILE_PATH,
@@ -21,17 +20,13 @@ from focustui.constants import (
     VolumeType,
 )
 
-SoundVolume = Annotated[
-    int, Field(
-        ge=MIN_VOLUME_LEVEL,
-        le=MAX_VOLUME_LEVEL,
-    ),
-]
-
 
 class _SoundModel(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    # Fields
     name: str
-    volume: SoundVolume = DEFAULT_SOUND_VOLUME
+    volume: int = DEFAULT_SOUND_VOLUME
 
     @field_validator("name")
     def validate_name(cls, string: str) -> str:
@@ -41,6 +36,13 @@ class _SoundModel(BaseModel):
                        "dash or apostrophe are allowed in sound name")
                 raise ValueError(msg)
         return string
+
+    @field_validator("volume")
+    def validate_volume(cls, value: int) -> int:
+        """Set to default when value is not correct."""
+        if value < MIN_VOLUME_LEVEL or value > MAX_VOLUME_LEVEL:
+            return DEFAULT_SOUND_VOLUME
+        return value
 
 
 class AlarmModel(_SoundModel):
@@ -56,19 +58,26 @@ class AmbientModel(_SoundModel):
 
 
 class ConfigModel(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    # Fields
     alarm: AlarmModel = AlarmModel()
     signal: SignalModel = SignalModel()
     ambient: AmbientModel = AmbientModel()
     session_length: int = DEFAULT_SESSION_LEN
-    test_volume: SoundVolume = DEFAULT_SOUND_VOLUME
+    test_volume: int = DEFAULT_SOUND_VOLUME
     input_mode_type: InputModeType = DEFAULT_TIME_INPUT_TYPE
 
     @field_validator("session_length")
     def session_length_validator(cls, value: int):
         if not (value == 0 or MIN_SESSION_LEN <= value <= MAX_SESSION_LEN):
-            msg = (f"{value=} must be 0 or between "
-                   f"{MIN_SESSION_LEN} and {MAX_SESSION_LEN}")
-            raise ValueError(msg)
+            return DEFAULT_SESSION_LEN
+        return value
+
+    @field_validator("test_volume")
+    def validate_volume(cls, value: int) -> int:
+        if value < MIN_VOLUME_LEVEL or value > MAX_VOLUME_LEVEL:
+            return DEFAULT_SOUND_VOLUME
         return value
 
 
