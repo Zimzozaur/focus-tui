@@ -5,7 +5,6 @@ from pathlib import Path
 from focustui.config_manager import ConfigModel
 from focustui.constants import (
     CONFIG_FILE_PATH,
-    DB_FILE_PATH,
     LONGS_PATH,
     MAIN_DIR_PATH,
     QUEUES_PATH,
