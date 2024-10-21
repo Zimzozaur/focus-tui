@@ -6,6 +6,7 @@ from focustui.sound_manager import SoundManager
 
 
 def main() -> None:
+    """Start app."""
     setup_app()
     FocusTUI(
         db=DatabaseManager(),

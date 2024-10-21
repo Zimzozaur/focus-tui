@@ -44,11 +44,11 @@ def setup_app() -> None:
             shutil.copy(sound, LONGS_PATH)
 
     # if not DB_FILE_PATH.exists():
-        # Create SQLite database file
-        # Path(DB_FILE_PATH).touch()
-        # This is the only place where
-        # this methods should be used
-        # db.db_setup()
+    # Create SQLite database file
+    # Path(DB_FILE_PATH).touch()  # noqa: ERA001
+    # This is the only place where
+    # this methods should be used
+    # db.db_setup()  # noqa: ERA001
 
     if not CONFIG_FILE_PATH.exists():
         # Create config.json file

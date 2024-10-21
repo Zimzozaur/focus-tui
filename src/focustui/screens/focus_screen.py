@@ -157,7 +157,7 @@ class FocusScreen(Screen):
 
     def _successful_session(self) -> None:
         """Play song, add successful session to DB and reset clock."""
-        # self._db.create_session_entry(self._session_len // 60, 1)
+        # self._db.create_session_entry(self._session_len // 60, 1)  # noqa: ERA001
         self._reset_timer()
         alarm = self._cm.config.alarm
         self._sm.play_sound(
@@ -170,8 +170,8 @@ class FocusScreen(Screen):
         if not should_kill:
             return
 
-        focused_for = (self._session_len - self._remaining_session) // MINUTE
-        # self._db.create_session_entry(focused_for, 0)
+        focused_for = (self._session_len - self._remaining_session) // MINUTE  # noqa: F841
+        # self._db.create_session_entry(focused_for, 0)  # noqa: ERA001
         self._reset_timer()
 
     def _reset_timer(self) -> None:
@@ -197,9 +197,8 @@ class FocusScreen(Screen):
         self._cancel_session_remaining -= 1
         if self._cancel_session_remaining > 0:
             self._focus_button.label = f"Cancel ({self._cancel_session_remaining})"
-        elif (
-            self._mode == "timer" or
-            (self._mode == "stopwatch" and self._session_len < self._min_length)
+        elif self._mode == "timer" or (
+            self._mode == "stopwatch" and self._session_len < self._min_length
         ):
             self._focus_button.label = "Kill"
             self._focus_button.variant = "error"

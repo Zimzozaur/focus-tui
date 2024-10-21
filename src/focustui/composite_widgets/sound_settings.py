@@ -22,8 +22,10 @@ if TYPE_CHECKING:
 
 def create_tooltip(volume_type: SoundType | Literal["test"]) -> str:
     """Return a tooltip string with volume_type interpolated."""
-    return (f"Type value between {MIN_VOLUME_LEVEL} and {MAX_VOLUME_LEVEL}\nto "
-            f"set {volume_type} volume.")
+    return (
+        f"Type value between {MIN_VOLUME_LEVEL} and {MAX_VOLUME_LEVEL}\nto "
+        f"set {volume_type} volume."
+    )
 
 
 class SoundSettings(Grid):
@@ -91,7 +93,7 @@ class SoundSettings(Grid):
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
         """Open Sounds Edit menu and refresh page if changes where applied."""
 
-        async def reinit_and_recompose_sound_settings(arg) -> None:
+        async def reinit_and_recompose_sound_settings(arg) -> None:  # noqa: ARG001
             """Restart initialization and recompose."""
             self.initialize_sound_attributes()
             await self.recompose()
