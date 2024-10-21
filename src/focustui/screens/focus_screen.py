@@ -19,13 +19,15 @@ if TYPE_CHECKING:
 
 class FocusScreen(Screen):
     _ambient_silent = reactive(False, bindings=True)
+    _input_mode = reactive("PLACEHOLDER", bindings=True)
 
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
         ("ctrl+s", "open_settings", "Settings"),
         ("ctrl+a", "play_ambient", "Play Ambient"),
         ("ctrl+a", "stop_ambient", "Stop Ambient"),
-        ("ctrl+j", "toggle_input", "Toggle Input"),
+        ("ctrl+j", "min_input", "Min Input"),
+        ("ctrl+j", "hour_input", "Hour Input"),
     ]
 
     def action_quit_app(self) -> None:
@@ -49,20 +51,25 @@ class FocusScreen(Screen):
             self._cm.config.ambient.volume,
         )
 
-    async def action_toggle_input(self):
-        """Toggle between _minute_input and _hour_min_input also recompose UI."""
-        if isinstance(self._session_len_input, HourMinInput):
-            self._session_len_input = MinInput(cm=self._cm)
-            self._cm.change_time_input_mode("minute")
-        else:
-            self._session_len_input = HourMinInput(cm=self._cm)
-            self._cm.change_time_input_mode("hour_minute")
-
+    async def action_hour_input(self):
+        self._session_len_input = HourMinInput(cm=self._cm)
+        self._cm.change_time_input_mode("hour_minute")
+        self._input_mode = self._cm.get_time_input_mode()
         await self.recompose()
         self._session_len_input.focus()
 
-    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+    async def action_min_input(self):
+        self._session_len_input = MinInput(cm=self._cm)
+        self._cm.change_time_input_mode("minute")
+        self._input_mode = self._cm.get_time_input_mode()
+        await self.recompose()
+        self._session_len_input.focus()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:  # noqa: PLR0911
         """If clock is active allow to toggle ambient and hide rest."""
+        if self._active_session and action not in ("play_ambient", "stop_ambient"):
+            return False
+
         if action in ("play_ambient", "stop_ambient") and not self._active_session:
             return False
         if action == "play_ambient" and self._ambient_silent:
@@ -70,13 +77,22 @@ class FocusScreen(Screen):
         if action == "stop_ambient" and not self._ambient_silent:
             return True
 
+        if action == "min_input" and isinstance(self._session_len_input, HourMinInput):
+            return True
+        if action == "min_input" and isinstance(self._session_len_input, MinInput):
+            return False
+        if action == "hour_input" and isinstance(self._session_len_input, MinInput):
+            return True
+        if action == "hour_input" and isinstance(self._session_len_input, HourMinInput):
+            return False
+
         return not self._active_session
 
     def __init__(
-        self,
-        cm: "ConfigManager",
-        db: "DatabaseManager",
-        sm: "SoundManager",
+            self,
+            cm: "ConfigManager",
+            db: "DatabaseManager",
+            sm: "SoundManager",
     ) -> None:
         super().__init__()
         self._cm = cm
@@ -97,6 +113,7 @@ class FocusScreen(Screen):
         self._intervals = []
         self._mode: Literal["stopwatch", "timer"] | None = None
         self._min_length: int = MIN_SESSION_LEN * MINUTE
+        self._input_mode = self._cm.get_time_input_mode()
 
     def compose(self):
         with Horizontal(id="clock-wrapper"):
@@ -213,7 +230,7 @@ class FocusScreen(Screen):
         if self._cancel_session_remaining > 0:
             self._focus_button.label = f"Cancel ({self._cancel_session_remaining})"
         elif self._mode == "timer" or (
-            self._mode == "stopwatch" and self._session_len < self._min_length
+                self._mode == "stopwatch" and self._session_len < self._min_length
         ):
             self._focus_button.label = "Kill"
             self._focus_button.variant = "error"
