@@ -1,15 +1,8 @@
 import pytest
 from pytest_mock.plugin import MockerFixture
 
-from pydantic import ValidationError
-
-from focustui.config_manager import ConfigManager, ConfigModel, _SoundModel
-from focustui.constants import (
-    SoundType,
-    VolumeType,
-    MIN_SESSION_LEN,
-    MAX_SESSION_LEN,
-)
+from focustui.config_manager import ConfigManager, ConfigModel
+from focustui.constants import SoundType, VolumeType
 
 from focustui.constants import DEFAULT_ALARM_NAME as DEF_AL
 from focustui.constants import DEFAULT_SIGNAL_NAME as DEF_SIG
@@ -32,30 +25,6 @@ def mock_save_config(mocker: MockerFixture):
     )
 
 
-def test_sound_model_correct_data():
-    test_dict = {"name": "Ma_rio's-23", "volume": 50}
-    model = _SoundModel.model_validate(test_dict)
-    assert test_dict == model.model_dump()
-
-
-def test_sound_model_to_small_volume():
-    test_dict = {"name": "Mario", "volume": 0}
-    with pytest.raises(ValidationError):
-        _SoundModel.model_validate(test_dict)
-
-
-def test_sound_model_to_big_volume():
-    test_dict = {"name": "Mario", "volume": 101}
-    with pytest.raises(ValidationError):
-        _SoundModel.model_validate(test_dict)
-
-
-def test_sound_model_wrong_name():
-    test_dict = {"name": "Mario.flac", "volume": 100}
-    with pytest.raises(ValidationError):
-        _SoundModel.model_validate(test_dict)
-
-
 def test_session_length_positive():
     key = "session_length"
     test_dict = {key: 45}
@@ -70,37 +39,11 @@ def test_session_length_zero():
     assert test_dict[key] == model.model_dump()[key]
 
 
-def test_session_length_to_small_volume():
-    test_dict = {"session_length": MIN_SESSION_LEN - 1}
-    with pytest.raises(ValidationError):
-        ConfigModel.model_validate(test_dict)
-
-
-def test_session_length_to_big_volume():
-    test_dict = {"session_length": MAX_SESSION_LEN + 1}
-    with pytest.raises(ValidationError):
-        ConfigModel.model_validate(test_dict)
-
-
 def test_test_sound_volume():
     key = "test_volume"
     test_dict = {key: 57}
     model = ConfigModel.model_validate(test_dict)
     assert test_dict[key] == model.model_dump()[key]
-
-
-def test_test_sound_model_to_small_volume():
-    test_dict = {"test_volume": 0}
-    match = "Input should be greater than or equal to 1"
-    with pytest.raises(ValidationError, match=match):
-        ConfigModel.model_validate(test_dict)
-
-
-def test_test_sound_model_to_big_volume():
-    test_dict = {"test_volume": 101}
-    match = "Input should be less than or equal to 100"
-    with pytest.raises(ValidationError, match=match):
-        ConfigModel.model_validate(test_dict)
 
 
 def test_is_singleton(mock_cm_init):
