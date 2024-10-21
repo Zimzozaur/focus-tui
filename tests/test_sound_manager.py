@@ -262,4 +262,3 @@ def test_stop_sound(sound_manager, mock_get_any_sound):
     sound_manager.play_sound("what_ever", 1)
     sound_manager.stop_sound()
     assert sound_manager._sound_channel.get_sound() is None
-

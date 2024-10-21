@@ -28,4 +28,3 @@ def test_set_to_default_faulty_session_length_to_big():
     faulty_values = {"session_length": 10**9}
     res = ConfigModel.model_validate(faulty_values)
     assert res == ConfigModel()
-

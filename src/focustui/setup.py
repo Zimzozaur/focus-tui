@@ -56,4 +56,3 @@ def setup_app() -> None:
         with Path(CONFIG_FILE_PATH).open("w") as file:
             json_config = json.loads(ConfigModel().model_dump_json())
             json.dump(json_config, file, sort_keys=False, indent=4)
-

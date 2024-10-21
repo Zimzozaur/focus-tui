@@ -8,12 +8,12 @@ Disclaimer: The image displayed represents a potential appearance and features o
 
 ### Key Features:
 
-1.	**Cross-Platform:** Works seamlessly on every operating system and in any terminal. No matter where you are, 
+1.	**Cross-Platform:** Works seamlessly on every operating system and in any terminal. No matter where you are,
 	  FocusTUI is there to support your focus.
-2. **Statistics from Historical Data (coming soon):** Gain insights into your productivity with comprehensive 
-   statistics generated from 
+2. **Statistics from Historical Data (coming soon):** Gain insights into your productivity with comprehensive
+   statistics generated from
       your past focus sessions. Understand your patterns and optimize your workflow.
-3.	**Custom Focus Queues (coming soon):** Create and manage your own focus queues, with sessions categorized and tailored to 
+3.	**Custom Focus Queues (coming soon):** Create and manage your own focus queues, with sessions categorized and tailored to
 	  your needs. Whether it’s deep work, light tasks, or breaks, FocusTUI adjusts to you.
 4.	**Custom Themes (coming soon):** Personalize your experience with custom themes. Choose the colors that help you stay focused,
 	  or design your own.
@@ -63,8 +63,7 @@ After installation, you can start `FocusTUI` by typing:
 focustui
 ```
 
-Note for macOS users: The first time you open the app, it may take up to 1 minute. I’m not sure why, but during this 
-initial launch, the app creates folders, files, a database, and moves sounds to the app folder. This delay only 
+Note for macOS users: The first time you open the app, it may take up to 1 minute.
+I’m not sure why, but during this initial launch, the app creates
+folders, files, a database, and moves sounds to the app folder. This delay only
 happens on the first launch. Apologies for the inconvenience.
-
-
