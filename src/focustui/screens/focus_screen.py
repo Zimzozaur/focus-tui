@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Literal
 
 from textual import on
 from textual.containers import Horizontal, Vertical
+from textual.reactive import reactive
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Input
 
@@ -17,10 +18,13 @@ if TYPE_CHECKING:
 
 
 class FocusScreen(Screen):
+    _ambient_silent = reactive(False, bindings=True)
+
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
         ("ctrl+s", "open_settings", "Settings"),
-        ("ctrl+a", "play_ambient", "Play/Pause Ambient"),
+        ("ctrl+a", "play_ambient", "Play Ambient"),
+        ("ctrl+a", "stop_ambient", "Stop Ambient"),
         ("ctrl+j", "toggle_input", "Toggle Input"),
     ]
 
@@ -32,7 +36,14 @@ class FocusScreen(Screen):
         self.app.open_settings()
 
     def action_play_ambient(self):
-        self._ambient_silent = not self._ambient_silent
+        self._ambient_silent = False
+        self._sm.toggle_ambient(
+            self._ambient_silent,
+            self._cm.config.ambient.volume,
+        )
+
+    def action_stop_ambient(self):
+        self._ambient_silent = True
         self._sm.toggle_ambient(
             self._ambient_silent,
             self._cm.config.ambient.volume,
@@ -52,8 +63,13 @@ class FocusScreen(Screen):
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """If clock is active allow to toggle ambient and hide rest."""
-        if action == "play_ambient":
-            return self._active_session
+        if action in ("play_ambient", "stop_ambient") and not self._active_session:
+            return False
+        if action == "play_ambient" and self._ambient_silent:
+            return True
+        if action == "stop_ambient" and not self._ambient_silent:
+            return True
+
         return not self._active_session
 
     def __init__(
@@ -79,7 +95,6 @@ class FocusScreen(Screen):
         self._remaining_session: int = 0
         self._cancel_session_remaining: int = MINUTE
         self._intervals = []
-        self._ambient_silent: bool = True
         self._mode: Literal["stopwatch", "timer"] | None = None
         self._min_length: int = MIN_SESSION_LEN * MINUTE
 
@@ -117,7 +132,6 @@ class FocusScreen(Screen):
     def _start_session(self) -> None:
         """Start a Timer session."""
         self._active_session = True
-        self.app.refresh_bindings()  # Deactivates Bindings
         self._session_len_input.visible = False
         self._session_len = self._session_len_input.formated_value * MINUTE
         self._mode = "stopwatch" if self._session_len == 0 else "timer"
@@ -133,6 +147,7 @@ class FocusScreen(Screen):
         self._sm.play_ambient_in_background(
             ambient_name=self._cm.config.ambient.name,
         )
+        self.app.refresh_bindings()  # Deactivates Bindings
 
     def _timer_display_update(self) -> None:
         """Update variable used by timer, update displayed time and
@@ -177,7 +192,6 @@ class FocusScreen(Screen):
     def _reset_timer(self) -> None:
         """Set all clock properties to default."""
         self._active_session = False
-        self.app.refresh_bindings()
         self._session_len_input.visible = True
         self._session_len = self._cm.get_session_length()
         self._cancel_session_remaining = MINUTE
@@ -189,6 +203,7 @@ class FocusScreen(Screen):
         self._focus_button.label = "Focus"
         self._ambient_silent = True
         self._sm.stop_ambient()
+        self.app.refresh_bindings()
 
     def _cancel_session(self) -> None:
         """Allow user to cancel timer in first
