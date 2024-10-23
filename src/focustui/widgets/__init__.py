@@ -1,4 +1,4 @@
-"""Collection of custom widget."""
+"""Collection of custom Widgets."""
 
 # Local imports.
 from .accordion import Accordion
