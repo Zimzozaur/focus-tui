@@ -41,29 +41,50 @@ class SoundSettings(Grid):
         super().__init__()
         self._cm = cm
         self._sm = sm
-        # These attributes are set to None and initialized
-        # by a function to update them when the user applies changes.
-        self.select_alarm: Select | None = None
-        self.select_signal: Select | None = None
-        self.select_ambient: Select | None = None
-        self.test_sound: Select | None = None
-        self.alarm_input: SoundVolumeInput | None = None
-        self.signal_input: SoundVolumeInput | None = None
-        self.ambient_input: SoundVolumeInput | None = None
-        self.test_input: SoundVolumeInput | None = None
-        self.initialize_sound_attributes()
 
     def compose(self) -> ComposeResult:
-        yield self.select_alarm
-        yield self.alarm_input
+        yield Select.from_values(
+            self._sm.all_shorts_list,
+            prompt=f"Alarm:{self._cm.get_sound_name("alarm")}",
+            id="alarm",
+        )
+        yield SoundVolumeInput(
+            value=str(self._cm.config.alarm.volume),
+            tooltip=create_tooltip("alarm"),
+            id="alarm_volume",
+        )
         yield Button("Alarms\nSignals", id="short", classes="sound-edit-bt")
-        yield self.select_signal
-        yield self.signal_input
-        yield self.select_ambient
-        yield self.ambient_input
+        yield Select.from_values(
+            self._sm.all_shorts_list,
+            prompt=f"Signal:{self._cm.get_sound_name("signal")}",
+            id="signal",
+        )
+        yield SoundVolumeInput(
+            value=str(self._cm.config.signal.volume),
+            tooltip=create_tooltip("signal"),
+            id="signal_volume",
+        )
+        yield Select.from_values(
+            self._sm.all_longs_list,
+            prompt=f"Ambient: {self._cm.get_sound_name("ambient")}",
+            id="ambient",
+        )
+        yield SoundVolumeInput(
+            value=str(self._cm.config.ambient.volume),
+            tooltip=create_tooltip("ambient"),
+            id="ambient_volume",
+        )
         yield Button("Ambiences", id="long", classes="sound-edit-bt")
-        yield self.test_sound
-        yield self.test_input
+        yield Select.from_values(
+            self._sm.all_sounds_list,
+            prompt="Select to play sound",
+            id="test-sound",
+        )
+        yield SoundVolumeInput(
+            value=str(self._cm.config.test_volume),
+            tooltip=create_tooltip("test"),
+            id="test_volume",
+        )
         yield Button(
             "Pause",
             variant="warning",
@@ -81,21 +102,15 @@ class SoundSettings(Grid):
             sound_type=cast(SoundType, event.select.id),
             name=event.value,
         )
-        # Change prompt value in select menu
-        if event.control.id == "alarm":
-            self.select_alarm.prompt = f"Alarm: {self._cm.config.alarm.name}"
-        elif event.control.id == "signal":
-            self.select_alarm.prompt = f"Signal: {self._cm.config.signal.name}"
-        else:
-            self.select_alarm.prompt = f"Ambient: {self._cm.config.ambient.name}"
+        # Update song's name
+        sound_type = event.control.id.capitalize()
+        event.select.prompt = f"{sound_type}: {self._cm.config.alarm.name}"
 
     @on(Button.Pressed, ".sound-edit-bt")
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
         """Open Sounds Edit menu and refresh page if changes where applied."""
-
-        async def reinit_and_recompose_sound_settings(arg) -> None:  # noqa: ARG001
-            """Restart initialization and recompose."""
-            self.initialize_sound_attributes()
+        async def recompose(arg) -> None:  # noqa: ARG001
+            """Recompose."""
             await self.recompose()
 
         self.app.push_screen(
@@ -104,7 +119,7 @@ class SoundSettings(Grid):
                 sm=self._sm,
                 cm=self._cm,
             ),
-            reinit_and_recompose_sound_settings,
+            recompose,
         )
 
     @on(Select.Changed, "#test-sound")
@@ -140,42 +155,3 @@ class SoundSettings(Grid):
         _type = cast(VolumeType, event.input.id)
         value = int(event.input.value)
         self._cm.change_volume_value(_type, value)
-
-    def initialize_sound_attributes(self) -> None:
-        # Set alarm Select
-        self.select_alarm = Select.from_values(self._sm.all_shorts_list)
-        self.select_alarm.prompt = f"Alarm:{self._cm.get_sound_name("alarm")}"
-        self.select_alarm.id = "alarm"
-        # Set signal Select
-        self.select_signal = Select.from_values(self._sm.all_shorts_list)
-        self.select_signal.prompt = f"Signal:{self._cm.get_sound_name("signal")}"
-        self.select_signal.id = "signal"
-        # Set ambient Select
-        self.select_ambient = Select.from_values(self._sm.all_longs_list)
-        self.select_ambient.prompt = f"Ambient: {self._cm.get_sound_name("ambient")}"
-        self.select_ambient.id = "ambient"
-        # Set test sound Select
-        self.test_sound = Select.from_values(self._sm.all_sounds_list)
-        self.test_sound.prompt = "Select to play sound"
-        self.test_sound.id = "test-sound"
-        # Set volume
-        self.alarm_input = SoundVolumeInput(
-            value=str(self._cm.config.alarm.volume),
-            tooltip=create_tooltip("alarm"),
-            id="alarm_volume",
-        )
-        self.signal_input = SoundVolumeInput(
-            value=str(self._cm.config.signal.volume),
-            tooltip=create_tooltip("signal"),
-            id="signal_volume",
-        )
-        self.ambient_input = SoundVolumeInput(
-            value=str(self._cm.config.ambient.volume),
-            tooltip=create_tooltip("ambient"),
-            id="ambient_volume",
-        )
-        self.test_input = SoundVolumeInput(
-            value=str(self._cm.config.test_volume),
-            tooltip=create_tooltip("test"),
-            id="test_volume",
-        )
