@@ -41,8 +41,8 @@ class SoundSettings(Grid):
         super().__init__()
         self._cm = cm
         self._sm = sm
-        # Those attributes are set to None and initialized
-        # by function to updated them when users applies changes
+        # These attributes are set to None and initialized
+        # by a function to update them when the user applies changes.
         self.select_alarm: Select | None = None
         self.select_signal: Select | None = None
         self.select_ambient: Select | None = None
