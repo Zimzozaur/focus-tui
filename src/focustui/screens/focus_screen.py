@@ -26,7 +26,7 @@ ACTIONS_NOT_ALLOWED_ON_IDLE = (
 
 
 class FocusScreen(Screen):
-    _ambient_silent = reactive(False, bindings=True)
+    _ambient_silent = reactive(True, bindings=True)
     _input_mode = reactive("PLACEHOLDER", bindings=True)
 
     BINDINGS = [

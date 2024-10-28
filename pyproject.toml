@@ -1,6 +1,6 @@
 [project]
 name = "focustui"
-version = "0.1.11"
+version = "0.1.12"
 authors = [
   { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
 ]
