@@ -17,6 +17,14 @@ if TYPE_CHECKING:
     from focustui.sound_manager import SoundManager
 
 
+ACTIONS_NOT_ALLOWED_ON_IDLE = (
+    "play_ambient",
+    "stop_ambient",
+    "toggle_hours",
+    "toggle_seconds",
+)
+
+
 class FocusScreen(Screen):
     _ambient_silent = reactive(False, bindings=True)
     _input_mode = reactive("PLACEHOLDER", bindings=True)
@@ -28,6 +36,8 @@ class FocusScreen(Screen):
         ("ctrl+a", "stop_ambient", "Stop Ambient"),
         ("ctrl+j", "min_input", "Min Input"),
         ("ctrl+j", "hour_input", "Hour Input"),
+        ("ctrl+e", "toggle_hours", "Toggle Hours"),
+        ("ctrl+r", "toggle_seconds", "Toggle Seconds"),
     ]
 
     def action_quit_app(self) -> None:
@@ -65,9 +75,15 @@ class FocusScreen(Screen):
         await self.recompose()
         self._session_len_input.focus()
 
-    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:  # noqa: PLR0911
+    def action_toggle_hours(self):
+        self._cm.toggle_clock_display_hours()
+
+    def action_toggle_seconds(self):
+        self._cm.toggle_clock_display_seconds()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:  # noqa: PLR0911, C901
         """If clock is active allow to toggle ambient and hide rest."""
-        if self._active_session and action not in ("play_ambient", "stop_ambient"):
+        if self._active_session and action not in ACTIONS_NOT_ALLOWED_ON_IDLE:
             return False
 
         if action in ("play_ambient", "stop_ambient") and not self._active_session:
@@ -75,6 +91,11 @@ class FocusScreen(Screen):
         if action == "play_ambient" and self._ambient_silent:
             return True
         if action == "stop_ambient" and not self._ambient_silent:
+            return True
+
+        if action in ("toggle_hours", "toggle_seconds") and not self._active_session:
+            return False
+        if action in ("toggle_hours", "toggle_seconds"):
             return True
 
         if action == "min_input" and isinstance(self._session_len_input, HourMinInput):
@@ -104,7 +125,7 @@ class FocusScreen(Screen):
         else:
             self._session_len_input = HourMinInput(cm=self._cm)
 
-        self._clock_display = ClockDisplay()
+        self._clock_display = ClockDisplay(cm=self._cm)
         self._focus_button = Button("Focus", variant="success", id="focus-bt")
         self._active_session = False
         self._session_len: int = self._cm.get_session_length()

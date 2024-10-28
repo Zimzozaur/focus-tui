@@ -7,6 +7,8 @@ from focustui.constants import (
     CONFIG_FILE_PATH,
     DEFAULT_ALARM_NAME,
     DEFAULT_AMBIENT_NAME,
+    DEFAULT_CLOCK_DISPLAY_HOURS,
+    DEFAULT_CLOCK_DISPLAY_SECONDS,
     DEFAULT_SESSION_LEN,
     DEFAULT_SIGNAL_NAME,
     DEFAULT_SOUND_VOLUME,
@@ -67,6 +69,8 @@ class ConfigModel(BaseModel):
     session_length: int = DEFAULT_SESSION_LEN
     test_volume: int = DEFAULT_SOUND_VOLUME
     input_mode_type: InputModeType = DEFAULT_TIME_INPUT_TYPE
+    clock_display_hours: bool = DEFAULT_CLOCK_DISPLAY_HOURS
+    clock_display_seconds: bool = DEFAULT_CLOCK_DISPLAY_SECONDS
 
     @field_validator("session_length")
     def session_length_validator(cls, value: int):
@@ -104,9 +108,9 @@ class ConfigManager:
         return getattr(self.config, sound_type).name
 
     def update_used_sound(
-        self,
-        sound_type: SoundType,
-        name: str,
+            self,
+            sound_type: SoundType,
+            name: str,
     ) -> None:
         """Update config.json with new name."""
         getattr(self.config, sound_type).name = name
@@ -168,4 +172,18 @@ class ConfigManager:
 
     def change_time_input_mode(self, new: InputModeType) -> None:
         self.config.input_mode_type = new
+        self._save_config()
+
+    def get_clock_display_hours(self) -> bool:
+        return self.config.clock_display_hours
+
+    def toggle_clock_display_hours(self) -> None:
+        self.config.clock_display_hours = not self.config.clock_display_hours
+        self._save_config()
+
+    def get_clock_display_seconds(self) -> bool:
+        return self.config.clock_display_seconds
+
+    def toggle_clock_display_seconds(self) -> None:
+        self.config.clock_display_seconds = not self.config.clock_display_seconds
         self._save_config()

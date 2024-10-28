@@ -67,7 +67,7 @@ ClockDisplay {
     align: center middle;
 }
 
-.clock-display-digit {
+.clock-digit {
     width: auto;
     color: $warning-lighten-1;
 }

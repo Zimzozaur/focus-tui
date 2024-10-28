@@ -14,6 +14,7 @@ VolumeType = Literal["alarm_volume", "signal_volume", "ambient_volume", "test_vo
 SoundType = Literal["alarm", "signal", "ambient"]
 LengthType = Literal["short", "long"]
 InputModeType = Literal["minute", "hour_minute"]
+ClockDisplayMode = Literal["hour", "minute"]
 
 
 #############################
@@ -78,6 +79,8 @@ MIN_VOLUME_LEVEL: int = 1
 MAX_VOLUME_LEVEL: int = 100
 
 DEFAULT_TIME_INPUT_TYPE: InputModeType = "minute"
+DEFAULT_CLOCK_DISPLAY_HOURS: bool = False
+DEFAULT_CLOCK_DISPLAY_SECONDS: bool = True
 
 HOURS_MINUTES_TIMER_PATTERN: re.Pattern = re.compile(r"^(0|[0-3]:[0-5]?[0-9])$")
 
