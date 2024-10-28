@@ -4,8 +4,10 @@ from focustui.constants import MINUTE
 def hour_min_session_len(value: str):
     """Convert a time string in the format 'H:MM' to total minutes."""
     length = value.split(":")
-    if len(length) == 1:
+    if len(length) == 1 and value == "0":
         return 0
+    if len(length) == 1:
+        return int(value) * MINUTE
     return int(length[0]) * MINUTE + int(length[1])
 
 

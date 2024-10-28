@@ -23,10 +23,10 @@ class HourMinInput(Input):
     def __init__(self, cm: "ConfigManager", *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.value = int_to_hour_min(cm.get_session_length())
-        self.placeholder = "0 or 0:00-3:59"
+        self.placeholder = "0 or 0:00-4:59"
         self.validators = [StopwatchOrTimerHour()]
         self.id = "session-duration"
-        self.tooltip = "Type 0 or 0:00-3:59 (e.g., 1:30)"
+        self.tooltip = "Type 0 or 0:00-4:59 (e.g., 1:30)"
 
     @property
     def formated_value(self) -> int:

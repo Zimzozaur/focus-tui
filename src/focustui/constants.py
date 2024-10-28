@@ -36,6 +36,7 @@ _min_sessions_len = os.getenv("FOCUSTUI_DEBUG_MIN_SESSION_LEN")
 is_custom = FOCUSTUI_DEBUG and _min_sessions_len is not None
 MIN_SESSION_LEN = int(_min_sessions_len) if is_custom else 5
 MAX_SESSION_LEN: int = 300
+MAX_SESSION_LEN_HOUR: int = 5
 DEFAULT_SESSION_LEN: int = 45
 
 
@@ -82,7 +83,7 @@ DEFAULT_TIME_INPUT_TYPE: InputModeType = "minute"
 DEFAULT_CLOCK_DISPLAY_HOURS: bool = False
 DEFAULT_CLOCK_DISPLAY_SECONDS: bool = True
 
-HOURS_MINUTES_TIMER_PATTERN: re.Pattern = re.compile(r"^(0|[0-3]:[0-5]?[0-9])$")
+HOURS_MINUTES_TIMER_PATTERN: re.Pattern = re.compile(r"^([0-5]|[0-4]:[0-5]?[0-9])$")
 
 DISCORD_INVITATION = "https://discord.gg/JF44rr67Ng"
 PROJECT_GITHUB = "https://github.com/Zimzozaur/focus-tui"

@@ -1,6 +1,6 @@
 from textual.validation import ValidationResult, Validator
 
-from focustui.constants import HOURS_MINUTES_TIMER_PATTERN
+from focustui.constants import HOURS_MINUTES_TIMER_PATTERN, MAX_SESSION_LEN_HOUR
 from focustui.constants import MAX_SESSION_LEN as MAX_S_LEN
 from focustui.constants import MAX_VOLUME_LEVEL as MAX_V_LEV
 from focustui.constants import MIN_SESSION_LEN as MIN_S_LEN
@@ -27,7 +27,7 @@ class StopwatchOrTimerHour(Validator):
         if (
             pattern_bool and
             value not in FORBIDDEN_PATTER and
-            (hour_min_session_len(value) == 0 or
+            (hour_min_session_len(value) <= MAX_SESSION_LEN_HOUR or
              (MIN_S_LEN <= hour_min_session_len(value) <= MAX_S_LEN))
         ):
             return self.success()
