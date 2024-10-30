@@ -16,8 +16,21 @@ readme = "readme.md"
 requires-python = ">=3.12"
 
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Utilities",
+    "Topic :: Office/Business :: Scheduling",
+    "Topic :: Terminals",
+    "Topic :: Productivity",
+    "Topic :: Education",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
 ]
 
 [project.optional-dependencies]
