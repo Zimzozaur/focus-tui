@@ -1,10 +1,17 @@
+<!-- Icons -->
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![PyPI-Server](https://img.shields.io/pypi/v/focustui.svg)](https://pypi.org/project/focustui/)
+[![Pyversions](https://img.shields.io/pypi/pyversions/focustui.svg)](https://pypi.python.org/pypi/focustui)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://static.pepy.tech/badge/focustui)](https://pepy.tech/project/focustui)
+
 # FocusTUI: Your Deep Focus Session Buddy. (WIP)
 ## Are you struggling to maintain focus in a world full of distractions?
 
 Say hello to FocusTUI - the minimalist, distraction-free focus session tracker that works straight from your terminal, no internet required. FocusTUI empowers you to create and track customized focus sessions with a highly personalized touch, ensuring you stay on track with your work, studies, or creative projects.
 
 Disclaimer: The image displayed represents a potential appearance and features of FocusTUI. Actual app appearance and functionality may vary.
-![app_preview.png](app_preview.png)
+![board_image](https://github.com/Zimzozaur/focus-tui/blob/master/app_preview.png)
 
 ### Key Features:
 
