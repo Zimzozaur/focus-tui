@@ -1,4 +1,4 @@
-"""Collection of custom widget."""
+"""Collection of custom widgets."""
 
 # Local imports.
 from .inputs import hour_min_session_len, int_to_hour_min

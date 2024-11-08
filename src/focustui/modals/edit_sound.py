@@ -116,9 +116,9 @@ class EditSound(ModalScreen):
         # Update DOM
         await self.recompose_(None)
         if self._sound_type == "long":
-            self.notify("Changed name of an ambient")
+            self.notify("Renamed ambient")
         else:
-            self.notify("Changed name of a sound")
+            self.notify("Renamed sound")
 
         self.query_one(f"#{new_name}_coll", Collapsible).collapsed = False
 
@@ -136,11 +136,11 @@ class EditSound(ModalScreen):
             if self._cm.is_sound_in_config(sound_name):
                 self._cm.update_sound_name(sound_name)
             self._sm.remove_sound(sound_name, self._sound_type)
-            self.notify("Sound has been remove")
+            self.notify("Removed sound")
             await self.recompose_(None)
 
         sound_name = remove_id_suffix(event.button.id)
-        message = "Are you sure you want to remove sound?"
+        message = "Are you sure you want to remove the sound?"
         await self.app.push_screen(ConfirmPopup(message=message), remove_sound)
 
     @on(Button.Pressed, "#add-sound-bt")

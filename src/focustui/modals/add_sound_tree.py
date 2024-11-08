@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def get_users_folder() -> str:
-    """Return name of users folder."""
+    """Return name of the user's folder."""
     users_system = platform.system()
 
     if users_system == "Linux":
@@ -76,7 +76,7 @@ class AddSoundTree(ModalScreen):
         sound = soundify(event.path.name.split(".")[0])
 
         if self._sm.is_duplicate(sound):
-            message = "Sound name already in use."
+            message = "The sound name is already in use."
             self.notify(message, severity="error")
             return
 
