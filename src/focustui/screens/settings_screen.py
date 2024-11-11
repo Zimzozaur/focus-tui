@@ -24,6 +24,7 @@ class SettingsScreen(Screen):
 
     def action_close_settings(self) -> None:
         """Return anything to run callback."""
+        self._sm.stop_sound()
         self.app.open_focus()
 
     def __init__(
