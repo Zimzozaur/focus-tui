@@ -168,7 +168,7 @@ class SoundManager:
         self._ambient_channel.set_volume(0)
         sound_path = self.get_any_sound(ambient_name).path
         sound = pygame.mixer.Sound(sound_path)
-        self._ambient_channel.play(sound)
+        self._ambient_channel.play(sound, loops=-1)
 
     def stop_ambient(self) -> None:
         """Stop playing ambient in the background."""
