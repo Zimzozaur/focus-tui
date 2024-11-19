@@ -23,7 +23,6 @@ classifiers = [
     "Topic :: Utilities",
     "Topic :: Office/Business :: Scheduling",
     "Topic :: Terminals",
-    "Topic :: Productivity",
     "Topic :: Education",
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "Operating System :: Microsoft :: Windows :: Windows 11",
