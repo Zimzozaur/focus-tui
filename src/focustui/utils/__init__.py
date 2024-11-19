@@ -1,10 +1,9 @@
 """Collection of custom widgets."""
 
 # Local imports.
-from .inputs import hour_min_session_len, int_to_hour_min
+from .parsers import session_len_parser
 
 # Public symbols
 __all__ = [
-    "hour_min_session_len",
-    "int_to_hour_min",
+    "session_len_parser",
 ]

@@ -3,49 +3,43 @@ from typing import TYPE_CHECKING
 from textual.widgets import Input
 
 from focustui.constants import (
-    MAX_SESSION_LEN,
     MAX_VOLUME_LEVEL,
-    MIN_SESSION_LEN,
     MIN_VOLUME_LEVEL,
 )
-from focustui.utils import hour_min_session_len, int_to_hour_min
-from focustui.validators import StopwatchOrTimer, StopwatchOrTimerHour, ValueFrom1to100
+from focustui.utils import session_len_parser
+from focustui.validators import SessionInputValidator, ValueFrom1to100
 
 if TYPE_CHECKING:
     from focustui.config_manager import ConfigManager
 
 
-tooltip = (f"Type 0 to set stopwatch or\nbetween {MIN_SESSION_LEN} and "
-           f"{MAX_SESSION_LEN} to set timer.")
+tooltip = ("Type 0 to set stopwatch\n"
+           "Or timer between 5 and 120 minutes\n"
+           "In minutes form: 5, 49, 120 or\n"
+           "In hours form: 0:5, 0:49, 2:0"
+           "For timer")
 
 
-class HourMinInput(Input):
+class SessionLenInput(Input):
+    """Accept 0 or value in one of the 2 forms:
+    1. Minutes form - value between MIN to MAX
+    2. Hour form - H:M or H:MM between MIN and MAX.
+    """
+
     def __init__(self, cm: "ConfigManager", *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.value = int_to_hour_min(cm.get_session_length())
-        self.placeholder = "0 or 0:00-4:59"
-        self.validators = [StopwatchOrTimerHour()]
-        self.id = "session-duration"
-        self.tooltip = "Type 0 or 0:00-4:59 (e.g., 1:30)"
+        super().__init__(
+            *args,
+            value=cm.get_session_length(),
+            placeholder="0, 39, 1:30",
+            id="session-duration",
+            tooltip=tooltip,
+            restrict="^[0-9:]{1,4}$",
+            validators=[SessionInputValidator()],
+            **kwargs,
+        )
 
-    @property
-    def formated_value(self) -> int:
-        return hour_min_session_len(self.value)
-
-
-class MinInput(Input):
-    def __init__(self, cm: "ConfigManager", *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.value = str(cm.get_session_length())
-        self.placeholder = f"0 or {MIN_SESSION_LEN}-{MAX_SESSION_LEN}"
-        self.restrict = r"^(?:[0-9]|[1-9][0-9]{1,2})$"
-        self.validators = [StopwatchOrTimer()]
-        self.id = "session-duration"
-        self.tooltip = tooltip
-
-    @property
-    def formated_value(self) -> int:
-        return int(self.value)
+    def to_int(self) -> int:
+        return session_len_parser(self.value)
 
 
 class SoundVolumeInput(Input):

@@ -27,14 +27,14 @@ def mock_save_config(mocker: MockerFixture):
 
 def test_session_length_positive():
     key = "session_length"
-    test_dict = {key: 45}
+    test_dict = {key: "45"}
     model = ConfigModel.model_validate(test_dict)
     assert test_dict[key] == model.model_dump()[key]
 
 
 def test_session_length_zero():
     key = "session_length"
-    test_dict = {key: 0}
+    test_dict = {key: "0"}
     model = ConfigModel.model_validate(test_dict)
     assert test_dict[key] == model.model_dump()[key]
 

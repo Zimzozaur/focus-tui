@@ -1,6 +1,7 @@
 import os
 import re
 from pathlib import Path
+from re import Pattern
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -35,9 +36,10 @@ MINUTE: int = int(_minute) if is_custom else 60
 _min_sessions_len = os.getenv("FOCUSTUI_DEBUG_MIN_SESSION_LEN")
 is_custom = FOCUSTUI_DEBUG and _min_sessions_len is not None
 MIN_SESSION_LEN = int(_min_sessions_len) if is_custom else 5
-MAX_SESSION_LEN: int = 300
+MAX_SESSION_LEN: int = 120
 MAX_SESSION_LEN_HOUR: int = 5
-DEFAULT_SESSION_LEN: int = 45
+DEFAULT_SESSION_LEN: str = "45"
+SESSION_SIGNATURE: Pattern[str] = re.compile("^([0-9]{1,3}|[0-3]:[0-9]{1,2})$")
 
 
 #############################

@@ -9,7 +9,8 @@ from textual.widgets import Button, Footer, Input
 from focustui.composite_widgets import ClockDisplay
 from focustui.constants import MIN_SESSION_LEN, MINUTE
 from focustui.modals import ConfirmPopup
-from focustui.widgets import HourMinInput, MinInput
+from focustui.utils import session_len_parser
+from focustui.widgets import SessionLenInput
 
 if TYPE_CHECKING:
     from focustui.config_manager import ConfigManager
@@ -34,8 +35,6 @@ class FocusScreen(Screen):
         ("ctrl+s", "open_settings", "Settings"),
         ("ctrl+a", "play_ambient", "Play Ambient"),
         ("ctrl+a", "stop_ambient", "Stop Ambient"),
-        ("ctrl+j", "min_input", "Min Input"),
-        ("ctrl+j", "hour_input", "Hour Input"),
         ("ctrl+e", "toggle_hours", "Toggle Hours"),
         ("ctrl+r", "toggle_seconds", "Toggle Seconds"),
     ]
@@ -61,27 +60,13 @@ class FocusScreen(Screen):
             self._cm.config.ambient.volume,
         )
 
-    async def action_hour_input(self):
-        self._session_len_input = HourMinInput(cm=self._cm)
-        self._cm.change_time_input_mode("hour_minute")
-        self._input_mode = self._cm.get_time_input_mode()
-        await self.recompose()
-        self._session_len_input.focus()
-
-    async def action_min_input(self):
-        self._session_len_input = MinInput(cm=self._cm)
-        self._cm.change_time_input_mode("minute")
-        self._input_mode = self._cm.get_time_input_mode()
-        await self.recompose()
-        self._session_len_input.focus()
-
     def action_toggle_hours(self):
         self._cm.toggle_clock_display_hours()
 
     def action_toggle_seconds(self):
         self._cm.toggle_clock_display_seconds()
 
-    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:  # noqa: PLR0911, C901
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:  # noqa: PLR0911
         """If clock is active allow to toggle ambient and hide rest."""
         if self._active_session and action not in ACTIONS_NOT_ALLOWED_ON_IDLE:
             return False
@@ -98,37 +83,23 @@ class FocusScreen(Screen):
         if action in ("toggle_hours", "toggle_seconds"):
             return True
 
-        if action == "min_input" and isinstance(self._session_len_input, HourMinInput):
-            return True
-        if action == "min_input" and isinstance(self._session_len_input, MinInput):
-            return False
-        if action == "hour_input" and isinstance(self._session_len_input, MinInput):
-            return True
-        if action == "hour_input" and isinstance(self._session_len_input, HourMinInput):
-            return False
-
         return not self._active_session
 
     def __init__(
-            self,
-            cm: "ConfigManager",
-            db: "DatabaseManager",
-            sm: "SoundManager",
+        self,
+        cm: "ConfigManager",
+        db: "DatabaseManager",
+        sm: "SoundManager",
     ) -> None:
         super().__init__()
         self._cm = cm
         self._db = db
         self._sm = sm
-
-        if self._cm.get_time_input_mode() == "minute":
-            self._session_len_input = MinInput(cm=self._cm)
-        else:
-            self._session_len_input = HourMinInput(cm=self._cm)
-
+        self._session_len_input = SessionLenInput(cm=self._cm)
         self._clock_display = ClockDisplay(cm=self._cm)
         self._focus_button = Button("Focus", variant="success", id="focus-bt")
         self._active_session = False
-        self._session_len: int = self._cm.get_session_length()
+        self._session_len: int = session_len_parser(self._cm.get_session_length())
         self._remaining_session: int = 0
         self._cancel_session_remaining: int = MINUTE
         self._intervals = []
@@ -164,14 +135,14 @@ class FocusScreen(Screen):
         self._focus_button.disabled = not is_valid
         if is_valid:
             self._cm.update_session_length(
-                self._session_len_input.formated_value,
+                self._session_len_input.value,
             )
 
     def _start_session(self) -> None:
         """Start a Timer session."""
         self._active_session = True
         self._session_len_input.visible = False
-        self._session_len = self._session_len_input.formated_value * MINUTE
+        self._session_len = self._session_len_input.to_int() * MINUTE
         self._mode = "stopwatch" if self._session_len == 0 else "timer"
         if self._mode == "timer":
             self._remaining_session = self._session_len

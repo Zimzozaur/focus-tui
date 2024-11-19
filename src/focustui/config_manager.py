@@ -13,14 +13,13 @@ from focustui.constants import (
     DEFAULT_SIGNAL_NAME,
     DEFAULT_SOUND_VOLUME,
     DEFAULT_TIME_INPUT_TYPE,
-    MAX_SESSION_LEN,
     MAX_VOLUME_LEVEL,
-    MIN_SESSION_LEN,
     MIN_VOLUME_LEVEL,
     InputModeType,
     SoundType,
     VolumeType,
 )
+from focustui.utils import session_len_parser
 
 
 class _SoundModel(BaseModel):
@@ -66,15 +65,15 @@ class ConfigModel(BaseModel):
     alarm: AlarmModel = AlarmModel()
     signal: SignalModel = SignalModel()
     ambient: AmbientModel = AmbientModel()
-    session_length: int = DEFAULT_SESSION_LEN
+    session_length: str = DEFAULT_SESSION_LEN
     test_volume: int = DEFAULT_SOUND_VOLUME
     input_mode_type: InputModeType = DEFAULT_TIME_INPUT_TYPE
     clock_display_hours: bool = DEFAULT_CLOCK_DISPLAY_HOURS
     clock_display_seconds: bool = DEFAULT_CLOCK_DISPLAY_SECONDS
 
     @field_validator("session_length")
-    def session_length_validator(cls, value: int):
-        if not (value == 0 or MIN_SESSION_LEN <= value <= MAX_SESSION_LEN):
+    def session_length_validator(cls, value: str):
+        if session_len_parser(value) == -1:
             return DEFAULT_SESSION_LEN
         return value
 
@@ -156,10 +155,10 @@ class ConfigManager:
 
         self._save_config()
 
-    def get_session_length(self) -> int:
+    def get_session_length(self) -> str:
         return self.config.session_length
 
-    def update_session_length(self, new_length: int):
+    def update_session_length(self, new_length: str):
         self.config.session_length = new_length
         self._save_config()
 

@@ -19,12 +19,12 @@ def test_ignore_faulty_config_settings():
 
 
 def test_set_to_default_session_length_to_big():
-    faulty_values = {"session_length": -1}
+    faulty_values = {"session_length": "-1"}
     res = ConfigModel.model_validate(faulty_values)
     assert res == ConfigModel()
 
 
 def test_set_to_default_faulty_session_length_to_big():
-    faulty_values = {"session_length": 10**9}
+    faulty_values = {"session_length": "1000"}
     res = ConfigModel.model_validate(faulty_values)
     assert res == ConfigModel()

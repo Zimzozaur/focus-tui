@@ -1,6 +1,6 @@
 [project]
 name = "focustui"
-version = "0.1.13"
+version = "0.1.14"
 authors = [
   { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
 ]
@@ -97,3 +97,4 @@ FOCUSTUI_DEBUG = "False"
 
 [tool.pytest.ini_options]
 python_files = "test_*.py"
+testpaths = ["tests"]
