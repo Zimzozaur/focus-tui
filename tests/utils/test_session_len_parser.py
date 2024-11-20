@@ -23,12 +23,12 @@ def test_invalid_min_format(time: str):
     assert session_len_parser(time) == -1
 
 
-@pytest.mark.parametrize("time", ("0:00", "1:00", "2:00"))
+@pytest.mark.parametrize("time", ("1:00", "2:00"))
 def test_valid_hour_min_format(time):
     assert session_len_parser(time) != -1
 
 
-@pytest.mark.parametrize("hour", ("1:", "2:"))
+@pytest.mark.parametrize("hour", ("0:", "1:", "2:", "3:"))
 def test_invalid_hour(hour):
     assert session_len_parser(hour) == -1
 
@@ -39,8 +39,16 @@ def test_valid_hour_format_from_5_to_120(i: int):
     assert session_len_parser(f"{hour}:{min}") != -1
 
 
-@pytest.mark.parametrize("i", range(5, 121))
-def test_valid_hour_format_from_5_to_120_leading_0(i: int):
+@pytest.mark.parametrize("i", range(5, 10))
+def test_valid_hour_format_from_5_to_10_leading_0(i: int):
+    """From 0:05 to 0:09"""
+    hour, min = divmod(i, 60)
+    assert session_len_parser(f"{hour}:{min:02}") != -1
+
+
+@pytest.mark.parametrize("i", range(60, 70))
+def test_valid_hour_format_from_60_to_70_leading_0(i: int):
+    """From 1:01 to 1:09"""
     hour, min = divmod(i, 60)
     assert session_len_parser(f"{hour}:{min:02}") != -1
 
