@@ -10,6 +10,7 @@ dependencies = [
     "platformdirs~=4.2.2",
     "python-dotenv~=1.0.1",
     "pydantic>=2.8.2, <3.0.0",
+    "click~=8.1.8",
 ]
 description = "Your Deep Focus Session Buddy."
 readme = "readme.md"
