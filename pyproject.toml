@@ -1,6 +1,6 @@
 [project]
 name = "focustui"
-version = "0.1.16"
+version = "0.1.17"
 authors = [
   { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
 ]
@@ -10,7 +10,7 @@ dependencies = [
     "platformdirs~=4.2.2",
     "python-dotenv~=1.0.1",
     "pydantic>=2.8.2, <3.0.0",
-    "click~=8.1.8",
+    "click~=8.1.7",
 ]
 description = "Your Deep Focus Session Buddy."
 readme = "readme.md"
