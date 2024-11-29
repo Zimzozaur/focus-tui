@@ -68,14 +68,14 @@ DEFAULT_SIGNAL_NAME: str = "Landing"
 DEFAULT_AMBIENT_NAME: str = "Woodpecker_Forest"
 
 # Reserved Sounds
-RESERVED_SHORTS: set = {
+RESERVED_SHORTS: set[str] = {
     "Acid_Bassline.flac",
     "Braam.flac",
     "Landing_Forcefield.flac",
     "Woohoo.flac",
 }
-RESERVED_LONG: set = {"Mexican_Forest.wav", "Woodpecker_Forest.flac"}
-RESERVED_ALL_SOUNDS: set = RESERVED_SHORTS | RESERVED_LONG
+RESERVED_LONG: set[str] = {"Mexican_Forest.wav", "Woodpecker_Forest.flac"}
+RESERVED_ALL_SOUNDS: set[str] = RESERVED_SHORTS | RESERVED_LONG
 
 DEFAULT_SOUND_VOLUME: int = 50
 MIN_VOLUME_LEVEL: int = 1
@@ -85,8 +85,8 @@ DEFAULT_TIME_INPUT_TYPE: InputModeType = "minute"
 DEFAULT_CLOCK_DISPLAY_HOURS: bool = False
 DEFAULT_CLOCK_DISPLAY_SECONDS: bool = True
 
-HOURS_MINUTES_TIMER_PATTERN: re.Pattern = re.compile(r"^([0-5]|[0-4]:[0-5]?[0-9])$")
+HOURS_MINUTES_TIMER_PATTERN: Pattern[str] = re.compile(r"^([0-5]|[0-4]:[0-5]?[0-9])$")
 
-DISCORD_INVITATION = "https://discord.gg/JF44rr67Ng"
+DISCORD_INVITATION = "https://discord.gg/new7rgTw"
 PROJECT_GITHUB = "https://github.com/Zimzozaur/focus-tui"
 SIMONS_X_ACCOUNT = "https://x.com/zimzozaur"
