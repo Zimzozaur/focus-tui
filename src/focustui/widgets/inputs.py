@@ -13,11 +13,12 @@ if TYPE_CHECKING:
     from focustui.config_manager import ConfigManager
 
 
-tooltip = ("Type 0 to set stopwatch\n"
-           "Or timer between 5 and 120 minutes\n"
-           "In minutes form: 5, 49, 120 or\n"
-           "In hours form: 0:5, 0:49, 2:0"
-           "For timer")
+tooltip = (
+    "Type 0 to set stopwatch\n"
+    "Or 5-120 for timer in minutes\n"
+    "Examples: 5, 49, 120 (minutes)\n"
+    "Or 0:5, 0:49, 2:0 (hours:minutes)"
+)
 
 
 class SessionLenInput(Input):
@@ -30,7 +31,6 @@ class SessionLenInput(Input):
         super().__init__(
             *args,
             value=cm.get_session_length(),
-            placeholder="0, 39, 1:30",
             id="session-duration",
             tooltip=tooltip,
             restrict="^[0-9:]{1,4}$",
