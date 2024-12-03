@@ -1,11 +1,11 @@
 [project]
 name = "focustui"
-version = "0.1.20"
+version = "0.1.21"
 authors = [
   { name="Simon Piechutowski", email="szymonpiechutowski@gmail.com" },
 ]
 dependencies = [
-    "textual>=0.73.0",
+    "textual",
     "pygame-ce~=2.5.0",
     "platformdirs~=4.2.2",
     "python-dotenv~=1.0.1",
@@ -35,7 +35,7 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = [
-    "textual-dev~=1.5.1",
+    "textual-dev",
     "ruff>=0.6.1",
     "pytest~=8.3.2",
     "pytest-asyncio~=0.24.0",
