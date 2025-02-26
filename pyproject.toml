@@ -59,7 +59,7 @@ paths = ["src/focustui/static/**"]
 paths = ["src/focustui/static/**"]
 
 [project.scripts]
-focustui = "focustui.__main__:main"
+focustui = "focustui.main:main"
 
 [tool.ruff]
 exclude = ["src/focustui/assets.py", "tests"]
