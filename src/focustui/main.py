@@ -1499,17 +1499,11 @@ def main(ctx) -> None:
         ).run()
 
 
-def echo_path(path: Path) -> None:
-    """Print given resource path."""
-    echo(style("Path: ", "green") + str(path))
-
-
 @main.command()
 @click.argument("what", type=Choice(list(_paths.keys())))
 def locate(what: str) -> None:
     """Help you find location of a needed resource used by the app."""
-    echo_path(_paths[what])
-
+    echo(style("Path: ", "green") + str(_paths[what]))
 
 
 if __name__ == "__main__":
