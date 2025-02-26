@@ -1395,13 +1395,15 @@ class SettingsScreen(Screen):
 
 class FocusTUI(App, inherit_bindings=False):
     ENABLE_COMMAND_PALETTE = False
-    CSS_PATH = "style.tcss"
+    CSS_PATH = "styles/style.tcss"
 
     def __init__(
-            self,
-            db: "DatabaseManager",
-            cm: "ConfigManager",
-            sm: "SoundManager",
+        self,
+        db: "DatabaseManager",
+        cm: "ConfigManager",
+        sm: "SoundManager",
+        *,
+        borders: bool = False
     ) -> None:
         super().__init__()
         self._db = db
@@ -1409,6 +1411,14 @@ class FocusTUI(App, inherit_bindings=False):
         self._sm = sm
 
         pygame.init()
+
+        if borders:
+            path = os.path.join(
+                os.path.dirname(__file__),
+                "styles/borders.tcss"
+            )
+            with open(path) as f:
+                self.stylesheet.add_source("".join(f.readlines()))
 
     def on_mount(self):
         self.push_screen(FocusScreen(cm=self._cm, db=self._db, sm=self._sm))
@@ -1523,3 +1533,12 @@ def locate(what: str) -> None:
     echo_path(_paths[what])
 
 
+
+if __name__ == "__main__":
+    setup_app()
+    FocusTUI(
+        db=DatabaseManager(),
+        cm=ConfigManager(),
+        sm=SoundManager(),
+        borders=True,
+    ).run()
