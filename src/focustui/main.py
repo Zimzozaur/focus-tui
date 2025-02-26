@@ -685,17 +685,13 @@ class SoundSettings(Grid):
     @on(Button.Pressed, ".sound-edit-bt")
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
         """Open Sounds Edit menu and refresh page if changes where applied."""
-        async def recompose(arg) -> None:  # noqa: ARG001
-            """Recompose."""
-            await self.recompose()
-
         self.app.push_screen(
             EditSound(
                 cast(LengthType, event.button.id),
                 sm=self._sm,
                 cm=self._cm,
             ),
-            recompose,
+            lambda x: self.recompose(),
         )
 
     @on(Select.Changed, "#test-sound")
