@@ -178,7 +178,7 @@ class SessionLenInput(Input):
             value=cm.get_session_length(),
             id="session-duration",
             tooltip=tooltip,
-            restrict="^[0-9:]{1,4}$",
+            restrict="[0-9:]*$",
             validators=[SessionInputValidator()],
             **kwargs,
         )
@@ -486,9 +486,9 @@ class ConfigManager:
         self._save_config()
 
     def change_volume_value(
-            self,
-            volume_type: VolumeType,
-            value: int,
+        self,
+        volume_type: VolumeType,
+        value: int,
     ) -> None:
         """Change volume value if type is not test it hast to get the attribute
         from the nested model.
@@ -610,9 +610,9 @@ class SoundSettings(Grid):
     """
 
     def __init__(
-            self,
-            cm: "ConfigManager",
-            sm: "SoundManager",
+        self,
+        cm: "ConfigManager",
+        sm: "SoundManager",
     ) -> None:
         super().__init__()
         self._cm = cm
