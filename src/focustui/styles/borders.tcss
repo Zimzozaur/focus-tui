@@ -1,0 +1,65 @@
+FocusScreen {
+    border: round red;
+
+    Horizontal, Vertical {
+        border: round orange;
+    }
+
+    Static {
+        border: round yellow;
+    }
+}
+
+
+SettingsScreen {
+    border: round red;
+
+    VerticalScroll {
+        border: round orange;
+    }
+}
+
+SoundSettings {
+    border: round yellow;
+}
+
+AboutSettings {
+    border: round orange;
+
+    Grid {
+        border: round yellow;
+    }
+}
+
+
+ConfirmPopup {
+    border: round red;
+
+    Container {
+        border: round orange;
+    }
+
+    Horizontal {
+        border: round yellow;
+    }
+}
+
+EditSound {
+    border: round red;
+
+    Accordion {
+        border: round orange;
+    }
+
+    Collapsible {
+        border: round yellow;
+    }
+}
+
+AddSoundPopup {
+    border: round red;
+
+    MusicDirectoryTree {
+        border: round orange;
+    }
+}

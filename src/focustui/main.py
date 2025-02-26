@@ -2,13 +2,14 @@ import json
 import os
 import re
 import webbrowser
+import sys
 
 from collections import ChainMap
 import shutil
 from pathlib import Path
 from re import Pattern
 from sqlite3 import connect
-from sys import platform
+
 from typing import Iterable, Literal, cast
 
 import click
@@ -163,28 +164,6 @@ class ValueFrom1to100(Validator):
         if not value or int(value) < MIN_VOLUME_LEVEL or int(value) > MAX_VOLUME_LEVEL:
             return self.failure()
         return self.success()
-
-
-
-class SessionLenInput(Input):
-    """Accept 0 or value in one of the 2 forms:
-    1. Minutes form - value between MIN to MAX
-    2. Hour form - H:M or H:MM between MIN and MAX.
-    """
-
-    def __init__(self, cm: "ConfigManager", *args, **kwargs) -> None:
-        super().__init__(
-            *args,
-            value=cm.get_session_length(),
-            id="session-duration",
-            tooltip=tooltip,
-            restrict="[0-9:]*$",
-            validators=[SessionInputValidator()],
-            **kwargs,
-        )
-
-    def to_int(self) -> int:
-        return session_len_parser(self.value)
 
 
 class SoundVolumeInput(Input):
@@ -577,7 +556,7 @@ class AboutSettings(Container):
         yield Static("FocusTUI is your best buddy for working or studying.")
         yield Static("If you want to learn more, share your ideas, or report bugs...")
         yield Static("Check out our media!")
-        with Grid(id="get-into-social"):
+        with Grid():
             yield Button("Discord", id="discord")
             yield Button("Github", id="github")
             yield Button("X", id="x")
@@ -629,7 +608,7 @@ class SoundSettings(Grid):
             tooltip=create_tooltip("alarm"),
             id="alarm_volume",
         )
-        yield Button("Alarms\nSignals", id="short", classes="sound-edit-bt")
+        yield Button("Alarms\nSignals", id="short")
         yield Select.from_values(
             self._sm.all_shorts_list,
             prompt=f"Signal:{self._cm.get_sound_name("signal")}",
@@ -650,7 +629,7 @@ class SoundSettings(Grid):
             tooltip=create_tooltip("ambient"),
             id="ambient_volume",
         )
-        yield Button("Ambiences", id="long", classes="sound-edit-bt")
+        yield Button("Ambiences", id="long")
         yield Select.from_values(
             self._sm.all_sounds_list,
             prompt="Select to play sound",
@@ -682,7 +661,7 @@ class SoundSettings(Grid):
         sound_type = event.control.id.capitalize()
         event.select.prompt = f"{sound_type}: {self._cm.config.alarm.name}"
 
-    @on(Button.Pressed, ".sound-edit-bt")
+    @on(Button.Pressed)
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
         """Open Sounds Edit menu and refresh page if changes where applied."""
         self.app.push_screen(
@@ -738,27 +717,27 @@ class ClockDisplay(Horizontal):
         self._cm = cm
 
         if self._cm.get_clock_display_hours():
-            self._ones_hour = Static(NUMBERS_DICT["0"], classes="clock-digit")
+            self._ones_hour = Static(NUMBERS_DICT["0"])
             self._hour_separator = Static(
                 NUMBERS_DICT[":"],
                 classes="clock-digit",
             )
         else:
-            self._ones_hour = Static("", classes="clock-digit")
-            self._hour_separator = Static("", classes="clock-digit")
+            self._ones_hour = Static("")
+            self._hour_separator = Static("")
 
-        self._hundreds_min = Static("", classes="clock-digit")
-        self._tens_min = Static(NUMBERS_DICT["0"], classes="clock-digit")
-        self._ones_min = Static(NUMBERS_DICT["0"], classes="clock-digit")
+        self._hundreds_min = Static("")
+        self._tens_min = Static(NUMBERS_DICT["0"])
+        self._ones_min = Static(NUMBERS_DICT["0"])
 
         if self._cm.get_clock_display_seconds():
-            self._sec_separator = Static(NUMBERS_DICT[":"], classes="clock-digit")
-            self._tens_sec = Static(NUMBERS_DICT["0"], classes="clock-digit")
-            self._ones_sec = Static(NUMBERS_DICT["0"], classes="clock-digit")
+            self._sec_separator = Static(NUMBERS_DICT[":"])
+            self._tens_sec = Static(NUMBERS_DICT["0"])
+            self._ones_sec = Static(NUMBERS_DICT["0"])
         else:
-            self._sec_separator = Static("", classes="clock-digit")
-            self._tens_sec = Static("", classes="clock-digit")
-            self._ones_sec = Static("", classes="clock-digit")
+            self._sec_separator = Static("")
+            self._tens_sec = Static("")
+            self._ones_sec = Static("")
 
     def compose(self) -> ComposeResult:
         yield self._ones_hour
@@ -833,15 +812,13 @@ class ClockDisplay(Horizontal):
 
 def get_users_folder() -> str:
     """Return name of the user's folder."""
-    users_system = platform.system()
-
-    if users_system == "Linux":
+    if sys.platform == "linux":
         return "/home"
-    if users_system == "Windows":
+    if sys.platform == "windows":
         return os.path.expandvars("%SystemDrive%\\Users")
-    if users_system == "Darwin":
+    if sys.platform == "darwin":
         return "/Users"
-    msg = "App does not support this operating system."
+    msg = f"App does not support {sys.platform} OS."
     raise NotImplementedError(msg)
 
 
@@ -860,6 +837,7 @@ class MusicDirectoryTree(DirectoryTree):
 
         suffixes = {".wav", ".mp3", ".ogg", ".flac", ".opus", "/"}
         return [path for path in paths if not_hidden(path) or path.suffix in suffixes]
+
 
 class Accordion(Container):
     """Accordion class is a container for Collapsibles
@@ -889,7 +867,7 @@ class Accordion(Container):
         self._currently_expanded = event.collapsible
 
 
-class AddSoundTree(ModalScreen):
+class AddSoundPopup(ModalScreen):
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
         ("escape", "close_popup", "Close Popup"),
@@ -911,11 +889,11 @@ class AddSoundTree(ModalScreen):
             self.dismiss(True)
 
     def __init__(
-            self,
-            sound_type: LengthType,
-            sm: "SoundManager",
-            *args: tuple,
-            **kwargs: dict,
+        self,
+        sound_type: LengthType,
+        sm: "SoundManager",
+        *args: tuple,
+        **kwargs: dict,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.sound_type = sound_type
@@ -962,12 +940,12 @@ class EditSound(ModalScreen):
         self.app.exit()
 
     def __init__(
-            self,
-            sound_type: LengthType,
-            sm: "SoundManager",
-            cm: "ConfigManager",
-            *args: tuple,
-            **kwargs: dict,
+        self,
+        sound_type: LengthType,
+        sm: "SoundManager",
+        cm: "ConfigManager",
+        *args: tuple,
+        **kwargs: dict,
     ) -> None:
         super().__init__(*args, **kwargs)
         self._cm = cm
@@ -991,15 +969,10 @@ class EditSound(ModalScreen):
             self.dismiss(True)
 
     def compose(self) -> ComposeResult:
-        restriction = r"^[a-zA-Z0-9_-]+$"
         with Accordion(id="sounds-accordion"):
             for name in self._sounds_names:
-                with Collapsible(
-                        title=name, classes="sound-collapsible", id=f"{name}_coll",
-                ):
-                    yield Input(
-                        value=name, id=f"{name}_input", restrict=restriction,
-                    )
+                with Collapsible(title=name, id=f"{name}_coll",):
+                    yield Input(value=name, id=f"{name}_input", restrict="^[a-zA-Z0-9_-]+$")
                     with Horizontal(classes="sound-buttons-wrapper"):
                         yield Button(
                             "Rename",
@@ -1074,9 +1047,9 @@ class EditSound(ModalScreen):
 
     @on(Button.Pressed, "#add-sound-bt")
     async def open_music_directory_tree(self) -> None:
-        """Push AddSoundTree that allow user to add new songs."""
+        """Push AddSoundPopup that allow user to add new songs."""
         await self.app.push_screen(
-            AddSoundTree(
+            AddSoundPopup(
                 self._sound_type, sm=self._sm),
             self.recompose_,
         )
@@ -1101,9 +1074,9 @@ class ConfirmPopup(ModalScreen[bool]):
         self.message = message
 
     def compose(self) -> ComposeResult:
-        with Container(id="confirm-popup-body"):
-            yield Static(self.message, id="confirm-popup-message")
-            with Horizontal(id="confirm-popup-buttons"):
+        with Container():
+            yield Label(self.message)
+            with Horizontal():
                 yield Button("No", variant="error", id="no-button")
                 yield Button("Yes", variant="success", id="yes-button")
 
@@ -1197,9 +1170,15 @@ class FocusScreen(Screen):
         self._cm = cm
         self._db = db
         self._sm = sm
-        self._session_len_input = SessionLenInput(cm=self._cm)
+        self._session_len_input = Input(
+            value=cm.get_session_length(),
+            id="session-duration",
+            tooltip=tooltip,
+            restrict="[0-9:]*$",
+            validators=[SessionInputValidator()],
+        )
         self._clock_display = ClockDisplay(cm=self._cm)
-        self._focus_button = Button("Focus", variant="success", id="focus-bt")
+        self._focus_button = Button("Focus", variant="success")
         self._active_session = False
         self._session_len: int = session_len_parser(self._cm.get_session_length())
         self._remaining_session: int = 0
@@ -1210,14 +1189,13 @@ class FocusScreen(Screen):
         self._input_mode = self._cm.get_time_input_mode()
 
     def compose(self):
-        with Horizontal(id="clock-wrapper"):
-            yield self._clock_display
-        with Vertical(id="focus-wrapper"):
+        yield self._clock_display
+        with Vertical():
             yield self._session_len_input
             yield self._focus_button
         yield Footer()
 
-    @on(Button.Pressed, "#focus-bt")
+    @on(Button.Pressed)
     def _focus_button_clicked(self) -> None:
         """Start, Cancel, Kill session."""
         if self._focus_button.variant == "success":
@@ -1230,7 +1208,7 @@ class FocusScreen(Screen):
         else:
             self._successful_session()
 
-    @on(Input.Changed, "#session-duration")
+    @on(Input.Changed)
     def _is_valid_session_length(self, event: Input.Changed) -> None:
         """If the session duration is not correct block start button."""
         is_valid: bool = event.input.is_valid
@@ -1244,7 +1222,7 @@ class FocusScreen(Screen):
         """Start a Timer session."""
         self._active_session = True
         self._session_len_input.visible = False
-        self._session_len = self._session_len_input.to_int() * MINUTE
+        self._session_len = session_len_parser(self._session_len_input.value) * MINUTE
         self._mode = "stopwatch" if self._session_len == 0 else "timer"
         if self._mode == "timer":
             self._remaining_session = self._session_len
@@ -1357,7 +1335,7 @@ class SettingsScreen(Screen):
         self._cm = cm
         self._sm = sm
 
-        self.account_settings_border = Static(classes="settings-section")
+        self.account_settings_border = Widget(classes="settings-section")
         self.account_settings_border.border_title = "Account"
 
         self.social_settings_border = Static(classes="settings-section")
@@ -1376,20 +1354,19 @@ class SettingsScreen(Screen):
         self.about.border_title = "About"
 
     def compose(self) -> ComposeResult:
-        with VerticalScroll(id="settings-wrapper"):
-            with Container(id="settings-body"):
-                with self.account_settings_border:
-                    yield Button("PLACEHOLDER")
-                with self.social_settings_border:
-                    yield Button("PLACEHOLDER")
-                with self.sound_settings_border:
-                    yield SoundSettings(cm=self._cm, sm=self._sm)
-                with self.theme_settings_border:
-                    yield Button("PLACEHOLDER")
-                with self.theme_store_settings_border:
-                    yield Button("PLACEHOLDER")
-                with self.about:
-                    yield AboutSettings()
+        with VerticalScroll():
+            with self.account_settings_border:
+                yield Button("PLACEHOLDER")
+            with self.social_settings_border:
+                yield Button("PLACEHOLDER")
+            with self.sound_settings_border:
+                yield SoundSettings(cm=self._cm, sm=self._sm)
+            with self.theme_settings_border:
+                yield Button("PLACEHOLDER")
+            with self.theme_store_settings_border:
+                yield Button("PLACEHOLDER")
+            with self.about:
+                yield AboutSettings()
         yield Footer()
 
 
@@ -1422,6 +1399,7 @@ class FocusTUI(App, inherit_bindings=False):
 
     def on_mount(self):
         self.push_screen(FocusScreen(cm=self._cm, db=self._db, sm=self._sm))
+        # self.push_screen(AddSoundPopup(callback=lambda x: self.exit()))
 
     def open_settings(self):
         """Switch to settings screen."""

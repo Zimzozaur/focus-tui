@@ -1,0 +1,151 @@
+Screen {
+    padding: 1 2;
+    width: 100%;
+    height: 100%;
+    align: center middle;
+}
+
+ModalScreen {
+    padding: 0;
+}
+
+FocusScreen {
+    Vertical {
+        align: center middle;
+        height: 40%;
+    }
+
+    Button {
+        margin-top: 1;
+        margin-left: 2;
+    }
+
+    Input {
+        width: 20;
+    }
+
+    ClockDisplay {
+        align: center middle;
+    }
+
+    Static {
+        width: auto;
+        color: $warning-lighten-1;
+    }
+}
+
+SettingsScreen {
+    VerticalScroll {
+        align: center top;
+        margin: 2 0;
+        width: 70;
+        height: auto;
+    }
+
+    .settings-section {
+        border: round white;
+        height: auto;
+        padding: 0 1;
+    }
+
+    SoundSettings {
+        height: auto;
+        grid-size: 3 4;
+        grid-columns: 3fr 1fr 1fr;
+
+        #short {
+            row-span: 2;
+            height: 8;
+        }
+    }
+
+    AboutSettings {
+        height: auto;
+        padding: 1;
+
+        Grid {
+            grid-size: 3 1;
+            grid-gutter: 10;
+            height: auto;
+            padding-top: 1;
+        }
+    }
+}
+
+
+
+EditSound {
+    align: center middle;
+
+    Accordion {
+        layout: vertical;
+        overflow-x: hidden;
+        overflow-y: auto;
+        min-width: 50;
+        max-width: 70;
+        height: 30;
+        padding: 1 2;
+        background: $surface;
+
+        .sound-buttons-wrapper {
+            height: auto;
+            padding: 1 1 0 1;
+            width: 100%;
+        }
+
+        #add-sound-wrapper {
+            height: auto;
+        }
+
+        .sound-buttons-divider {
+            width: 1fr;
+        }
+
+        #add-sound-divider {
+            height: 1fr
+        }
+    }
+}
+
+
+
+
+ConfirmPopup {
+    align: center middle;
+
+    Container {
+        width: auto;
+        height: auto;
+        padding: 1 2;
+        background: $panel;
+    }
+
+    Label {
+        text-style: bold;
+    }
+
+    Horizontal {
+        width: auto;
+        height: auto;
+        margin-top: 1;
+    }
+
+    #yes-button {
+        margin-left: 10;
+    }
+}
+
+
+AddSoundPopup {
+    MusicDirectoryTree {
+        width: 60%;
+        height: 60%;
+        padding: 1 2;
+        background: $panel;
+    }
+}
+
+
+
+
+
