@@ -30,21 +30,22 @@ from textual.screen import Screen, ModalScreen
 from textual.app import App, ComposeResult
 from textual.containers import Grid, Center, Horizontal, Vertical, VerticalScroll, Container
 
-
 from focustui.assets import *
-
 
 
 #############################
 #       Custom Types        #
 #############################
 
-VolumeType = Literal["alarm_volume", "signal_volume", "ambient_volume", "test_volume"]
-SoundType = Literal["alarm", "signal", "ambient"]
-LengthType = Literal["short", "long"]
-InputModeType = Literal["minute", "hour_minute"]
-ClockDisplayMode = Literal["hour", "minute"]
-
+LengthTypeLit = Literal["short", "long"]
+InputModeTypeLit = Literal["minute", "hour_minute"]
+SoundTypeLit = Literal["alarm", "signal", "ambient", "test"]
+VolumeTypeLit = Literal[
+    "alarm_volume",
+    "signal_volume",
+    "ambient_volume",
+    "test_volume"
+]
 
 #############################
 #      Custom Settings      #
@@ -68,7 +69,6 @@ MAX_SESSION_LEN: int = 120
 MAX_SESSION_LEN_HOUR: int = 5
 DEFAULT_SESSION_LEN: str = "45"
 SESSION_SIGNATURE: Pattern[str] = re.compile("^([0-9]{1,3}|[0-3]:[0-9]{1,2})$")
-
 
 #############################
 #      Default Settings     #
@@ -109,7 +109,7 @@ DEFAULT_SOUND_VOLUME: int = 50
 MIN_VOLUME_LEVEL: int = 1
 MAX_VOLUME_LEVEL: int = 100
 
-DEFAULT_TIME_INPUT_TYPE: InputModeType = "minute"
+DEFAULT_TIME_INPUT_TYPE: InputModeTypeLit = "minute"
 DEFAULT_CLOCK_DISPLAY_HOURS: bool = False
 DEFAULT_CLOCK_DISPLAY_SECONDS: bool = True
 
@@ -142,8 +142,6 @@ def session_len_parser(string: str) -> int:
     return -1
 
 
-
-
 tooltip = (
     "Type 0 to set stopwatch\n"
     "Or 5-120 for timer in minutes\n"
@@ -166,18 +164,17 @@ class ValueFrom1to100(Validator):
         return self.success()
 
 
-class SoundVolumeInput(Input):
+class VolumeInput(Input):
     def __init__(
             self, **kwargs,
     ) -> None:
         super().__init__(
             placeholder=f"{MIN_VOLUME_LEVEL} - {MAX_VOLUME_LEVEL}",
-            restrict=r"^(100|[1-9][0-9]?|0?[1-9])$",
+            restrict=r"[0-9\s]{0,3}",
             validators=[ValueFrom1to100()],
             type="integer",
             **kwargs,
         )
-
 
 
 class Sound:
@@ -294,14 +291,14 @@ class SoundManager:
             self._longs_dict[new_name] = Sound(new_file_path)
 
     def add_sound(
-            self,
-            path: Path,
-            name: str,
-            extension: str,
-            sound_type: LengthType,
+        self,
+        path: Path,
+        name: str,
+        extension: str,
+        length_type: LengthTypeLit,
     ) -> None:
         """Add sound to right folder, create instance of Sound and to dict."""
-        if sound_type == "short":
+        if length_type == "short":
             new_path = SHORTS_PATH
             dict_ = self._shorts_dict
         else:
@@ -313,10 +310,10 @@ class SoundManager:
         dict_[name] = sound
         shutil.copy(path, sound.path)
 
-    def remove_sound(self, name: str, sound_type: LengthType) -> None:
+    def remove_sound(self, name: str, length_type: LengthTypeLit) -> None:
         """Remove sound from users drive and update config if needed."""
         self._all_sounds_dict[name].path.unlink()
-        if sound_type == "short":
+        if length_type == "short":
             del self._shorts_dict[name]
         else:
             del self._longs_dict[name]
@@ -351,52 +348,21 @@ class SoundManager:
         """Stop playing sound."""
         self._sound_channel.stop()
 
-class _SoundModel(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    # Fields
-    name: str
-    volume: int = DEFAULT_SOUND_VOLUME
-
-    @field_validator("name")
-    def validate_name(cls, string: str) -> str:
-        for char in string:
-            if not (char.isalpha() or char.isdigit() or char in {"_", "-", "'"}):
-                msg = ("Only letters, numbers, underscore, "
-                       "dash or apostrophe are allowed in sound name")
-                raise ValueError(msg)
-        return string
-
-    @field_validator("volume")
-    def validate_volume(cls, value: int) -> int:
-        """Set to default when value is not correct."""
-        if value < MIN_VOLUME_LEVEL or value > MAX_VOLUME_LEVEL:
-            return DEFAULT_SOUND_VOLUME
-        return value
-
-
-class AlarmModel(_SoundModel):
-    name: str = DEFAULT_ALARM_NAME
-
-
-class SignalModel(_SoundModel):
-    name: str = DEFAULT_SIGNAL_NAME
-
-
-class AmbientModel(_SoundModel):
-    name: str = DEFAULT_AMBIENT_NAME
-
 
 class ConfigModel(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    # Fields
-    alarm: AlarmModel = AlarmModel()
-    signal: SignalModel = SignalModel()
-    ambient: AmbientModel = AmbientModel()
-    session_length: str = DEFAULT_SESSION_LEN
+    alarm_name: str = DEFAULT_ALARM_NAME
+    signal_name: str = DEFAULT_SIGNAL_NAME
+    ambient_name: str = DEFAULT_AMBIENT_NAME
+
+    alarm_volume: int = DEFAULT_SOUND_VOLUME
+    signal_volume: int = DEFAULT_SOUND_VOLUME
+    ambient_volume: int = DEFAULT_SOUND_VOLUME
     test_volume: int = DEFAULT_SOUND_VOLUME
-    input_mode_type: InputModeType = DEFAULT_TIME_INPUT_TYPE
+
+    session_length: str = DEFAULT_SESSION_LEN
+    input_mode_type: InputModeTypeLit = DEFAULT_TIME_INPUT_TYPE
     clock_display_hours: bool = DEFAULT_CLOCK_DISPLAY_HOURS
     clock_display_seconds: bool = DEFAULT_CLOCK_DISPLAY_SECONDS
 
@@ -406,17 +372,20 @@ class ConfigModel(BaseModel):
             return DEFAULT_SESSION_LEN
         return value
 
-    @field_validator("test_volume")
+    @field_validator("test_volume", "alarm_volume", "signal_volume", "ambient_volume")
     def validate_volume(cls, value: int) -> int:
         if value < MIN_VOLUME_LEVEL or value > MAX_VOLUME_LEVEL:
             return DEFAULT_SOUND_VOLUME
         return value
 
-
-def _load_and_validate_model() -> ConfigModel:
-    with Path(CONFIG_FILE_PATH).open() as file:
-        data = json.load(file)
-        return ConfigModel.model_validate(data)
+    @field_validator("alarm_name", "signal_name", "ambient_name")
+    def validate_name(cls, string: str) -> str:
+        for char in string:
+            if not (char.isalpha() or char.isdigit() or char in {"_", "-", "'"}):
+                msg = ("Only letters, numbers, underscore, "
+                       "dash or apostrophe are allowed in sound name")
+                raise ValueError(msg)
+        return string
 
 
 class ConfigManager:
@@ -429,58 +398,68 @@ class ConfigManager:
         return cls._instance
 
     def __init__(self) -> None:
-        self.config: ConfigModel = _load_and_validate_model()
+        with Path(CONFIG_FILE_PATH).open() as file:
+            self.config = ConfigModel.model_validate(json.load(file))
 
-    def get_sound_name(self, sound_type: SoundType) -> str:
+    def get_sound_name(self, sound_type: SoundTypeLit):
         """Get from config.json name of chosen sound_type."""
-        return getattr(self.config, sound_type).name
+        match sound_type:
+            case "alarm":
+                return self.config.alarm_name
+            case "signal":
+                return self.config.signal_name
+            case "ambient":
+                return self.config.ambient_name
 
-    def update_used_sound(
-            self,
-            sound_type: SoundType,
-            name: str,
-    ) -> None:
+    def update_used_sound(self, sound_type: SoundTypeLit, name: str) -> None:
         """Update config.json with new name."""
-        getattr(self.config, sound_type).name = name
+        match sound_type:
+            case "alarm":
+                self.config.alarm_name = name
+            case "signal":
+                self.config.signal_name = name
+            case "ambient":
+                self.config.ambient_name = name
         self._save_config()
 
     def is_sound_in_config(self, sound_name: str) -> bool:
         """Check is sound in config file if yes return True."""
-        alarm = self.config.alarm.name == sound_name
-        signal = self.config.signal.name == sound_name
-        ambient = self.config.ambient.name == sound_name
+        alarm = self.config.alarm_name == sound_name
+        signal = self.config.signal_name == sound_name
+        ambient = self.config.ambient_name == sound_name
         return alarm or signal or ambient
 
     def update_sound_name(self, old_name: str, new_name: str | None = None) -> None:
         """Update name to new if old in config."""
-        if self.config.alarm.name == old_name:
-            self.config.alarm.name = new_name or DEFAULT_ALARM_NAME
+        if self.config.alarm_name == old_name:
+            self.config.alarm_name = new_name or DEFAULT_ALARM_NAME
 
-        if self.config.signal.name == old_name:
-            self.config.signal.name = new_name or DEFAULT_SIGNAL_NAME
+        if self.config.signal_name == old_name:
+            self.config.signal_name = new_name or DEFAULT_SIGNAL_NAME
 
-        if self.config.ambient.name == old_name:
-            self.config.ambient.name = new_name or DEFAULT_AMBIENT_NAME
+        if self.config.ambient_name == old_name:
+            self.config.ambient_name = new_name or DEFAULT_AMBIENT_NAME
 
         self._save_config()
 
-    def change_volume_value(
-        self,
-        volume_type: VolumeType,
-        value: int,
-    ) -> None:
-        """Change volume value if type is not test it hast to get the attribute
-        from the nested model.
-        """
-        if volume_type == "test_volume":
-            if getattr(self.config, volume_type) == value:
-                return
-            self.config.test_volume = value
-        else:
-            sound_model = getattr(self.config, volume_type.split("_")[0])
-            if sound_model.volume == value:
-                return
-            sound_model.volume = value
+    def change_volume_value(self, volume_type: VolumeTypeLit, value: int) -> None:
+        match volume_type:
+            case "test_volume":
+                if self.config.test_volume == value:
+                    return
+                self.config.test_volume = value
+            case "alarm_volume":
+                if self.config.alarm_volume == value:
+                    return
+                self.config.alarm_volume = value
+            case "signal_volume":
+                if self.config.signal_volume == value:
+                    return
+                self.config.signal_volume = value
+            case "ambient_volume":
+                if self.config.ambient_volume == value:
+                    return
+                self.config.ambient_volume = value
 
         self._save_config()
 
@@ -495,10 +474,10 @@ class ConfigManager:
         with Path(CONFIG_FILE_PATH).open("w") as file:
             json.dump(self.config.model_dump(), file, sort_keys=False)
 
-    def get_time_input_mode(self) -> InputModeType:
+    def get_time_input_mode(self) -> InputModeTypeLit:
         return self.config.input_mode_type
 
-    def change_time_input_mode(self, new: InputModeType) -> None:
+    def change_time_input_mode(self, new: InputModeTypeLit) -> None:
         self.config.input_mode_type = new
         self._save_config()
 
@@ -515,6 +494,7 @@ class ConfigManager:
     def toggle_clock_display_seconds(self) -> None:
         self.config.clock_display_seconds = not self.config.clock_display_seconds
         self._save_config()
+
 
 class DatabaseManager:
     _instance = None
@@ -550,7 +530,6 @@ class DatabaseManager:
     #                              )
 
 
-
 class AboutSettings(Container):
     def compose(self) -> ComposeResult:
         yield Static("FocusTUI is your best buddy for working or studying.")
@@ -574,8 +553,7 @@ class AboutSettings(Container):
         webbrowser.open(SIMONS_X_ACCOUNT)
 
 
-
-def create_tooltip(volume_type: SoundType | Literal["test"]) -> str:
+def create_tooltip(volume_type: SoundTypeLit) -> str:
     """Return a tooltip string with volume_type interpolated."""
     return (
         f"Type value between {MIN_VOLUME_LEVEL} and {MAX_VOLUME_LEVEL}\nto "
@@ -603,19 +581,19 @@ class SoundSettings(Grid):
             prompt=f"Alarm:{self._cm.get_sound_name("alarm")}",
             id="alarm",
         )
-        yield SoundVolumeInput(
-            value=str(self._cm.config.alarm.volume),
+        yield VolumeInput(
+            value=str(self._cm.config.alarm_volume),
             tooltip=create_tooltip("alarm"),
             id="alarm_volume",
         )
-        yield Button("Alarms\nSignals", id="short")
+        yield Button("Alarms\nSignals", id="short", classes="add-sound-bt")
         yield Select.from_values(
             self._sm.all_shorts_list,
             prompt=f"Signal:{self._cm.get_sound_name("signal")}",
             id="signal",
         )
-        yield SoundVolumeInput(
-            value=str(self._cm.config.signal.volume),
+        yield VolumeInput(
+            value=str(self._cm.config.signal_volume),
             tooltip=create_tooltip("signal"),
             id="signal_volume",
         )
@@ -624,18 +602,18 @@ class SoundSettings(Grid):
             prompt=f"Ambient: {self._cm.get_sound_name("ambient")}",
             id="ambient",
         )
-        yield SoundVolumeInput(
-            value=str(self._cm.config.ambient.volume),
+        yield VolumeInput(
+            value=str(self._cm.config.ambient_volume),
             tooltip=create_tooltip("ambient"),
             id="ambient_volume",
         )
-        yield Button("Ambiences", id="long")
+        yield Button("Ambiences", id="long", classes="add-sound-bt")
         yield Select.from_values(
             self._sm.all_sounds_list,
             prompt="Select to play sound",
             id="test-sound",
         )
-        yield SoundVolumeInput(
+        yield VolumeInput(
             value=str(self._cm.config.test_volume),
             tooltip=create_tooltip("test"),
             id="test_volume",
@@ -654,19 +632,19 @@ class SoundSettings(Grid):
             return
 
         self._cm.update_used_sound(
-            sound_type=cast(SoundType, event.select.id),
+            sound_type=cast(SoundTypeLit, event.select.id),
             name=event.value,
         )
         # Update song's name
         sound_type = event.control.id.capitalize()
-        event.select.prompt = f"{sound_type}: {self._cm.config.alarm.name}"
+        event.select.prompt = f"{sound_type}: {self._cm.config.alarm_name}"
 
-    @on(Button.Pressed)
+    @on(Button.Pressed, ".add-sound-bt")
     def open_edit_sound_popup(self, event: Button.Pressed) -> None:
         """Open Sounds Edit menu and refresh page if changes where applied."""
         self.app.push_screen(
             EditSound(
-                cast(LengthType, event.button.id),
+                cast(LengthTypeLit, event.button.id),
                 sm=self._sm,
                 cm=self._cm,
             ),
@@ -695,18 +673,17 @@ class SoundSettings(Grid):
         """Stop playing any sound."""
         self._sm.stop_sound()
 
-    @on(SoundVolumeInput.Changed)
-    def new_volume_submitted(self, event: SoundVolumeInput.Submitted) -> None:
+    @on(VolumeInput.Changed)
+    def new_volume_submitted(self, event: VolumeInput.Submitted) -> None:
         if event.value == "":
             return
 
         if not MIN_VOLUME_LEVEL <= int(event.value) <= MAX_VOLUME_LEVEL:
             return
 
-        _type = cast(VolumeType, event.input.id)
+        _type = cast(VolumeTypeLit, event.input.id)
         value = int(event.input.value)
         self._cm.change_volume_value(_type, value)
-
 
 
 class ClockDisplay(Horizontal):
@@ -828,6 +805,7 @@ def soundify(sound: str):
         char if char.isalnum() or char in {"_", "-"} else "_" for char in sound
     )
 
+
 class MusicDirectoryTree(DirectoryTree):
     show_root = False
 
@@ -890,7 +868,7 @@ class AddSoundPopup(ModalScreen):
 
     def __init__(
         self,
-        sound_type: LengthType,
+        sound_type: LengthTypeLit,
         sm: "SoundManager",
         *args: tuple,
         **kwargs: dict,
@@ -922,7 +900,6 @@ class AddSoundPopup(ModalScreen):
         self.notify(f"Imported: {sound}")
 
 
-
 def remove_id_suffix(string: str) -> str:
     """Remove _something from the end of the string."""
     return string[:string.rindex("_")]
@@ -941,7 +918,7 @@ class EditSound(ModalScreen):
 
     def __init__(
         self,
-        sound_type: LengthType,
+        sound_type: LengthTypeLit,
         sm: "SoundManager",
         cm: "ConfigManager",
         *args: tuple,
@@ -951,10 +928,8 @@ class EditSound(ModalScreen):
         self._cm = cm
         self._sm = sm
         self._sound_type = sound_type
-        if self._sound_type == "short":
-            self._sounds_names = self._sm.user_shorts_list
-        else:
-            self._sounds_names = self._sm.user_longs_list
+        self._sounds_names = self._sm.user_shorts_list \
+            if sound_type == "short" else self._sm.user_longs_list
 
     def action_close_popup(self) -> None:
         self.dismiss(True)
@@ -971,7 +946,7 @@ class EditSound(ModalScreen):
     def compose(self) -> ComposeResult:
         with Accordion(id="sounds-accordion"):
             for name in self._sounds_names:
-                with Collapsible(title=name, id=f"{name}_coll",):
+                with Collapsible(title=name, id=f"{name}_coll"):
                     yield Input(value=name, id=f"{name}_input", restrict="^[a-zA-Z0-9_-]+$")
                     with Horizontal(classes="sound-buttons-wrapper"):
                         yield Button(
@@ -1063,9 +1038,6 @@ class EditSound(ModalScreen):
         await self.recompose()
 
 
-
-
-
 class ConfirmPopup(ModalScreen[bool]):
     """ModalScreen to ask user for confirmation of certain action."""
 
@@ -1093,15 +1065,8 @@ class ConfirmPopup(ModalScreen[bool]):
 
 
 
-ACTIONS_NOT_ALLOWED_ON_IDLE = (
-    "play_ambient",
-    "stop_ambient",
-    "toggle_hours",
-    "toggle_seconds",
-)
-
-
 class FocusScreen(Screen):
+    app: "FocusTUI"
     _ambient_silent = reactive(True, bindings=True)
     _input_mode = reactive("PLACEHOLDER", bindings=True)
 
@@ -1125,14 +1090,14 @@ class FocusScreen(Screen):
         self._ambient_silent = False
         self._sm.toggle_ambient(
             self._ambient_silent,
-            self._cm.config.ambient.volume,
+            self._cm.config.ambient_volume,
         )
 
     def action_stop_ambient(self):
         self._ambient_silent = True
         self._sm.toggle_ambient(
             self._ambient_silent,
-            self._cm.config.ambient.volume,
+            self._cm.config.ambient_volume,
         )
 
     def action_toggle_hours(self):
@@ -1143,7 +1108,8 @@ class FocusScreen(Screen):
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:  # noqa: PLR0911
         """If clock is active allow to toggle ambient and hide rest."""
-        if self._active_session and action not in ACTIONS_NOT_ALLOWED_ON_IDLE:
+        not_allowed = "play_ambient", "stop_ambient", "toggle_hours", "toggle_seconds"
+        if self._active_session and action not in not_allowed:
             return False
 
         if action in ("play_ambient", "stop_ambient") and not self._active_session:
@@ -1234,7 +1200,7 @@ class FocusScreen(Screen):
         self._intervals.extend([update_clock, cancel_session])
         self._focus_button.variant = "warning"
         self._sm.play_ambient_in_background(
-            ambient_name=self._cm.config.ambient.name,
+            ambient_name=self._cm.config.ambient_name,
         )
         self.app.refresh_bindings()  # Deactivates Bindings
 
@@ -1263,10 +1229,9 @@ class FocusScreen(Screen):
         """Play song, add successful session to DB and reset clock."""
         # self._db.create_session_entry(self._session_len // 60, 1)  # noqa: ERA001
         self._reset_timer()
-        alarm = self._cm.config.alarm
         self._sm.play_sound(
-            sound_name=alarm.name,
-            sound_volume=alarm.volume,
+            sound_name=self._cm.config.alarm_name,
+            sound_volume=self._cm.config.alarm_volume,
         )
 
     def _not_successful_session(self, should_kill: bool) -> None:
@@ -1312,6 +1277,7 @@ class FocusScreen(Screen):
 
 
 class SettingsScreen(Screen):
+    app: "FocusTUI"
     TITLE = "Settings"
     BINDINGS = [
         ("ctrl+q", "quit_app", "Quit App"),
@@ -1430,7 +1396,6 @@ class SoundFileManager:
     def get_longs(self) -> list[Path]:
         """Return list of longs paths."""
         return list(self.longs.glob("*"))
-
 
 
 def _create_dir_if_not_exist(path: Path) -> None:
